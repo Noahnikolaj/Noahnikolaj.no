@@ -78,11 +78,11 @@ const Page = () => {
                 </div>
 
                 <div className="mt-12 space-x-8">
-                <button className="inline-block px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-background hover:scale-105 transition-all cursor-pointer" style={{ fontFamily: "lekton" }}>
+                <button className="inline-block px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-background hover:scale-105 transition-all cursor-pointer md:hover:(effekt)" style={{ fontFamily: "lekton" }}>
                     <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/">LinkedIn</a>
                 </button>
 
-                <button className="inline-block px-4 py-2 text-base font-bold text-secondary bg-input border border-primary rounded-lg hover:bg-muted hover:border-muted hover:scale-105 transition-all cursor-pointer" style={{ fontFamily: "lekton" }}>
+                <button className="inline-block px-4 py-2 text-base font-bold text-secondary bg-input border border-primary rounded-lg hover:bg-muted hover:border-muted hover:scale-105 transition-all cursor-pointer md:hover:(effekt)" style={{ fontFamily: "lekton" }}>
                     <Link href="/cv">Min CV</Link>
                 </button>
                 </div>
