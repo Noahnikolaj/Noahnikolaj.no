@@ -13,9 +13,26 @@ import {ModeToggle} from "@/components/ModeToggle";
 import Link from "next/link";
 import Image from "next/image";
 import {MailIcon } from "lucide-react";
+import Autoplay from "embla-carousel-autoplay"
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
+import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel";
+
 
 
 const Page = () => {
+
+    const plugin = React.useRef(
+        Autoplay({ delay: 4000, stopOnInteraction: false}) // The times it takes for the carousel to rotate
+    )
+
+    const wheelGestures = WheelGesturesPlugin()
+
+    /* The projects displayed in the carosel */
+    const projects = [
+        { title: "Nettside",content: "My name is Pink and I'm really glad to meet you", image: "/projectphotos/img.png", link: "/projects/1" },
+        { title: "Designsystem",content: "You're recommended to me by some people\n" + "Hey, ooh, is this illegal?", image: "/projectphotos/img.png", link: "/projects/2" },
+        { title: "En annen side",content: "Hey, ooh, it feels illegal (Ha)\n" + "I've suffered quite a few times with paranoia\n" + "Oh, what's your name? I don't know what I should call ya", image: "/projectphotos/img.png", link: "/projects/3" },
+    ];
 
     return (
     <div className="flex flex-col min-h-screen">
@@ -24,7 +41,7 @@ const Page = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-            <header className="text-center my-12">
+            <header className="text-center my-5">
                 <h1 className="text-4xl font-light text-primary" style={{ fontFamily: "lemon" }}> <span className="font-bold">Hei Hei</span>{""}
                     <ReactTyped startWhenVisible
                     strings={[", hvem er jeg"]}
@@ -87,9 +104,39 @@ const Page = () => {
                 </button>
                 </div>
 
+                <div className="mt-52 space-x-16">
+                    <h2 className="text-3xl font-light text-primary mb-2" style={{ fontFamily: "lemon" }}> <span className="font-bold">Hva har jeg jobbet med?</span></h2>
+                    <Carousel
+                        plugins={[plugin.current, wheelGestures]}
+                        opts={{ loop: true }}
+                        className="w-full max-w-xs flex justify-center mt-2"
+                        onMouseEnter={() => plugin.current.stop()}
+                        onMouseLeave={() => plugin.current.play()}
+                    >
+                        <CarouselContent>
+                            {projects.map((project, index) => (
+                                <CarouselItem key={index}>
+                                    <div className="p-2 hover:scale-105 transition-all cursor-pointer">
+                                        <Card>
+                                            <CardContent className="flex flex-col items-center justify-center p-4 gap-2 text-center">
+                                                <Image src={project.image} alt={project.title} width={120} height={120} className="rounded-lg" />
+                                                <h3 className="text-lg font-bold text-secondary">{project.title}</h3>
+                                                <p className="text-sm text-secondary">{project.content}</p>
+                                                <Link href={project.link} className="text-sm text-chart-2 underline">Se mer →</Link>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </Carousel>
+                </div>
+
             </main>
 
-            <footer className="mt-auto text-center text-primary flex items-center justify-center gap-2 py-4">
+            <footer className="mt-24 text-center text-primary flex items-center justify-center gap-2 py-4">
                 <MailIcon size={16} />
                 <span>Kontakt meg: noahnikolaj.c@gmail.com</span>
             </footer>
