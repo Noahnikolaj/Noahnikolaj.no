@@ -8,11 +8,13 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .lemon-regular {
   font-family: "Lemon", serif;
   font-weight: 400;
   font-style: normal;
 }
+
 .lekton-regular {
   font-family: "Lekton", serif;
   font-weight: 600;
@@ -31,34 +33,86 @@ body {
   font-style: italic;
 }
 
+.porteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  background-color: rgba(var(--secondary));
+  color: rgba(var(--chart-2));
+  border: 1px solid rgba(var(--primary));
+  border-radius: 0.375rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.porteBtn:hover {
+  transform: scale(1.1);
+  background-color: rgba(var(--primary));
+  color: rgba(var(--secondary));
+}
+
+.squiggly-text {
+  background-color: rgba(var(--secondary));
+  color: rgba(var(--chart-2));
+  padding: 1rem;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  font-weight: 500;
+  display: inline-block;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
 @layer base {
   :root {
-    --background: 255, 188, 200, 1;
-    --foreground: 228, 100, 124, 1; /* blant annat icon farge til dropdown meny */
-    --card: 228, 100, 124, 1;
+    --background: rgba(255, 238, 241, 1);
+    /* eggshell off-white */
+    --foreground: 228, 100, 124, 1;
+    --card: 233, 89, 114, 1;
     --card-foreground: 220, 51, 90, 0.2;
-    --popover: 228, 100, 124, 1; /* bakgrunns farge til dropdown meny */
-    --popover-foreground: 255, 188, 200, 1; /* Text farge til dropdown meny */
-    --primary: 228, 100, 124, 1; /* Tittel farge */
+    --popover: 228, 100, 124, 1;
+    /* bakgrunns farge til dropdown meny */
+    --popover-foreground: 255, 188, 200, 1;
+    /* Text farge til dropdown meny */
+    --primary: 228, 100, 124, 1;
+    /* Tittel farge */
     --primary-foreground: 210 40% 98%;
-    --secondary: 255, 188, 200, 1; /* Vanlig text farge */
+    --secondary: 255, 188, 200, 1;
+    /* Vanlig text farge */
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 228, 100, 124, 0.7; /* Hover over noe farge */
-    --muted-foreground: 130, 50, 70, 0.8; /* muted tekst for CV */
-    --accent: 250, 131, 152, 1; /* hover over Valgte element i dropdown meny */
-    --accent-foreground: 255, 188, 200, 1; /* hover over element i dropdown meny */
+    --muted: 228, 100, 124, 0.7;
+    /* Hover over noe farge */
+    --muted-foreground: 130, 50, 70, 0.8;
+    /* muted tekst for CV */
+    --accent: 250, 131, 152, 1;
+    /* hover over Valgte element i dropdown meny */
+    --accent-foreground: 255, 188, 200, 1;
+    /* hover over element i dropdown meny */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 228, 100, 124, 1; /* border rundt dropdown meny */
+    --border: 228, 100, 124, 1;
+    /* border rundt dropdown meny */
     --input: 228, 100, 124, 1;
-    --ring: 255, 188, 200, 1; /* Outline around buttons */
-    --chart-1: 244, 114, 182, 1; /* Glowing effect color */
-    --chart-2: 50, 10, 30, 1; /* Titteler for CV */
-    --chart-3: 80, 20, 40, 1; /* vanlig tekst for CV */
-    --chart-4: 43 74% 66%; /* vanlig tekst for CV */
+    --ring: 255, 188, 200, 1;
+    /* Outline around buttons */
+    --chart-1: 244, 114, 182, 1;
+    /* Glowing effect color */
+    --chart-2: 50, 10, 30, 1;
+    /* Titteler for CV */
+    --chart-3: 80, 20, 40, 1;
+    /* vanlig tekst for CV */
+    --chart-4: 43 74% 66%;
+    /* vanlig tekst for CV */
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 20, 20, 30, 1;
     --foreground: 255, 160, 190, 1;
@@ -91,6 +145,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
