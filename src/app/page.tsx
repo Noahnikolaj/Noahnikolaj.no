@@ -13,7 +13,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import Link from "next/link";
 import Image from "next/image";
 import { MailIcon } from "lucide-react";
-import { Code, FileText } from "lucide-react";
+import { Code, FileText, Figma } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
@@ -34,18 +34,14 @@ const Page = () => {
 
   /* The projects displayed in the carosel */
   const projects = [
-    {
-      title: "Dip - Badeapp",
-      content: "En badeapp som gir tilgang til badeplasser i norge med ett interaktiv kart og point of interest i nærheten av badeplasser.",
-      image: "/projectphotos/varapp.png",
-      link: "/projects/1",
-    },
+
     {
       title: "Bosett",
       content:
         "Bosett er en tidslinjebasert integreringsapp som hjelper innvandrere i Norge med å finne og forstå nødvendig informasjon på ett sted, og som reduserer integreringsstress gjennom en tydelig, brukersentrert steg-for-steg-opplevelse.",
       image: "/projectphotos/Bosett.png",
-      link: "/projects/2",
+      link: "/bosett",
+      buttonType: "figma",
     },
     {
       title: "PixiWorld",
@@ -53,19 +49,22 @@ const Page = () => {
         "En sosial medieplattform rettet mot barn og som har trygghet og barnas helse i fokus",
       image: "/projectphotos/Pixiworld.png",
       link: "/projects/3",
+      codeLink: "https://github.com/Noahnikolaj/PixiWorld_SocialNetworkExam/tree/main",
     },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-x-hidden pt-20 md:pt-0">
+      {/*
       <div className="fixed top-4 right-4 z-50">
         <ModeToggle />
       </div>
+      */}
 
       <div className="flex flex-col items-center justify-center min-h-screen bg-background">
         <header className="text-center my-5">
           <h1
-            className="text-4xl font-light text-primary"
+            className="text-3xl md:text-4xl font-light text-primary"
             style={{ fontFamily: "lemon" }}
           >
             {" "}
@@ -84,14 +83,14 @@ const Page = () => {
           </h1>
         </header>
 
-        <main className="text-center">
-          <div className="  relative inline-block">
+        <main className="text-center w-full">
+          <div className="relative w-full max-w-md mx-auto px-6">
             <div className="absolute -inset-1 bg-chart-1 rounded-lg blur-2xl opacity-95 animate-pulse"></div>{" "}
             {/* Glowing effect */}
-            <Card className="relative max-w-md mx-auto bg-card shadow-none outline-none rounded-l-2xl overflow-hidden border border-primary hover:scale-105 transition-all cursor-pointer">
+            <Card className="relative max-w-md mx-auto bg-card shadow-none outline-none rounded-l-2xl overflow-hidden border border-primary md:hover:scale-105 transition-all cursor-pointer">
               <CardHeader>
                 <CardTitle
-                  className="text-3xl font-bold text-secondary drop-shadow-md"
+                  className="text-2xl md:text-3xl font-bold text-secondary drop-shadow-md"
                   style={{
                     fontFamily: "lemon",
                     textShadow: "16px 16px 18px rgba(228, 100, 124, 1)",
@@ -108,11 +107,11 @@ const Page = () => {
                     alt="Noah"
                     width={176}
                     height={176}
-                    className="rounded-full flex-shrink-0"
+                    className="rounded-full flex-shrink-0 w-32 h-32 md:w-44 md:h-44"
                   />
                   <div className="flex-grow max-w-[50%]">
                     <p
-                      className="text-lg font-bold text-secondary leading-relaxed break-words whitespace-normal"
+                      className="text-base md:text-lg font-bold text-secondary leading-relaxed break-words whitespace-normal"
                       style={{ fontFamily: "lekton" }}
                     >
                       Hei, jeg er Noah! 21 år gammel{" "}
@@ -139,7 +138,7 @@ const Page = () => {
 
           <div className="mt-12 space-x-6">
             <button
-              className="inline-block px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-background hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
+              className="inline-block px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-secondary hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
               style={{ fontFamily: "lekton" }}
             >
               <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/">
@@ -155,8 +154,7 @@ const Page = () => {
             </button>
           </div>
 
-          <div className="mt-52 space-x-16 relative">
-            {" "}
+          <div className="mt-24 md:mt-52 relative">
             {/* make container relative for absolutely positioned controls */}
             <h2
               className="text-3xl font-light text-primary mb-2"
@@ -167,16 +165,16 @@ const Page = () => {
             <Carousel
               plugins={[plugin.current, wheelGestures]}
               opts={{ loop: true, align: "start", slidesToScroll: 1 }}
-              className="w-full max-w-5xl mx-auto flex justify-center mt-6 bg-background rounded-2xl px-6 py-8"
+              className="w-[85%] md:w-full max-w-5xl mx-auto mt-6 bg-background rounded-2xl px-6 py-8"
               onMouseEnter={() => plugin.current.stop()}
               onMouseLeave={() => plugin.current.play()}
             >
               <CarouselContent>
                 {projects.map((project, index) => (
-                  <CarouselItem key={index} className="basis-1/2 px-2">
-                    <div className="p-2 hover:scale-105 transition-all cursor-pointer">
+                  <CarouselItem key={index} className="basis-full md:basis-1/2 px-2">
+                    <div className="p-2 md:hover:scale-105 transition-all cursor-pointer">
                       <Card className="bg-background shadow-none outline-none rounded-lg overflow-hidden border border-none">
-                        <CardContent className="flex flex-col items-center justify-center p-4 gap-2">
+                        <CardContent className="flex flex-col items-center justify-center p-3 md:p-4 gap-2">
                           {/* Card content including image, title, and description */}
                           <Image
                             src={project.image}
@@ -185,28 +183,38 @@ const Page = () => {
                             height={500}
                             quality={100}
                             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 48rem"
-                            className="w-full h-72 sm:h-80 md:h-[24rem] object-cover rounded-lg border border-primary mb-2"
+                            className="w-full h-48 md:h-[24rem] object-cover rounded-lg border border-primary mb-2"
                           />
                           <div className="w-full text-left">
                             <h3 className="text-lg font-bold text-primary mt-2">
                               {project.title}
                             </h3>
-                            <p className="squiggly-text mt-1">
+                            <p className="bg-secondary text-chart-2 p-3 md:p-4 rounded-xl shadow-sm mt-1 text-sm md:text-base">
                               {project.content}
                             </p>
                           </div>
                         </CardContent>
 
                         <CardFooter className="flex w-full gap-3 justify-center px-4 pb-4 mt-2">
-                          <a
-                            href={project.link + "/code"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="porteBtn"
-                          >
-                            <Code size={16} />
-                            Code
-                          </a>
+                          {project.buttonType === "figma" ? (
+                            <Link
+                              href={project.link}
+                              className="porteBtn"
+                            >
+                              <Figma size={16} />
+                              Design
+                            </Link>
+                          ) : (
+                            <a
+                              href={project.codeLink || project.link + "/code"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="porteBtn"
+                            >
+                              <Code size={16} />
+                              Code
+                            </a>
+                          )}
 
                           <Link
                             href={project.link}
@@ -221,11 +229,11 @@ const Page = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-1 flex items-center justify-center bg-white border border-primary text-primary hover:bg-secondary hover:text-background transition z-10">
+              <CarouselPrevious className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-1 items-center justify-center bg-white border border-primary text-primary hover:bg-secondary hover:text-background transition z-10">
                 <ChevronLeft size={16} />
               </CarouselPrevious>
 
-              <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-1 flex items-center justify-center bg-white border border-primary text-primary hover:bg-secondary hover:text-background transition z-10">
+              <CarouselNext className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-1 items-center justify-center bg-white border border-primary text-primary hover:bg-secondary hover:text-background transition z-10">
                 <ChevronRight size={16} />
               </CarouselNext>
             </Carousel>
