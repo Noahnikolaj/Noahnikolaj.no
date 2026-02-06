@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ModeToggle } from "@/components/ModeToggle";
 import Link from "next/link";
 import Image from "next/image";
 import { MailIcon } from "lucide-react";
