@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Lemon, Lekton } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -11,6 +11,19 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const lemon = Lemon({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-lemon",
+});
+
+const lekton = Lekton({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-lekton",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${lemon.variable} ${lekton.variable} antialiased`}>
       <ThemeProvider
           attribute="class"
           defaultTheme="system"

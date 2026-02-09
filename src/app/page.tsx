@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ArchiveIcon } from "@/components/ui/archive";
+import { LinkedinIcon } from "@/components/ui/linkedin";
 import Link from "next/link";
 import Image from "next/image";
 import { MailIcon } from "lucide-react";
@@ -64,7 +66,7 @@ const Page = () => {
         <header className="text-center my-5">
           <h1
             className="text-3xl md:text-4xl font-light text-primary"
-            style={{ fontFamily: "lemon" }}
+            style={{ fontFamily: "Lemon" }}
           >
             {" "}
             <span className="font-bold">Hei Hei</span>
@@ -91,7 +93,7 @@ const Page = () => {
                 <CardTitle
                   className="text-2xl md:text-3xl font-bold text-secondary drop-shadow-md"
                   style={{
-                    fontFamily: "lemon",
+                    fontFamily: "Lemon",
                     textShadow: "16px 16px 18px rgba(228, 100, 124, 1)",
                   }}
                 >
@@ -111,7 +113,7 @@ const Page = () => {
                   <div className="flex-grow max-w-[50%]">
                     <p
                       className="text-base md:text-lg font-bold text-secondary leading-relaxed break-words whitespace-normal"
-                      style={{ fontFamily: "lekton" }}
+                      style={{ fontFamily: "Lekton" }}
                     >
                       Hei, jeg er Noah! 21 år gammel{" "}
                       <ReactTyped
@@ -137,19 +139,21 @@ const Page = () => {
 
           <div className="mt-12 space-x-6">
             <button
-              className="inline-block px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-secondary hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
-              style={{ fontFamily: "lekton" }}
+              className="inline-flex items-center gap-2 px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-secondary hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
+              style={{ fontFamily: "Lekton" }}
             >
-              <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/">
+              <LinkedinIcon size={20} />
+              <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/" className="pt-1">
                 LinkedIn
               </a>
             </button>
 
             <button
-              className="inline-block px-4 py-2 text-base font-bold text-secondary bg-input border border-primary rounded-lg hover:bg-muted hover:border-muted hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
-              style={{ fontFamily: "lekton" }}
+              className="inline-flex items-center gap-2 px-4 py-2 text-base font-bold text-secondary bg-input border border-primary rounded-lg hover:text-primary hover:bg-secondary hover:border-secondary hover:scale-110 transition-all cursor-pointer md:hover:(effekt)"
+              style={{ fontFamily: "Lekton" }}
             >
-              <Link href="/cv">Min CV</Link>
+              <ArchiveIcon size={20} />
+              <Link href="/cv" className="pt-1">Min CV</Link>
             </button>
           </div>
 
@@ -157,7 +161,7 @@ const Page = () => {
             {/* make container relative for absolutely positioned controls */}
             <h2
               className="text-3xl font-light text-primary mb-2"
-              style={{ fontFamily: "lemon" }}
+              style={{ fontFamily: "Lemon" }}
             >
               Portefølje
             </h2>
@@ -165,8 +169,8 @@ const Page = () => {
               plugins={[plugin.current, wheelGestures]}
               opts={{ loop: true, align: "start", slidesToScroll: 1 }}
               className="w-[85%] md:w-full max-w-5xl mx-auto mt-6 bg-background rounded-2xl px-6 py-8"
-              onMouseEnter={() => plugin.current.stop()}
-              onMouseLeave={() => plugin.current.play()}
+              onMouseEnter={() => plugin.current?.stop()}
+              onMouseLeave={() => plugin.current?.play()}
             >
               <CarouselContent>
                 {projects.map((project, index) => (

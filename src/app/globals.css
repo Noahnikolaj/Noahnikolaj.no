@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lekton:ital,wght@0,400;0,700;1,400&family=Lemon&display=swap');
+/* Fonts are loaded via Next.js font loader in layout.tsx */
 
 @tailwind base;
 @tailwind components;
@@ -10,27 +10,40 @@ body {
 }
 
 .lemon-regular {
-  font-family: "Lemon", serif;
+  font-family: var(--font-lemon), serif;
   font-weight: 400;
   font-style: normal;
 }
 
 .lekton-regular {
-  font-family: "Lekton", serif;
+  font-family: var(--font-lekton), sans-serif;
   font-weight: 600;
   font-style: normal;
 }
 
 .lekton-bold {
-  font-family: "Lekton", serif;
+  font-family: var(--font-lekton), sans-serif;
   font-weight: 900;
   font-style: normal;
 }
 
 .lekton-regular-italic {
-  font-family: "Lekton", serif;
+  font-family: var(--font-lekton), sans-serif;
   font-weight: 400;
   font-style: italic;
+}
+
+/* Support for inline font-family styles */
+@font-face {
+  font-family: 'Lemon';
+  src: local('Lemon');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lekton';
+  src: local('Lekton');
+  font-display: swap;
 }
 
 .porteBtn {
