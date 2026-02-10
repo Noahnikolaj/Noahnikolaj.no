@@ -243,9 +243,9 @@ const Page = () => {
           </div>
         </main>
 
-        <footer className="mt-24 text-center text-black flex items-center justify-center gap-2 py-4">
-          <MailIcon size={16} />
-          <span>Kontakt meg: noahnikolaj.c@gmail.com</span>
+        <footer className="w-full mt-40 md:mt-64 bg-primary text-secondary flex items-center justify-center gap-2 py-12">
+          <MailIcon size={20} />
+          <span className="text-lg font-medium" style={{ fontFamily: "Lekton" }}>Kontakt meg: noahnikolaj.c@gmail.com</span>
         </footer>
       </div>
     </div>
