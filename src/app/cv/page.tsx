@@ -116,8 +116,8 @@ const CVPage = () => {
               Noah Klavestad-Christensen
             </h1>
             <p className="text-chart-3 font-medium text-center md:text-left" style={{ fontFamily: "Lekton" }}>
-              Hei! Jeg er Noah, en student hos UiO, der jeg fullfører en Bachelor
-              i Informatikk: Design, bruk og interaksjon :)
+              Hei! Jeg er Noah, en masterstudent ved Høyskolen Kristiania,
+              der jeg studerer Human Computer Interaction (HCI) :)
             </p>
           </div>
       </div>
