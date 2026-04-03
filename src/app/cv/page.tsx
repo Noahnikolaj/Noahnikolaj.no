@@ -71,6 +71,8 @@ const CVPage = () => {
       case "HTML": return <Code {...iconProps} />;
       case "CSS": return <Palette {...iconProps} />;
       case "Figma": return <Figma {...iconProps} />;
+      case "Wireframing": return <Figma {...iconProps} />;
+      case "Prototyping": return <Figma {...iconProps} />;
       case "Next.js": return <Globe {...iconProps} />;
       case "Android Studio": return <Smartphone {...iconProps} />;
       case "Jetpack Compose": return <Layout {...iconProps} />;
@@ -264,7 +266,7 @@ const CVPage = () => {
               <div>
                 <h3 className="font-bold text-chart-2 mb-3">Utvikling</h3>
                 <div className="flex flex-wrap gap-2">
-                  {["Python", "Java", "Kotlin", "HTML", "CSS", "Figma","React", "Next.js", "Android Studio", "Jetpack Compose", "Git/Github"].map((skill) => (
+                  {["Python", "Java", "Kotlin", "HTML", "CSS", "Figma", "Wireframing", "Prototyping", "React", "Next.js", "Android Studio", "Jetpack Compose", "Git/Github"].map((skill) => (
                     <Badge key={skill} variant="outline" className="text-chart-3 border-primary/30 flex items-center">
                       {getSkillIcon(skill)}
                       {skill}
@@ -279,7 +281,7 @@ const CVPage = () => {
               <div>
                 <h3 className="font-bold text-chart-2 mb-3">Kreative Verktøy</h3>
                 <div className="flex flex-wrap gap-2">
-                  {["InDesign", "Illustrator", "Photoshop", "Lightroom", "Premiere", "Audition", "Final Cut Pro", "Blender", "Procreate", "Foto/Drone"].map((skill) => (
+                  {["InDesign", "Illustrator", "Photoshop", "Lightroom", "Premiere", "Audition", "Final Cut Pro", "Procreate", "Foto/Drone"].map((skill) => (
                     <Badge key={skill} variant="secondary" className="text-chart-3 hover:bg-secondary flex items-center">
                       {getSkillIcon(skill)}
                       {skill}

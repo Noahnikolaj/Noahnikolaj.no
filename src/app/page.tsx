@@ -32,6 +32,7 @@ const Page = () => {
   );
 
   const wheelGestures = WheelGesturesPlugin();
+  const linkedinIconRef = React.useRef<any>(null);
 
   /* The projects displayed in the carosel */
   const projects = [
@@ -139,12 +140,14 @@ const Page = () => {
 
           <div className="mt-12 space-x-6">
             <button
-              className="inline-flex items-center gap-2 px-4 py-2 text-base font-bold text-primary bg-background border border-primary rounded-lg hover:bg-primary hover:text-secondary hover:scale-105 transition-all cursor-pointer md:hover:(effekt)"
+              className="glowing-btn font-bold transition-all cursor-pointer"
               style={{ fontFamily: "Lekton" }}
+              onMouseEnter={() => linkedinIconRef.current?.startAnimation()}
+              onMouseLeave={() => linkedinIconRef.current?.stopAnimation()}
             >
-              <LinkedinIcon size={20} />
-              <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/" className="pt-1">
-                LinkedIn
+              <LinkedinIcon ref={linkedinIconRef} size={20} className="glowing-txt" />
+              <a href="https://www.linkedin.com/in/noah-nikolaj-klavestad-christensen-130568247/" className="pt-1 flex">
+                <span className="glowing-txt">Lin<span className="faulty-letter">k</span>edI<span className="faulty-letter">n</span></span>
               </a>
             </button>
 
@@ -163,7 +166,7 @@ const Page = () => {
               className="text-3xl font-light text-primary mb-2"
               style={{ fontFamily: "Lemon" }}
             >
-              Portefølje
+              Projekter
             </h2>
             <Carousel
               plugins={[plugin.current, wheelGestures]}
