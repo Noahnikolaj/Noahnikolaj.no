@@ -12,6 +12,7 @@ import {
 import { ArchiveIcon } from "@/components/ui/archive";
 import { LinkedinIcon } from "@/components/ui/linkedin";
 import Link from "next/link";
+import { toast } from "sonner";
 import Image from "next/image";
 import { MailIcon } from "lucide-react";
 import { Code, FileText, Figma } from "lucide-react";
@@ -222,13 +223,13 @@ const Page = () => {
                             </a>
                           )}
 
-                          <Link
-                            href={project.link}
-                            className="porteBtn"
+                          <button
+                            onClick={() => toast("Sorry, I am still working on this! :)")}
+                            className="porteBtn opacity-50 grayscale cursor-not-allowed"
                           >
                             <FileText size={16} />
                             Project
-                          </Link>
+                          </button>
                         </CardFooter>
                       </Card>
                     </div>
