@@ -27,6 +27,14 @@ const CELL: Record<Dir, string> = {
  * even if her thumb slides off the button, and `touch-action: none` stops
  * Safari from treating the drag as a scroll or a double-tap zoom.
  */
+/** The page is lang="nb"; raw Dir values would be announced in English. */
+const LABEL: Record<Dir, string> = {
+  up: "Gå opp",
+  down: "Gå ned",
+  left: "Gå til venstre",
+  right: "Gå til høyre",
+};
+
 export default function DPad({ onDir }: Props) {
   const bind = (dir: Dir) => ({
     onPointerDown: (e: ReactPointerEvent<HTMLButtonElement>) => {
@@ -49,7 +57,7 @@ export default function DPad({ onDir }: Props) {
         <button
           key={dir}
           type="button"
-          aria-label={dir}
+          aria-label={LABEL[dir]}
           className={`hw-key ${CELL[dir]}`}
           {...bind(dir)}
         >

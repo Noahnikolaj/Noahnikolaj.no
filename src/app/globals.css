@@ -1,300 +1,752 @@
-/* Fonts are loaded via Next.js font loader in layout.tsx */
+/* Fonts load via the Next.js font loader in layout.tsx */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   TOKENS
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+   Space-separated RGB channels, read as rgb(var(--x) / <alpha-value>).
+   Never wrap a value in rgb()/rgba() here: that breaks opacity modifiers.
 
-.lemon-regular {
-  font-family: var(--font-lemon), serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.lekton-regular {
-  font-family: var(--font-lekton), sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.lekton-bold {
-  font-family: var(--font-lekton), sans-serif;
-  font-weight: 900;
-  font-style: normal;
-}
-
-.lekton-regular-italic {
-  font-family: var(--font-lekton), sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
-
-/* Support for inline font-family styles */
-@font-face {
-  font-family: 'Lemon';
-  src: local('Lemon');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lekton';
-  src: local('Lekton');
-  font-display: swap;
-}
-
-.porteBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-  background-color: rgba(var(--secondary));
-  color: rgba(var(--chart-2));
-  border: 1px solid rgba(var(--primary));
-  border-radius: 0.375rem;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.porteBtn:hover {
-  transform: scale(1.1);
-  background-color: rgba(var(--primary));
-  color: rgba(var(--secondary));
-}
-
-.squiggly-text {
-  background-color: rgba(var(--secondary));
-  color: rgba(var(--chart-2));
-  padding: 1rem;
-  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  font-weight: 500;
-  display: inline-block;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.glowing-btn {
-  position: relative;
-  color: rgba(var(--primary));
-  cursor: pointer;
-  padding: 0.35em 1em;
-  border: 0.15em solid rgba(var(--primary));
-  border-radius: 0.45em;
-  background: none;
-  perspective: 2em;
-  font-size: 1rem;
-  font-weight: 900;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  -webkit-box-shadow: inset 0px 0px 0.5em 0px rgba(var(--primary)),
-    0px 0px 0.5em 0px rgba(var(--primary));
-  -moz-box-shadow: inset 0px 0px 0.5em 0px rgba(var(--primary)),
-    0px 0px 0.5em 0px rgba(var(--primary));
-  box-shadow: inset 0px 0px 0.5em 0px rgba(var(--primary)),
-    0px 0px 0.5em 0px rgba(var(--primary));
-  animation: border-flicker 7s linear infinite;
-}
-
-.glowing-txt {
-  -webkit-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
-    0 0 0.45em rgba(var(--primary));
-  -moz-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
-    0 0 0.45em rgba(var(--primary));
-  text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em rgba(var(--primary));
-  animation: text-flicker 8s linear infinite;
-}
-
-.faulty-letter {
-  opacity: 0.5;
-  animation: faulty-flicker 6s linear infinite;
-}
-
-.glowing-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0.7;
-  filter: blur(1em);
-  transform: translateY(120%) rotateX(95deg) scale(1, 0.35);
-  background: rgba(var(--primary));
-  pointer-events: none;
-}
-
-.glowing-btn::after {
-  content: "";
-  position: absolute;
-  top: -0.15em;
-  left: -0.15em;
-  right: -0.15em;
-  bottom: -0.15em;
-  opacity: 0;
-  z-index: -1;
-  background-color: rgba(var(--primary));
-  box-shadow: 0 0 2em 0.2em rgba(var(--primary));
-  transition: opacity 100ms linear;
-  border-radius: 0.45em;
-}
-
-.glowing-btn:hover {
-  color: rgba(var(--secondary));
-  text-shadow: none;
-  animation: none;
-}
-
-.glowing-btn:hover .glowing-txt {
-  animation: none;
-}
-
-.glowing-btn:hover .faulty-letter {
-  animation: none;
-  text-shadow: none;
-  opacity: 1;
-}
-
-.glowing-btn:hover:before {
-  filter: blur(1.5em);
-  opacity: 1;
-}
-
-.glowing-btn:hover:after {
-  opacity: 1;
-}
-
-@keyframes faulty-flicker {
-  0% { opacity: 1; }
-  2% { opacity: 0.1; }
-  2.5% { opacity: 0.5; }
-  5% { opacity: 0.5; }
-  5.5% { opacity: 0.1; }
-  6% { opacity: 1; }
-  30% { opacity: 0.5; }
-  31% { opacity: 0.4; }
-  32% { opacity: 1; }
-  100% { opacity: 1; }
-}
-
-@keyframes text-flicker {
-  0% { opacity: 1; }
-  1% { opacity: 0.1; }
-  2% { opacity: 1; }
-  3% { opacity: 0.1; }
-  4% { opacity: 1; }
-  5% { opacity: 0.1; }
-  6% { opacity: 1; }
-  7% { opacity: 0.3; }
-  8% { opacity: 1; }
-  40% { opacity: 1; }
-  41% { opacity: 0.7; }
-  42% { opacity: 0.2; }
-  43% { opacity: 0.9; }
-  100% { opacity: 0.9; }
-}
-
-@keyframes border-flicker {
-  0% { opacity: 1; }
-  1% { opacity: 0.1; }
-  1.5% { opacity: 1; }
-  2% { opacity: 0.1; }
-  2.5% { opacity: 1; }
-  40% { opacity: 1; }
-  41% { opacity: 0.7; }
-  42% { opacity: 1; }
-  100% { opacity: 1; }
-}
-
-
-
-
-
-
+   Noah's original pink scheme. The one rule that governs everything:
+   #E4647C scores 2.92:1 on #FFEEF1, so it cannot carry text on light ground.
+   It is a FILL. The plum ink does the reading.
+   ========================================================================== */
 
 @layer base {
   :root {
-    --background: rgba(255, 238, 241, 1);
-    /* eggshell off-white */
-    --foreground: 228, 100, 124, 1;
-    --card: 233, 89, 114, 1;
-    --card-foreground: 220, 51, 90, 0.2;
-    --popover: 228, 100, 124, 1;
-    /* bakgrunns farge til dropdown meny */
-    --popover-foreground: 255, 188, 200, 1;
-    /* Text farge til dropdown meny */
-    --primary: 228, 100, 124, 1;
-    /* Tittel farge */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 255, 188, 200, 1;
-    /* Vanlig text farge */
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 228, 100, 124, 0.7;
-    /* Hover over noe farge */
-    --muted-foreground: 130, 50, 70, 0.8;
-    /* muted tekst for CV */
-    --accent: 250, 131, 152, 1;
-    /* hover over Valgte element i dropdown meny */
-    --accent-foreground: 255, 188, 200, 1;
-    /* hover over element i dropdown meny */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 228, 100, 124, 1;
-    /* border rundt dropdown meny */
-    --input: 228, 100, 124, 1;
-    --ring: 255, 188, 200, 1;
-    /* Outline around buttons */
-    --chart-1: 244, 114, 182, 1;
-    /* Glowing effect color */
-    --chart-2: 50, 10, 30, 1;
-    /* Titteler for CV */
-    --chart-3: 80, 20, 40, 1;
-    /* vanlig tekst for CV */
-    --chart-4: 43 74% 66%;
-    /* vanlig tekst for CV */
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    /* DAG. Rosa papir. */
+    --papir: 255 238 241; /* #FFEEF1 */
+    --lys: 255 188 200; /* #FFBCC8 */
+    --rosa: 228 100 124; /* #E4647C  fill only */
+    --dyp: 155 39 66; /* #9B2742  6.79 on papir, 4.81 on lys */
+    --blekk: 50 10 30; /* #320A1E  15.66 on papir */
+
+    --background: var(--papir);
+    --foreground: var(--blekk);
+    --card: 255 255 255;
+    --card-foreground: var(--blekk);
+    --popover: 255 255 255;
+    --popover-foreground: var(--blekk);
+
+    --primary: var(--rosa);
+    --primary-foreground: var(--blekk); /* 5.35 on rosa. White is only 3.27. */
+
+    --secondary: var(--lys);
+    --secondary-foreground: var(--blekk);
+
+    --muted: var(--lys);
+    --muted-foreground: 110 51 68; /* #6E3344  8.45 papir, 5.98 lys */
+
+    --accent: var(--dyp);
+    --accent-foreground: var(--papir);
+
+    --destructive: 150 27 27;
+    --destructive-foreground: 255 255 255;
+
+    --border: 217 141 160; /* #D98DA0 */
+    --input: 217 141 160;
+    --ring: var(--dyp);
+
+    /*
+     * Ground: the solid band the world stands on, and the nav strip. It is a
+     * LARGE fill, so it cannot reuse --rosa: at night --rosa is the light pink
+     * meant to read AS TEXT on dark, and using it as a big fill glares.
+     */
+    --grunn: var(--rosa); /* #E4647C */
+    --grunn-foreground: var(--blekk); /* 5.35 on rosa */
+
+    /* Pixel craft */
+    --u: 4px; /* one "pixel" of the UI grid */
+    --d: 6px; /* dither cell */
+    --line: var(--blekk); /* sprite/box outline */
+    --dither: var(--rosa);
+    --blokk: var(--lys); /* hard offset block shadow */
+
+    --radius: 0;
+    color-scheme: light;
   }
 
   .dark {
-    --background: 20, 20, 30, 1;
-    --foreground: 255, 160, 190, 1;
-    --card: 45, 45, 60, 1;
-    --card-foreground: 210 40% 98%;
-    --popover: 45, 45, 60, 1;
-    --popover-foreground: 245, 220, 230;
-    --primary: 255, 160, 190, 1;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 245, 220, 230;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 200, 100, 140;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 255, 160, 190, 0.5;
-    --accent-foreground: 20, 20, 30, 1;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 45, 45, 60, 1;
-    --input: 180, 80, 120;
-    --ring: 20, 20, 30, 1;
-    --chart-1: 255, 100, 150, 0.4;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* NATT. Same world after dark. */
+    --papir: 255 238 241;
+    --lys: 74 35 52; /* #4A2334  fills become deep plum */
+    --rosa: 242 129 155; /* #F2819B  7.45 on night ground */
+    --dyp: 255 188 200; /* #FFBCC8  11.80 */
+    --blekk: 26 15 24; /* #1A0F18  the night ground */
+
+    --background: var(--blekk);
+    --foreground: var(--papir); /* 16.66 */
+    --card: 36 19 32; /* #241320 */
+    --card-foreground: var(--papir);
+    --popover: 36 19 32;
+    --popover-foreground: var(--papir);
+
+    --primary: var(--rosa);
+    --primary-foreground: var(--blekk);
+
+    --secondary: var(--lys);
+    --secondary-foreground: var(--papir);
+
+    --muted: var(--lys);
+    --muted-foreground: 201 154 168; /* #C99AA8  7.70 */
+
+    --accent: var(--dyp);
+    --accent-foreground: var(--blekk);
+
+    --destructive: 255 138 138;
+    --destructive-foreground: 26 15 24;
+
+    --border: 93 48 68; /* #5D3044 */
+    --input: 93 48 68;
+    --ring: var(--dyp);
+
+    /* #93384F. Papir reads on it at 6.42, and it separates from both the
+       night ground (2.59) and the feature band (1.85). */
+    --grunn: 147 56 79;
+    --grunn-foreground: var(--papir);
+
+    --line: var(--papir);
+    --dither: var(--rosa);
+    --blokk: 93 48 68;
+
+    color-scheme: dark;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    /*
+     * WCAG 2.2 AA, 2.4.11 Focus Not Obscured. The navigation is fixed over
+     * the bottom of the viewport, so without this a keyboard user tabbing
+     * down the page lands on links that sit underneath it. Scroll padding
+     * reserves the strip's height whenever the browser scrolls something
+     * into view, including on focus.
+     */
+    scroll-padding-bottom: 7rem;
+
+    /*
+     * clip, not hidden: hidden on the root turns the viewport into a scroll
+     * container and breaks position: sticky. This stops a stray element from
+     * widening the document, which on a phone makes Chrome zoom the page out
+     * to fit and resizes the viewport between pages.
+     */
+    overflow-x: clip;
   }
 
   body {
-    @apply bg-background text-foreground;
+    overflow-x: clip;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    @apply font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  /* Body copy stays under 80 characters per line wherever it is set. */
+  p {
+    max-width: 68ch;
+  }
+
+  /*
+   * Focus is a hard pixel ring, not a soft halo: it belongs to the same
+   * drawing system as everything else.
+   */
+  :focus-visible {
+    outline: var(--u) solid rgb(var(--ring));
+    outline-offset: var(--u);
+  }
+}
+
+/* ==========================================================================
+   PIXEL CRAFT
+
+   The point of this section: the pixels are *made*, not themed. Corners are
+   notched by four offset shadows the way an 8-bit box is drawn, shading is
+   1-bit dithering rather than a gradient, and nothing is ever blurred.
+   ========================================================================== */
+
+@layer components {
+  /* An 8-bit box: square body, notched corners, hard outline. */
+  .px-box {
+    position: relative;
+    border-radius: 0;
+    box-shadow:
+      0 calc(-1 * var(--u)) 0 0 rgb(var(--line)),
+      0 var(--u) 0 0 rgb(var(--line)),
+      calc(-1 * var(--u)) 0 0 0 rgb(var(--line)),
+      var(--u) 0 0 0 rgb(var(--line));
+  }
+
+  /* Same, plus the hard offset block beneath. No blur, ever. */
+  .px-box-drop {
+    position: relative;
+    border-radius: 0;
+    box-shadow:
+      0 calc(-1 * var(--u)) 0 0 rgb(var(--line)),
+      0 var(--u) 0 0 rgb(var(--line)),
+      calc(-1 * var(--u)) 0 0 0 rgb(var(--line)),
+      var(--u) 0 0 0 rgb(var(--line)),
+      calc(2 * var(--u)) calc(2 * var(--u)) 0 0 rgb(var(--blokk));
+  }
+
+  /* 1-bit shading. Three densities, the way a pixel artist ramps a gradient. */
+  .dither-75 {
+    background-image: linear-gradient(
+        45deg,
+        rgb(var(--dither)) 25%,
+        transparent 25% 75%,
+        rgb(var(--dither)) 75%
+      ),
+      linear-gradient(
+        45deg,
+        rgb(var(--dither)) 25%,
+        transparent 25% 75%,
+        rgb(var(--dither)) 75%
+      ),
+      linear-gradient(rgb(var(--dither)) 0 0);
+    background-size: var(--d) var(--d), var(--d) var(--d), 100% 100%;
+    background-position: 0 0, calc(var(--d) / 2) calc(var(--d) / 2), 0 0;
+    background-blend-mode: normal, normal, normal;
+    opacity: 0.75;
+  }
+
+  .dither-50 {
+    background-image: linear-gradient(
+        45deg,
+        rgb(var(--dither)) 25%,
+        transparent 25% 75%,
+        rgb(var(--dither)) 75%
+      ),
+      linear-gradient(
+        45deg,
+        rgb(var(--dither)) 25%,
+        transparent 25% 75%,
+        rgb(var(--dither)) 75%
+      );
+    background-size: var(--d) var(--d);
+    background-position: 0 0, calc(var(--d) / 2) calc(var(--d) / 2);
+  }
+
+  .dither-25 {
+    background-image: linear-gradient(
+      45deg,
+      rgb(var(--dither)) 25%,
+      transparent 25%
+    );
+    background-size: var(--d) var(--d);
+  }
+
+  /* Anything upscaled stays crisp. */
+  .pixelated {
+    image-rendering: pixelated;
+  }
+
+  /*
+   * The one orchestrated motion on the site: the sprite takes a single hop
+   * when the page settles, then stands still. Not a loop.
+   */
+  .sprite-hop {
+    animation: sprite-hop 760ms cubic-bezier(0.33, 0, 0.3, 1) 1 300ms both;
+  }
+}
+
+@keyframes sprite-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-2 * var(--u)));
+  }
+}
+
+/* ==========================================================================
+   DRIFTING SKY
+
+   Two parallax layers of pixel clouds. The shape is a mask, so the colour
+   comes from the theme token. Each layer travels exactly one tile width, so
+   the loop has no seam.
+   ========================================================================== */
+
+@layer components {
+  .sky-layer {
+    position: absolute;
+    top: -8%;
+    left: -320px;
+    right: -320px;
+    bottom: -8%;
+    mask-repeat: repeat;
+    -webkit-mask-repeat: repeat;
+    will-change: transform;
+  }
+
+  /* Texture, not wallpaper: the headline has to win. */
+  .sky-layer--far {
+    background-color: rgb(var(--lys));
+    opacity: 0.5;
+    mask-size: 440px 220px;
+    -webkit-mask-size: 440px 220px;
+    animation: sky-drift-far 50s linear infinite;
+  }
+
+  .sky-layer--near {
+    background-color: rgb(var(--lys));
+    opacity: 0.3;
+    mask-size: 290px 145px;
+    -webkit-mask-size: 290px 145px;
+    animation: sky-drift-near 26s linear infinite;
+  }
+
+  .dark .sky-layer--far {
+    opacity: 0.4;
+  }
+
+  .dark .sky-layer--near {
+    opacity: 0.25;
+  }
+}
+
+@keyframes sky-drift-far {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-440px, 0, 0);
+  }
+}
+
+@keyframes sky-drift-near {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-290px, 0, 0);
+  }
+}
+
+/* ==========================================================================
+   SCROLL REVEAL
+
+   Content slides in from the right as it enters view. The hidden state is
+   scoped to .js-reveal (set by a blocking script in layout.tsx) so that
+   without JavaScript nothing is ever hidden, and the whole block sits inside
+   prefers-reduced-motion: no-preference so a reader who opted out simply sees
+   static content.
+
+   steps(5, end) is the point: elements jump in on a five frame cadence like a
+   sprite, instead of gliding the way every generated page does.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x, 2.25rem), 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .js-reveal [data-reveal][data-shown] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    /* easeOutExpo: fast out of the gate, long gentle settle. */
+    transition:
+      opacity 460ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms);
+  }
+
+  .js-reveal [data-reveal][data-shown] {
+    will-change: auto;
+  }
+}
+
+/* ==========================================================================
+   ROOMS
+
+   Each route tints the air and hangs its own wallpaper. Measured: the worst
+   body-text pair under any wash is 7.38:1, so a room cannot push anything
+   below AA. Neither layer ever carries text.
+
+   The arrival itself is drawn on a canvas, see RoomCurtain.tsx. It sits at
+   z-40 so the navigation at z-50 stays lit throughout.
+   ========================================================================== */
+
+@layer components {
+  /* The travelling highlight in the nav. Transform and width animate together
+     so the block appears to slide and stretch into its new home. */
+  .nav-marker {
+    transition:
+      transform 420ms cubic-bezier(0.22, 1, 0.3, 1),
+      width 420ms cubic-bezier(0.22, 1, 0.3, 1);
+    will-change: transform, width;
+  }
+
+  .room-wash {
+    position: fixed;
+    inset: 0;
+    /*
+     * Negative, not 0. These decorations sit inside the content's stacking
+     * context, and a positioned element at z-index 0 paints ABOVE sibling
+     * in-flow content: that is what put the wallpaper grid on top of the
+     * project screenshots.
+     */
+    z-index: -1;
+    pointer-events: none;
+    background-color: rgb(var(--rom-tint) / 0.07);
+  }
+
+  /* --- Wallpaper, one per room ------------------------------------------ */
+
+  /* Gallery: pictures hang on a gridded wall. */
+  .room-wash[data-pattern="grid"] {
+    background-image:
+      linear-gradient(rgb(var(--rom-tint) / 0.14) 2px, transparent 2px),
+      linear-gradient(90deg, rgb(var(--rom-tint) / 0.14) 2px, transparent 2px);
+    background-size: 54px 54px;
+  }
+
+  /* Archive: ruled paper. */
+  .room-wash[data-pattern="rules"] {
+    background-image: linear-gradient(
+      rgb(var(--rom-tint) / 0.16) 2px,
+      transparent 2px
+    );
+    background-size: 100% 38px;
+  }
+
+  /* Prototype room: dotted pegboard. */
+  .room-wash[data-pattern="dots"] {
+    background-image: linear-gradient(
+      45deg,
+      rgb(var(--rom-tint) / 0.2) 25%,
+      transparent 25%
+    );
+    background-size: 12px 12px;
+  }
+
+  /* Outside and the cave both skip wallpaper: one has clouds, one has nothing. */
+}
+
+/* ==========================================================================
+   THE PIXEL FLIP
+
+   The browser holds the outgoing and incoming views at the same time, which is
+   what removes the black frame: there is never a moment when a flat colour is
+   all that is on screen.
+
+   The OUTGOING view simply stays put. The INCOMING view is masked by a paint
+   worklet that opens one block at a time in a wave from whatever you clicked,
+   so the new page lands on top of the old one block by block.
+
+   The nav carries its own transition name, so the flip only turns what is
+   behind it.
+   ========================================================================== */
+
+@property --flip-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --flip-x {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --flip-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --flip-block {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 64;
+}
+:root {
+  --flip-block: 64;
+}
+
+/*
+ * The snapshot tree sits above the live page and defaults to pointer-events:
+ * auto, which swallows clicks for the whole transition. Letting them through
+ * means the nav stays usable mid-flip, so you can change your mind.
+ */
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-group(root) {
+  animation-duration: var(--flip-duration, 1400ms);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* The page you were on holds still underneath the whole time. */
+::view-transition-old(root) {
+  animation: none;
+  z-index: 0;
+}
+
+/* The page you are going to lands on top of it, block by block. */
+.pixel-flip-ready::view-transition-new(root) {
+  z-index: 1;
+  mask-image: paint(pixelFlip);
+  -webkit-mask-image: paint(pixelFlip);
+  animation: pixel-flip-wave var(--flip-duration, 1400ms) linear forwards;
+}
+
+@keyframes pixel-flip-wave {
+  from {
+    --flip-progress: 0;
+  }
+  to {
+    --flip-progress: 1;
+  }
+}
+
+/* No paint worklet (Safari, Firefox): a short plain fade instead. */
+.no-pixel-flip::view-transition-new(root) {
+  z-index: 1;
+  animation: pixel-flip-fade 420ms ease-out forwards;
+}
+
+@keyframes pixel-flip-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- The navigation strip ------------------------------------------------ */
+
+.world-strip nav {
+  view-transition-name: verdensstripe;
+}
+
+::view-transition-group(verdensstripe) {
+  animation-duration: var(--flip-duration, 1400ms);
+}
+
+/* Walking between rooms: the nav does not move at all. */
+::view-transition-old(verdensstripe),
+::view-transition-new(verdensstripe) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/*
+ * Changing the theme: a palette swap, the way the hardware does it.
+ *
+ * The bar does not move at all. The old snapshot is dropped immediately and
+ * the new one steps through two intermediate tints before settling, which
+ * reads as the palette registers being rewritten rather than a page element
+ * animating. Nothing shifts under the finger that just pressed the button.
+ *
+ * Two changes over ~210ms on a small element, once per press. Well inside the
+ * flash thresholds, which are about large areas and repeated flashing.
+ */
+.theme-switch::view-transition-old(verdensstripe) {
+  animation: none;
+  opacity: 0;
+}
+
+.theme-switch::view-transition-new(verdensstripe) {
+  animation: palette-swap 210ms linear forwards;
+}
+
+@keyframes palette-swap {
+  0%,
+  44% {
+    filter: brightness(1.45) saturate(0.3);
+  }
+  45%,
+  89% {
+    filter: brightness(0.85) saturate(1.55);
+  }
+  90%,
+  100% {
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   CLOUD PORTRAIT
+
+   The photo sits in a pink pixel cloud drawn from the same vocabulary as the
+   ones drifting across the sky, rather than in a hard square frame. The
+   cutout already has transparent edges, so the cloud reads around him.
+   ========================================================================== */
+
+@layer components {
+  .pixel-cloud {
+    background-color: rgb(var(--lys));
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  /* A second cloud behind, offset, standing in for a pixel drop shadow. */
+  .pixel-cloud-shadow {
+    background-color: rgb(var(--rosa) / 0.45);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+}
+
+
+/* ==========================================================================
+   COMPANIONS
+
+   One pair only. They start life parked on the hero's ground band and switch
+   to a fixed position along the floor once it scrolls away, jumping at the
+   handover so it reads as the same two characters setting off rather than a
+   second copy fading in.
+   ========================================================================== */
+
+@layer components {
+  .companions {
+    position: absolute;
+    left: clamp(0.75rem, 4vw, 3rem);
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.8rem;
+    pointer-events: none;
+  }
+
+  /* Off the ledge and onto the floor of the screen. */
+  .companions[data-moving] {
+    position: fixed;
+    /* --companion-bottom is set from the footer's own position once it is in
+       view, so they stand on its edge instead of hovering above it. */
+    bottom: var(--companion-bottom, calc(5.5rem + env(safe-area-inset-bottom)));
+    z-index: 45;
+  }
+
+  /* Driven from JS once the real take-off offset has been measured. */
+  .companions.leaping {
+    transform-origin: 50% 100%;
+    animation: companion-leap 700ms cubic-bezier(0.32, 0.12, 0.28, 1) 1;
+  }
+
+  .companion[data-running] {
+    animation: companion-bob 240ms ease-in-out infinite;
+  }
+
+  .companion--cat[data-running] {
+    animation-delay: 80ms;
+  }
+
+  /* Idle breathing while they are still standing in the hero. */
+  .sprite-idle {
+    animation: sprite-idle 2.4s steps(2, end) infinite;
+  }
+
+  .sprite-idle--late {
+    animation-delay: 1.2s;
+  }
+}
+
+/*
+ * A proper game jump: crouch, launch, arc over the gap, land heavy, recover.
+ * --leap-dx/--leap-dy are the measured distance back to where they started.
+ */
+@keyframes companion-leap {
+  0% {
+    transform: translate(var(--leap-dx, 0px), var(--leap-dy, 0px))
+      scale(1.12, 0.88);
+  }
+  12% {
+    transform: translate(calc(var(--leap-dx, 0px) * 0.92),
+        calc(var(--leap-dy, 0px) - 1.2rem))
+      scale(0.9, 1.18);
+  }
+  42% {
+    transform: translate(calc(var(--leap-dx, 0px) * 0.5),
+        calc(var(--leap-dy, 0px) * 0.35 - 3.2rem))
+      scale(0.95, 1.08);
+  }
+  72% {
+    transform: translate(calc(var(--leap-dx, 0px) * 0.14),
+        calc(var(--leap-dy, 0px) * 0.08 - 0.9rem))
+      scale(1.02, 0.98);
+  }
+  86% {
+    transform: translate(0, 0) scale(1.18, 0.8);
+  }
+  100% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+}
+
+@keyframes companion-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes sprite-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   Applies site-wide, /halloween included: its strobe, shake and jumpscare are
+   exactly what a reduced-motion user is asking not to receive. The game loop
+   is requestAnimationFrame on a canvas, so gameplay is unaffected.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    /* Zeroed too, or a staggered animation leaves the page wipe covering the
+       screen for the length of its delay before snapping away. */
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
   }
 }

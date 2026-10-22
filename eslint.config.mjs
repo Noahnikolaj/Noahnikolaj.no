@@ -10,6 +10,10 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // `next lint` ignored build output implicitly; plain `eslint .` does not.
+  {
+    ignores: [".next/**", "node_modules/**", "out/**", "next-env.d.ts"],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
