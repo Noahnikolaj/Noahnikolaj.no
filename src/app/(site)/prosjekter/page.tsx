@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ProjectTile } from "@/components/site/ProjectTile";
+import { ProjectIndex } from "@/components/site/ProjectIndex";
 import { projects } from "@/content/projects";
 
 export const metadata: Metadata = {
@@ -27,18 +27,8 @@ export default function ProsjekterPage() {
         <div aria-hidden="true" className="dither-50 relative z-10 h-3 w-full" />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-5 pb-16 pt-14 sm:px-8">
-        <ul className="grid gap-x-8 gap-y-14 sm:grid-cols-2">
-          {projects.map((project, index) => (
-            <ProjectTile
-              key={project.slug}
-              project={project}
-              index={index}
-              headingLevel={2}
-              size={project.slug === "pixiworld" ? "wide" : "normal"}
-            />
-          ))}
-        </ul>
+      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-14 sm:px-8">
+        <ProjectIndex projects={projects} />
       </div>
     </main>
   );

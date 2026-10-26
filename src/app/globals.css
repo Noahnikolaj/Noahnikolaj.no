@@ -392,6 +392,28 @@
   /* Outside and the cave both skip wallpaper: one has clouds, one has nothing. */
 }
 
+/*
+ * The projects preview changing over.
+ *
+ * Stepped, not faded. A cross-fade is the one transition this world does not
+ * own: everything else here either cuts or jumps in whole pixels, so the new
+ * art arrives in three frames rather than dissolving into place.
+ */
+.preview-swap {
+  animation: preview-swap 180ms steps(3, end) 1;
+}
+
+@keyframes preview-swap {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-2 * var(--u)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ==========================================================================
    THE PIXEL FLIP
 

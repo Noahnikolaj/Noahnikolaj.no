@@ -24,6 +24,12 @@ export type ProjectImage = {
   alt: string;
   /** PNGs with an alpha channel sit straight on the pink with no frame. */
   transparent?: boolean;
+  /**
+   * Which drawn device the screenshot sits inside. See DeviceFrame. Omit for
+   * art that is already composed, where a frame would only be a frame around
+   * a frame.
+   */
+  device?: "phone" | "browser" | "handheld";
 };
 
 export type Project = {
@@ -54,6 +60,7 @@ export const projects: Project[] = [
     stack: ["Node.js", "TypeScript", "Backend", "intern APIs", "Firestore/Firebase"],
     image: {
       src: "/projectphotos/guest-food-payment.png",
+      device: "phone",
       width: 450,
       height: 920,
       alt: "Mobilskjerm fra Guest Food Payment for Welcome Workdays: landingsside for gjestelunsj på Skippergata 3",
@@ -77,6 +84,7 @@ export const projects: Project[] = [
     stack: ["React", "TypeScript", "Node.js", "Supabase", "Vercel"],
     image: {
       src: "/projectphotos/deadwax-live.png",
+      device: "browser",
       width: 1600,
       height: 1000,
       alt: "Forsiden av Deadwax: et rutenett av platecover med terningkast under hvert album.",
@@ -122,6 +130,7 @@ export const projects: Project[] = [
     stack: ["Design", "Utvikling", "Eksamensprosjekt"],
     image: {
       src: "/projectphotos/Pixiworld.png",
+      device: "browser",
       width: 2969,
       height: 1603,
       alt: "PixiWorld sitt oppslagstavle-grensesnitt i pikselkunst, med en pergamentrull som meny og innlegg fra barn i trerammer mot en pikselhimmel.",
@@ -148,6 +157,7 @@ export const projects: Project[] = [
     stack: ["Canvas", "TypeScript", "Web Audio", "Pixel art", "React"],
     image: {
       src: "/projectphotos/denji-game.png",
+      device: "handheld",
       width: 960,
       height: 864,
       alt: "Skjermbilde fra Denji-spillet: et rom i Game Boy-oppløsning med spillerfiguren mellom møbler.",
