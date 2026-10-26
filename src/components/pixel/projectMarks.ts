@@ -1,24 +1,25 @@
 import type { Sprite } from "./sprites";
 
 /*
- * One drawn mark per project, animated.
+ * Denji, doing a different job on every project.
  *
- * The index rows carry a title, a role and a period, which tells you what
- * each project is but gives you nothing to recognise it by at a glance. A
- * mark does that, and because it is drawn rather than an icon from a set, it
- * can say something specific: the record turns, the timeline fills in, the
- * cat is hiding in the dark.
+ * The first version of this was five abstract marks: a record, a phone, a
+ * timeline. They worked, but they were icons, and the site already has a
+ * cast. The same cat turning up in five jobs says more than five symbols
+ * do, and it is the thing nobody else's portfolio has.
  *
- * Four frames each, so one steps(4) covers all of them, and all on the same
- * 8x8 grid. Only the tempo differs, because a record spinning and a pair of
- * eyes blinking are not the same speed.
+ * Four frames each, all on the same 8x8 grid, so one steps(4) covers the
+ * lot. Only the tempo differs.
  */
 
+const CAT = "#ff8c1a";
+const CAT_DARK = "#c25f06";
+const CAT_DIM = "#7a4512";
+const EYE = "#120c10";
+const MUZZLE = "#ffd1a1";
 const INK = "#320A1E";
-const PAPER = "#FFEEF1";
 const ROSE = "#E4647C";
 const DEEP = "#9B2742";
-const EDGE = "#D98DA0";
 const NIGHT = "#1A0F18";
 const GLOW = "#FFBCC8";
 
@@ -28,141 +29,258 @@ export type ProjectMark = {
   ms: number;
 };
 
-/* --- Guest Food Payment: a phone, an order going through ----------------- */
-
-const PHONE_PALETTE = { p: INK, w: PAPER, r: ROSE };
-
-const phone = (screen: string[]): Sprite => ({
-  art: [".pppppp.", ...screen, ".pppppp.", "........"],
-  palette: PHONE_PALETTE,
-  label: "Mobilskjerm",
+const sprite = (art: string[], palette: Record<string, string>, label: string): Sprite => ({
+  art,
+  palette,
+  label,
 });
+
+/* --- Guest Food Payment: lunch, so Denji is eating ----------------------- */
+
+const BOWL = { o: CAT, e: EYE, w: MUZZLE, m: ROSE };
 
 const GUEST_FOOD: ProjectMark = {
   frames: [
-    phone([".pwwwwp.", ".pwwwwp.", ".pwwwwp.", ".pwwwwp.", ".pwwwwp."]),
-    phone([".pwwwwp.", ".prrrwp.", ".pwwwwp.", ".pwwwwp.", ".pwwwwp."]),
-    phone([".pwwwwp.", ".prrrwp.", ".prrwwp.", ".pwwwwp.", ".pwwwwp."]),
-    phone([".pwwwwp.", ".prrrwp.", ".prrwwp.", ".pwwwwp.", ".prrrrp."]),
+    sprite([
+      "........",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo..",
+      ".oowoo..",
+      ".oooooo.",
+      "..mmmm..",
+    ], BOWL, "Denji ser opp fra skåla"),
+    sprite([
+      "........",
+      "........",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo..",
+      ".oowooo.",
+      "..mmmm..",
+    ], BOWL, "Denji bøyer seg mot skåla"),
+    sprite([
+      "........",
+      "........",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".ooooo..",
+      ".oowooo.",
+      "..mwwm..",
+    ], BOWL, "Denji spiser"),
+    sprite([
+      "........",
+      "........",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo..",
+      ".oowooo.",
+      "..mmmm..",
+    ], BOWL, "Denji tygger"),
+  ],
+  ms: 760,
+};
+
+/* --- Deadwax: headphones on, nodding along ------------------------------- */
+
+const PHONES = { o: CAT, e: EYE, w: MUZZLE, h: INK };
+
+const DEADWAX: ProjectMark = {
+  frames: [
+    sprite([
+      "..hhhh..",
+      ".h....h.",
+      "h.o..o.h",
+      "hooooooh",
+      "hoeoeooh",
+      ".oowooo.",
+      ".oooooo.",
+      "........",
+    ], PHONES, "Denji med hodetelefoner"),
+    sprite([
+      "........",
+      "..hhhh..",
+      ".h....h.",
+      "h.o..o.h",
+      "hooooooh",
+      "hoeoeooh",
+      ".oowooo.",
+      ".oooooo.",
+    ], PHONES, "Denji nikker til musikken"),
+    sprite([
+      "..hhhh..",
+      ".h....h.",
+      "h.o..o.h",
+      "hooooooh",
+      "hoeoeooh",
+      ".oowooo.",
+      ".oooooo.",
+      "........",
+    ], PHONES, "Denji med hodetelefoner"),
+    sprite([
+      "........",
+      "..hhhh..",
+      ".h....h.",
+      "h.o..o.h",
+      "hooooooh",
+      "hooooooh",
+      ".oowooo.",
+      ".oooooo.",
+    ], PHONES, "Denji blunker til musikken"),
+  ],
+  ms: 620,
+};
+
+/* --- Bosett: arriving somewhere new, so Denji has luggage ---------------- */
+
+const CASE = { o: CAT, e: EYE, w: MUZZLE, s: DEEP, k: INK };
+
+const BOSETT: ProjectMark = {
+  frames: [
+    sprite([
+      "........",
+      "o...o...",
+      "ooooo.k.",
+      "oeoeo.ss",
+      "oowoosss",
+      "ooooosss",
+      "o...osss",
+      "........",
+    ], CASE, "Denji med koffert"),
+    sprite([
+      "........",
+      "o...o...",
+      "ooooo.k.",
+      "oeoeo.ss",
+      "oowoosss",
+      "ooooosss",
+      ".o.o.sss",
+      "........",
+    ], CASE, "Denji tar et steg"),
+    sprite([
+      "........",
+      "o...o...",
+      "ooooo.k.",
+      "ooooo.ss",
+      "oowoosss",
+      "ooooosss",
+      "o...osss",
+      "........",
+    ], CASE, "Denji blunker"),
+    sprite([
+      "........",
+      "o...o...",
+      "ooooo.k.",
+      "oeoeo.ss",
+      "oowoosss",
+      "ooooosss",
+      ".oo..sss",
+      "........",
+    ], CASE, "Denji tar et steg til"),
   ],
   ms: 900,
 };
 
-/* --- Deadwax: a record, and the shine turning on it ---------------------- */
+/* --- PixiWorld: a platform for talking, so Denji has something to say ---- */
 
-const RECORD_PALETTE = { r: INK, c: ROSE, w: PAPER };
-
-/*
- * The shine is what turns, not the disc: a disc this round looks identical
- * at every angle. A streak across the face reads as rotation, and it has to
- * sit INSIDE the disc. A first version put a single pixel on the rim, where
- * it had nothing to contrast against and disappeared.
- */
-const record = (rows: string[]): Sprite => ({
-  art: ["..rrrr..", rows[0], rows[1], rows[2], rows[3], rows[4], rows[5], "..rrrr.."],
-  palette: RECORD_PALETTE,
-  label: "Plate som snurrer",
-});
-
-const DEADWAX: ProjectMark = {
-  frames: [
-    // Vertical.
-    record([".rrwwrr.", "rrrwwrrr", "rrrccrrr", "rrrccrrr", "rrrwwrrr", ".rrwwrr."]),
-    // Leaning one way.
-    record([".rrrrwr.", "rrrrrwrr", "rrrccrrr", "rrrccrrr", "rrwrrrrr", ".rwrrrr."]),
-    // Flat.
-    record([".rrrrrr.", "rwwrrrrr", "rwwccwwr", "rwwccwwr", "rrrrrwwr", ".rrrrrr."]),
-    // Leaning the other way.
-    record([".rwrrrr.", "rrwrrrrr", "rrrccrrr", "rrrccrrr", "rrrrrwrr", ".rrrrwr."]),
-  ],
-  ms: 520,
-};
-
-/* --- Bosett: a timeline filling in, one step at a time ------------------- */
-
-const TIMELINE_PALETTE = { e: EDGE, f: DEEP, k: INK };
-
-const timeline = (a: string, b: string, c: string): Sprite => ({
-  art: [
-    `..${a}${a}${a}${a}..`,
-    "...kk...",
-    "...kk...",
-    `..${b}${b}${b}${b}..`,
-    "...kk...",
-    "...kk...",
-    `..${c}${c}${c}${c}..`,
-    "........",
-  ],
-  palette: TIMELINE_PALETTE,
-  label: "Tidslinje som fylles ut",
-});
-
-const BOSETT: ProjectMark = {
-  frames: [
-    timeline("e", "e", "e"),
-    timeline("f", "e", "e"),
-    timeline("f", "f", "e"),
-    timeline("f", "f", "f"),
-  ],
-  ms: 1200,
-};
-
-/* --- PixiWorld: two children talking, turn and turn about ---------------- */
-
-/*
- * Two speech bubbles rather than two figures. A person drawn three pixels
- * wide is a smudge, and the first attempt put a paper-coloured bubble on the
- * paper-coloured page, which was invisible. Bubbles are legible at this size
- * and a conversation going back and forth is the thing worth saying about a
- * social platform for children anyway.
- */
-const CHAT_PALETTE = { d: DEEP, e: EDGE };
-
-const chat = (l: string, r: string): Sprite => ({
-  art: [
-    `${l}${l}${l}${l}....`,
-    `${l}${l}${l}${l}....`,
-    `${l}${l}......`,
-    "........",
-    `....${r}${r}${r}${r}`,
-    `....${r}${r}${r}${r}`,
-    `......${r}${r}`,
-    "........",
-  ],
-  palette: CHAT_PALETTE,
-  label: "To snakkebobler",
-});
+const TALK = { o: CAT, e: EYE, w: MUZZLE, d: CAT_DARK, b: DEEP };
 
 const PIXIWORLD: ProjectMark = {
-  frames: [chat("d", "e"), chat("e", "e"), chat("e", "d"), chat("e", "e")],
+  frames: [
+    sprite([
+      "........",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo.d",
+      ".oowoo.d",
+      ".ooooo.d",
+      ".o...o..",
+    ], TALK, "Denji sier ingenting"),
+    sprite([
+      "....b...",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo.d",
+      ".oowoo.d",
+      ".ooooo.d",
+      ".o...o..",
+    ], TALK, "Denji begynner å si noe"),
+    sprite([
+      "...bbb..",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".oeoeo.d",
+      ".oowoo.d",
+      ".ooooo.d",
+      ".o...o..",
+    ], TALK, "Denji sier noe"),
+    sprite([
+      "..bbbb..",
+      "o.....o.",
+      "oo...oo.",
+      ".ooooo..",
+      ".ooooo.d",
+      ".oowoo.d",
+      ".ooooo.d",
+      ".o...o..",
+    ], TALK, "Denji sier noe og blunker"),
+  ],
   ms: 1000,
 };
 
-/* --- Denji: the cat you are looking for, in the dark --------------------- */
+/* --- The game: she is the thing you are looking for ---------------------- */
 
-const DARK_PALETTE = { n: NIGHT, g: GLOW };
-
-const dark = (row2: string, row3: string): Sprite => ({
-  art: [
-    "nnnnnnnn",
-    "nnnnnnnn",
-    row2,
-    row3,
-    "nnnnnnnn",
-    "nnnnnnnn",
-    "nnnnnnnn",
-    "nnnnnnnn",
-  ],
-  palette: DARK_PALETTE,
-  label: "Et par øyne i mørket",
-});
+const CAVE = { n: NIGHT, g: GLOW, m: CAT_DIM, w: MUZZLE };
 
 const DENJI_GAME: ProjectMark = {
   frames: [
-    dark("nnnnnnnn", "nngnngnn"),
-    dark("nnnnnnnn", "nnnnnnnn"),
-    dark("nnnnnnnn", "nngnngnn"),
-    dark("nngnngnn", "nnnnnnnn"),
+    sprite([
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nngnngnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+    ], CAVE, "Et par øyne i mørket"),
+    sprite([
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+    ], CAVE, "Mørket"),
+    sprite([
+      "nnnnnnnn",
+      "mnnnnnmn",
+      "mmnnnmmn",
+      "nmgmgmnn",
+      "nmmwmmnn",
+      "nmmmmmnn",
+      "nmnnnmnn",
+      "nnnnnnnn",
+    ], CAVE, "Denji så vidt synlig i mørket"),
+    sprite([
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nngnngnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+      "nnnnnnnn",
+    ], CAVE, "Et par øyne i mørket"),
   ],
   ms: 1400,
 };

@@ -35,6 +35,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
           <Reveal as="li" key={project.slug} delay={Math.min(index, 3) * 70}>
             <Link
               href={`/prosjekter/${project.slug}`}
+              data-spotlight=""
               /*
                * Focus as well as hover, not hover alone: a keyboard reader
                * tabbing the list has to drive the preview too, or the pane

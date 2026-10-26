@@ -786,7 +786,8 @@
 }
 
 .has-peek:hover > .button-peek > .button-peek-climb,
-.has-peek:focus-visible > .button-peek > .button-peek-climb {
+.has-peek:focus-visible > .button-peek > .button-peek-climb,
+.has-peek[data-near] > .button-peek > .button-peek-climb {
   transform: translateY(0);
 }
 
@@ -821,7 +822,8 @@
 
 /* Climb: four poses over the same time the rail takes to rise. */
 .has-peek:hover .peek-strip--climb,
-.has-peek:focus-visible .peek-strip--climb {
+.has-peek:focus-visible .peek-strip--climb,
+.has-peek[data-near] .peek-strip--climb {
   animation:
     strip-walk-4 var(--peek-climb) steps(3) 1 forwards,
     peek-out 1ms linear var(--peek-climb) forwards;
@@ -829,7 +831,8 @@
 
 /* Idle: eight poses, at whatever tempo the character keeps. */
 .has-peek:hover .peek-strip--idle,
-.has-peek:focus-visible .peek-strip--idle {
+.has-peek:focus-visible .peek-strip--idle,
+.has-peek[data-near] .peek-strip--idle {
   animation:
     peek-in 1ms linear var(--peek-climb) forwards,
     strip-walk var(--peek-idle, 1500ms) steps(12) infinite var(--peek-climb);
@@ -873,7 +876,8 @@
 }
 
 .project-row:hover .project-mark-strip,
-.project-row:focus-visible .project-mark-strip {
+.project-row:focus-visible .project-mark-strip,
+.project-row[data-near] .project-mark-strip {
   animation: strip-walk var(--mark-ms, 1000ms) steps(4) infinite;
 }
 

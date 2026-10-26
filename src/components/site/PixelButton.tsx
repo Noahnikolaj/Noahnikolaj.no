@@ -86,6 +86,12 @@ export function PixelButton({
   const classes = cn(pixelButton({ variant, size }), className);
 
   /*
+   * Only buttons that carry a character need watching, and only on touch:
+   * see TouchSpotlight.
+   */
+  const spotlight = companion ? { "data-spotlight": "" } : null;
+
+  /*
    * Rail, climber, strips. The rail is exactly one frame wide and clips on
    * both axes, so it is the window the strips are walked past; the climber
    * carries the slide up and down. See the note in globals.css.
@@ -124,6 +130,7 @@ export function PixelButton({
           className={classes}
           target="_blank"
           rel="noopener noreferrer"
+          {...spotlight}
           {...rest}
         >
           {peek}
@@ -133,7 +140,7 @@ export function PixelButton({
       );
     }
     return (
-      <Link href={href} className={classes} {...rest}>
+      <Link href={href} className={classes} {...spotlight} {...rest}>
         {peek}
         {children}
       </Link>
@@ -144,6 +151,7 @@ export function PixelButton({
     <button
       type="button"
       className={classes}
+      {...spotlight}
       {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >
       {peek}

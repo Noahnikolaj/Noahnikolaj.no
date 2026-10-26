@@ -1,3 +1,4 @@
+import { TouchSpotlight } from "@/components/pixel/TouchSpotlight";
 import { FlipLinks } from "@/components/site/FlipLinks";
 import { Footer } from "@/components/site/Footer";
 import { SkipLink } from "@/components/site/SkipLink";
@@ -12,6 +13,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col">
       <SkipLink />
       <FlipLinks />
+      <TouchSpotlight />
       {/* Above the room wash and the sky, which are fixed at z-0. */}
       <div className="relative z-10 flex flex-1 flex-col">
         {/*
