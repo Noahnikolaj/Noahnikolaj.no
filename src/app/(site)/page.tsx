@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { PixelButton } from "@/components/site/PixelButton";
 import { ProjectTile } from "@/components/site/ProjectTile";
-import { ScrollCompanions } from "@/components/pixel/ScrollCompanions";
+import { GroundCompanions } from "@/components/pixel/GroundCompanions";
 import { featuredProjects } from "@/content/projects";
 
 export default function HomePage() {
@@ -32,10 +32,10 @@ export default function HomePage() {
           </p>
 
           <div className="mt-9 flex flex-wrap gap-4 pb-14">
-            <PixelButton href="/prosjekter" size="lg">
+            <PixelButton href="/prosjekter" size="lg" companion="noah">
               Se prosjektene
             </PixelButton>
-            <PixelButton href="/cv" variant="papir" size="lg">
+            <PixelButton href="/cv" variant="papir" size="lg" companion="denji">
               Les CV-en
             </PixelButton>
           </div>
@@ -73,8 +73,8 @@ export default function HomePage() {
           <div aria-hidden="true" className="dither-50 absolute inset-x-0 top-1/4 h-1/4" />
           <div aria-hidden="true" className="absolute inset-x-0 top-1/2 h-1/2 bg-grunn" />
 
-          {/* The one pair of characters live here until the band scrolls away. */}
-          <ScrollCompanions />
+          {/* The one pair of characters. They stand here; they do not follow. */}
+          <GroundCompanions />
         </div>
       </section>
 
@@ -101,7 +101,7 @@ export default function HomePage() {
           </ul>
 
           <div className="mt-12">
-            <PixelButton href="/prosjekter" size="lg">
+            <PixelButton href="/prosjekter" size="lg" companion="denji">
               Alle fem prosjektene
             </PixelButton>
           </div>

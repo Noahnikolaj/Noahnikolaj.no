@@ -6,6 +6,8 @@ import Link from "next/link";
 
 import { DeviceFrame } from "@/components/site/DeviceFrame";
 import { Reveal } from "@/components/pixel/Reveal";
+import { Sprite } from "@/components/pixel/Sprite";
+import { DENJI } from "@/components/pixel/sprites";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/content/projects";
 
@@ -76,9 +78,13 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
        * Sticky so it stays beside the list while the list scrolls past.
        */}
       <div aria-hidden="true" className="hidden md:block">
-        <div className="sticky top-12 flex min-h-[22rem] items-center justify-center bg-secondary p-8">
+        <div className="sticky top-12 flex min-h-[22rem] flex-col items-center justify-center bg-secondary p-8">
           <div key={shown.slug} className="preview-swap flex justify-center">
-            <ProjectArt project={shown} maxHeight="22rem" />
+            <ProjectArt project={shown} maxHeight="20rem" />
+          </div>
+          {/* The cat came to look at the work too. */}
+          <div className="mt-6 self-start">
+            <Sprite sprite={DENJI} scale={5} decorative className="sprite-idle" />
           </div>
         </div>
       </div>

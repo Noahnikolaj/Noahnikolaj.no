@@ -2,6 +2,8 @@ import * as React from "react";
 import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
 
+import { Sprite } from "@/components/pixel/Sprite";
+import { DENJI, NOAH } from "@/components/pixel/sprites";
 import { cn } from "@/lib/utils";
 
 /*
@@ -11,10 +13,18 @@ import { cn } from "@/lib/utils";
  *
  * Pressing it moves the button down onto its own shadow, the way a physical
  * key travels. That is motion answering an action, so it stays.
+ *
+ * `companion` puts one of the sprites behind the top edge, popping up on
+ * hover or keyboard focus. It is a child of the single <a>/<button> rather
+ * than a wrapper, so the element stays one interactive thing, and it is
+ * pointer-events: none so it can never eat the click it is sitting on.
  */
 const pixelButton = cva(
   [
-    "inline-flex items-center justify-center gap-2 font-bold",
+    // `has-peek` and `relative` are what let the companion hang off the top
+    // edge and react to hover/focus on the button itself. Its own class, not
+    // Tailwind's shared `group`: see the note in globals.css.
+    "has-peek relative inline-flex items-center justify-center gap-2 font-bold",
     "border-4 border-foreground",
     "shadow-[4px_4px_0_0_rgb(var(--foreground))]",
     "transition-[transform,box-shadow] duration-75",
@@ -22,7 +32,12 @@ const pixelButton = cva(
     "active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
     "motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0",
     "disabled:pointer-events-none disabled:opacity-50",
-    "[&_svg]:size-[1.1em] [&_svg]:shrink-0",
+    /*
+     * Sizes icons passed as children to the label. Scoped past the
+     * companion, which is art at its own scale rather than an icon and was
+     * being squashed to 1.1em by this.
+     */
+    "[&_svg:not(.peek-sprite)]:size-[1.1em] [&_svg:not(.peek-sprite)]:shrink-0",
   ],
   {
     variants: {
@@ -42,9 +57,13 @@ const pixelButton = cva(
   },
 );
 
+const COMPANIONS = { noah: NOAH, denji: DENJI } as const;
+
 type Props = VariantProps<typeof pixelButton> & {
   className?: string;
   children: React.ReactNode;
+  /** Who peeks over the top edge on hover. Decorative; use it sparingly. */
+  companion?: keyof typeof COMPANIONS;
 } & (
     | ({ href: string } & Omit<
         React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -61,9 +80,21 @@ export function PixelButton({
   size,
   className,
   children,
+  companion,
   ...props
 }: Props) {
   const classes = cn(pixelButton({ variant, size }), className);
+
+  const peek = companion ? (
+    <span aria-hidden="true" className="button-peek">
+      <Sprite
+        sprite={COMPANIONS[companion]}
+        scale={5}
+        decorative
+        className="peek-sprite"
+      />
+    </span>
+  ) : null;
 
   if ("href" in props && props.href) {
     const { href, ...rest } = props;
@@ -78,6 +109,7 @@ export function PixelButton({
           rel="noopener noreferrer"
           {...rest}
         >
+          {peek}
           {children}
           <span className="sr-only"> (åpnes i ny fane)</span>
         </a>
@@ -85,6 +117,7 @@ export function PixelButton({
     }
     return (
       <Link href={href} className={classes} {...rest}>
+        {peek}
         {children}
       </Link>
     );
@@ -96,6 +129,7 @@ export function PixelButton({
       className={classes}
       {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >
+      {peek}
       {children}
     </button>
   );

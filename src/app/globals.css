@@ -637,10 +637,17 @@
 /* ==========================================================================
    COMPANIONS
 
-   One pair only. They start life parked on the hero's ground band and switch
-   to a fixed position along the floor once it scrolls away, jumping at the
-   handover so it reads as the same two characters setting off rather than a
-   second copy fading in.
+   Noah and the cat stand on the hero's ground band. That is the whole
+   behaviour now.
+
+   They used to detach when the band scrolled away and pace along the floor
+   of the screen for the rest of the page, with a measured leap at the
+   handover. It was a lot of machinery (an IntersectionObserver, a scroll
+   listener, a footer-riding offset and a five-keyframe jump) for something
+   that followed you whether or not you wanted company. A designer's note put
+   it plainly: let them turn up in places instead. So they stand here, and
+   the rest of their appearances answer to something you did, see
+   .button-peek below.
    ========================================================================== */
 
 @layer components {
@@ -655,30 +662,7 @@
     pointer-events: none;
   }
 
-  /* Off the ledge and onto the floor of the screen. */
-  .companions[data-moving] {
-    position: fixed;
-    /* --companion-bottom is set from the footer's own position once it is in
-       view, so they stand on its edge instead of hovering above it. */
-    bottom: var(--companion-bottom, calc(5.5rem + env(safe-area-inset-bottom)));
-    z-index: 45;
-  }
-
-  /* Driven from JS once the real take-off offset has been measured. */
-  .companions.leaping {
-    transform-origin: 50% 100%;
-    animation: companion-leap 700ms cubic-bezier(0.32, 0.12, 0.28, 1) 1;
-  }
-
-  .companion[data-running] {
-    animation: companion-bob 240ms ease-in-out infinite;
-  }
-
-  .companion--cat[data-running] {
-    animation-delay: 80ms;
-  }
-
-  /* Idle breathing while they are still standing in the hero. */
+  /* Idle breathing while they stand there. */
   .sprite-idle {
     animation: sprite-idle 2.4s steps(2, end) infinite;
   }
@@ -689,44 +673,49 @@
 }
 
 /*
- * A proper game jump: crouch, launch, arc over the gap, land heavy, recover.
- * --leap-dx/--leap-dy are the measured distance back to where they started.
+ * A character peeking over the top edge of a button.
+ *
+ * Deliberately outside @layer components and keyed off its own .has-peek
+ * class rather than Tailwind's shared .group. Written inside the layer and
+ * grouped with a comma, the minifier rewrote ".group:hover > .button-peek"
+ * down to a bare ".button-peek", which left the sprite permanently on show.
+ * Separate rules on a private class survive the build.
+ *
+ * It hangs outside the button's box, so the button must not clip and the
+ * sprite must never take a pointer event: the whole element is one link or
+ * one button, and a child that could swallow a click would quietly break
+ * that. Hidden rather than merely transparent when idle, so it is neither a
+ * target nor a phantom that widens the page.
  */
-@keyframes companion-leap {
-  0% {
-    transform: translate(var(--leap-dx, 0px), var(--leap-dy, 0px))
-      scale(1.12, 0.88);
-  }
-  12% {
-    transform: translate(calc(var(--leap-dx, 0px) * 0.92),
-        calc(var(--leap-dy, 0px) - 1.2rem))
-      scale(0.9, 1.18);
-  }
-  42% {
-    transform: translate(calc(var(--leap-dx, 0px) * 0.5),
-        calc(var(--leap-dy, 0px) * 0.35 - 3.2rem))
-      scale(0.95, 1.08);
-  }
-  72% {
-    transform: translate(calc(var(--leap-dx, 0px) * 0.14),
-        calc(var(--leap-dy, 0px) * 0.08 - 0.9rem))
-      scale(1.02, 0.98);
-  }
-  86% {
-    transform: translate(0, 0) scale(1.18, 0.8);
-  }
-  100% {
-    transform: translate(0, 0) scale(1, 1);
-  }
+.button-peek {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - var(--u));
+  translate: -50% 0;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
 }
 
-@keyframes companion-bob {
-  0%,
-  100% {
-    transform: translateY(0);
+.has-peek:hover > .button-peek {
+  opacity: 1;
+  visibility: visible;
+  animation: button-peek 220ms steps(3, end) 1;
+}
+
+.has-peek:focus-visible > .button-peek {
+  opacity: 1;
+  visibility: visible;
+  animation: button-peek 220ms steps(3, end) 1;
+}
+
+/* Up from behind the button in three frames, the way a sprite appears. */
+@keyframes button-peek {
+  from {
+    transform: translateY(60%);
   }
-  50% {
-    transform: translateY(-3px);
+  to {
+    transform: translateY(0);
   }
 }
 
