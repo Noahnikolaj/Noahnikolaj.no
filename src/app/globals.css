@@ -370,6 +370,51 @@
     background-size: 54px 54px;
   }
 
+  /*
+   * The torch: the same wall again at full strength, masked to a soft disc
+   * and moved to the pointer. See RoomTorch for why it is a small square
+   * rather than a full-screen layer.
+   *
+   * --torch-x/--torch-y are viewport coordinates. The transform carries the
+   * patch there and background-position cancels that same travel, so the
+   * grid underneath stays pinned to the viewport while the light slides
+   * across it.
+   */
+  .room-torch {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 460px;
+    height: 460px;
+    margin: -230px 0 0 -230px;
+    pointer-events: none;
+
+    background-image:
+      linear-gradient(rgb(var(--rom-tint) / 0.38) 2px, transparent 2px),
+      linear-gradient(90deg, rgb(var(--rom-tint) / 0.38) 2px, transparent 2px);
+    background-size: 54px 54px;
+    background-position: calc(230px - var(--torch-x, 0px))
+      calc(230px - var(--torch-y, 0px));
+
+    mask-image: radial-gradient(
+      circle closest-side,
+      #000 22%,
+      #000a 48%,
+      transparent 74%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle closest-side,
+      #000 22%,
+      #000a 48%,
+      transparent 74%
+    );
+
+    transform: translate3d(var(--torch-x, -9999px), var(--torch-y, -9999px), 0);
+    opacity: 0;
+    transition: opacity 260ms ease-out;
+  }
+
   /* Archive: ruled paper. */
   .room-wash[data-pattern="rules"] {
     background-image: linear-gradient(
@@ -675,17 +720,25 @@
 /*
  * A character peeking over the top edge of a button.
  *
- * Deliberately outside @layer components and keyed off its own .has-peek
- * class rather than Tailwind's shared .group. Written inside the layer and
- * grouped with a comma, the minifier rewrote ".group:hover > .button-peek"
- * down to a bare ".button-peek", which left the sprite permanently on show.
- * Separate rules on a private class survive the build.
+ * Nothing appears or disappears. The sprite is always rendered, parked in a
+ * window cut above the button's top edge and simply out of frame when idle,
+ * so hovering and leaving are the same transform running in two directions.
+ * The old version toggled visibility, which is what made them blink in and
+ * out of existence.
+ *
+ * Three layers, one job each: the rail is the window and does the clipping,
+ * the climber carries the slide, and the sprite itself does the breathing
+ * and the squash. Stacking them means the three never fight over transform.
  *
  * It hangs outside the button's box, so the button must not clip and the
  * sprite must never take a pointer event: the whole element is one link or
  * one button, and a child that could swallow a click would quietly break
- * that. Hidden rather than merely transparent when idle, so it is neither a
- * target nor a phantom that widens the page.
+ * that.
+ *
+ * Deliberately outside @layer components and keyed off its own .has-peek
+ * class rather than Tailwind's shared .group. Written inside the layer, the
+ * minifier rewrote ".group:hover > .button-peek" down to a bare
+ * ".button-peek", which left the sprite permanently on show.
  */
 .button-peek {
   position: absolute;
@@ -693,29 +746,57 @@
   bottom: calc(100% - var(--u));
   translate: -50% 0;
   pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
+  /* The window. Tall enough for the tallest sprite at scale 5. */
+  width: 2.75rem;
+  height: 2.75rem;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.has-peek:hover > .button-peek {
-  opacity: 1;
-  visibility: visible;
-  animation: button-peek 220ms steps(3, end) 1;
+/* Parked just below the window: present, rendered, out of frame. */
+.button-peek-climb {
+  display: block;
+  transform: translateY(115%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.3, 1);
 }
 
-.has-peek:focus-visible > .button-peek {
-  opacity: 1;
-  visibility: visible;
-  animation: button-peek 220ms steps(3, end) 1;
+.has-peek:hover > .button-peek > .button-peek-climb,
+.has-peek:focus-visible > .button-peek > .button-peek-climb {
+  transform: translateY(0);
 }
 
-/* Up from behind the button in three frames, the way a sprite appears. */
-@keyframes button-peek {
-  from {
-    transform: translateY(60%);
-  }
-  to {
+/* Breathing, so they read as waiting rather than as parked. */
+.has-peek:hover .peek-sprite,
+.has-peek:focus-visible .peek-sprite {
+  animation: peek-bob 1.8s steps(2, end) infinite;
+}
+
+/*
+ * Riding the press. The button already travels four pixels down onto its own
+ * shadow, and the sprite is inside the button so it makes that journey for
+ * free; all that is left is the landing. animation: none is load bearing,
+ * because an animation would otherwise outrank this transform.
+ */
+.has-peek:active .peek-sprite {
+  animation: none;
+  transform: scale(1.14, 0.82);
+  transform-origin: 50% 100%;
+}
+
+.peek-sprite {
+  transition: transform 90ms ease-out;
+  transform-origin: 50% 100%;
+}
+
+@keyframes peek-bob {
+  0%,
+  100% {
     transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-1 * var(--u) / 2));
   }
 }
 

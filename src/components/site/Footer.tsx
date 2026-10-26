@@ -12,14 +12,20 @@ const CONTACTS = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t-4 border-foreground bg-secondary">
+    <footer className="mt-20 border-t-4 border-foreground bg-secondary">
       {/* Bottom padding clears the fixed navigation strip. */}
-      <div className="mx-auto w-full max-w-5xl px-5 pb-32 pt-14 sm:px-8">
+      <div className="mx-auto w-full max-w-5xl px-5 pb-28 pt-10 sm:px-8">
         <h2 className="font-display text-2xl text-secondary-foreground">
           Ta kontakt
         </h2>
 
-        <ul className="mt-4">
+        {/*
+         * One row, not a stack. Three links on three lines each padded to a
+         * 44px touch target made the footer taller than some of the pages it
+         * sat under. They wrap to a second line only when they genuinely do
+         * not fit.
+         */}
+        <ul className="mt-3 flex flex-wrap items-center gap-x-7 gap-y-1">
           {CONTACTS.map(({ href, label }) => {
             const external = href.startsWith("http");
             return (
@@ -41,7 +47,7 @@ export function Footer() {
           })}
         </ul>
 
-        <div className="mt-10 flex items-end justify-between gap-4">
+        <div className="mt-8 flex items-end justify-between gap-4">
           <p className="text-sm font-medium text-secondary-foreground">
             © {new Date().getFullYear()} Noah Klavestad-Christensen
           </p>

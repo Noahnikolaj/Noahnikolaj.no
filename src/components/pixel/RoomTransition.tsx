@@ -4,6 +4,7 @@ import * as React from "react";
 import { usePathname } from "next/navigation";
 
 import { PixelSky } from "@/components/pixel/PixelSky";
+import { RoomTorch } from "@/components/pixel/RoomTorch";
 import { roomFor } from "@/lib/rooms";
 import { settleTransition } from "@/lib/viewTransition";
 
@@ -32,6 +33,8 @@ export function RoomTransition() {
         style={{ ["--rom-tint" as string]: room.tint }}
       />
       {room.pattern === "clouds" ? <PixelSky /> : null}
+      {/* The gridded wall is the only one you carry a light across. */}
+      {room.pattern === "grid" ? <RoomTorch tint={room.tint} /> : null}
     </>
   );
 }

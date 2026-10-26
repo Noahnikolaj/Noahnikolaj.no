@@ -85,14 +85,21 @@ export function PixelButton({
 }: Props) {
   const classes = cn(pixelButton({ variant, size }), className);
 
+  /*
+   * Rail, climber, sprite. The rail clips, the climber slides, the sprite
+   * breathes and squashes: see the note in globals.css for why they are
+   * three elements and not one.
+   */
   const peek = companion ? (
     <span aria-hidden="true" className="button-peek">
-      <Sprite
-        sprite={COMPANIONS[companion]}
-        scale={5}
-        decorative
-        className="peek-sprite"
-      />
+      <span className="button-peek-climb">
+        <Sprite
+          sprite={COMPANIONS[companion]}
+          scale={5}
+          decorative
+          className="peek-sprite"
+        />
+      </span>
     </span>
   ) : null;
 
