@@ -93,7 +93,14 @@ export function PixelButton({
   const frames = companion ? COMPANIONS[companion] : null;
   const peek = frames ? (
     <span aria-hidden="true" className="button-peek">
-      <span className="button-peek-climb">
+      <span
+        className="button-peek-climb"
+        style={{ ["--peek-idle" as string]: `${frames.idleMs}ms` }}
+      >
+        <SpriteStrip
+          frames={frames.climb}
+          className="peek-sprite peek-strip peek-strip--climb"
+        />
         <SpriteStrip
           frames={frames.idle}
           className="peek-sprite peek-strip peek-strip--idle"

@@ -232,23 +232,105 @@ const DENJI_PRESS: Sprite = {
   label: "Denji trykker",
 };
 
+/* --- Hauling themselves up over the edge ---------------------------------
+ *
+ * The window clips whatever has not risen yet, so these are the poses the
+ * climb passes through rather than a character sliding up rigid.
+ */
+
+/** Hanging off the edge, both arms overhead. */
+const NOAH_HANG: Sprite = {
+  art: [
+    "s.hhhh.s",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    ".bbbbbb.",
+    ".bbbbbb.",
+    "..d..d..",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah henger i kanten",
+};
+
+/** Mid-pull: one arm still up, the other pushing down. */
+const NOAH_PULL: Sprite = {
+  art: [
+    "s.hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    ".bbbbbbs",
+    ".bbbbbb.",
+    "..d..d..",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah drar seg opp",
+};
+
+/** A knee over the edge, nearly up. */
+const NOAH_KNEE: Sprite = {
+  art: [
+    "..hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    "sbbbbbb.",
+    ".bbbbbb.",
+    ".dd...d.",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah får kneet over kanten",
+};
+
+/** Both front paws hooked over the edge. */
+const DENJI_HANG: Sprite = {
+  art: [
+    "oo...oo.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    ".oowoo.d",
+    ".ooooo.d",
+    "o.....o.",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji henger i kanten",
+};
+
 export type CompanionFrames = {
-  /** Loops while the character is up on the button. */
+  /** Plays once on arrival, while the window is still revealing them. */
+  climb: Sprite[];
+  /** Loops once they are up. */
   idle: Sprite[];
   /** Plays once while the button is held, and holds its last pose. */
   press: Sprite[];
+  /** How long one pass of the idle loop takes. Their difference in tempo is
+   *  half of what separates the two characters. */
+  idleMs: number;
 };
 
 /*
- * Waits, blinks, waits, then has a go at the button. The repeats are what
- * make the blink read as a blink rather than as a second character.
+ * Noah is deliberate. He gets up, waits, winks, waits again, and only then
+ * knocks on the button, twice. Slow loop.
  */
 export const NOAH_FRAMES: CompanionFrames = {
-  idle: [NOAH, NOAH, NOAH_WINK, NOAH, NOAH_REACH, NOAH_TAP],
+  climb: [NOAH_HANG, NOAH_PULL, NOAH_KNEE, NOAH],
+  idle: [NOAH, NOAH, NOAH_WINK, NOAH, NOAH_REACH, NOAH_TAP, NOAH_REACH, NOAH_TAP],
   press: [NOAH_REACH, NOAH_TAP, NOAH_PRESS],
+  idleMs: 1800,
 };
 
+/*
+ * Denji is a cat. She scrambles up, sits very still, and then bats at the
+ * thing twice without warning. Same eight slots, two thirds of the time.
+ */
 export const DENJI_FRAMES: CompanionFrames = {
-  idle: [DENJI, DENJI, DENJI_WINK, DENJI, DENJI_PAW, DENJI_STRETCH],
+  climb: [DENJI_HANG, DENJI_PAW, DENJI_STRETCH, DENJI],
+  idle: [DENJI, DENJI, DENJI, DENJI_WINK, DENJI, DENJI_PAW, DENJI, DENJI_PAW],
   press: [DENJI_STRETCH, DENJI_PAW, DENJI_PRESS],
+  idleMs: 1100,
 };

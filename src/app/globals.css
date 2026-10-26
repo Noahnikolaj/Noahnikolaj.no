@@ -765,11 +765,14 @@
 
 /* Parked just below the window: present, rendered, out of frame. */
 .button-peek-climb {
+  --peek-climb: 320ms;
   position: absolute;
   left: 0;
   bottom: 0;
   transform: translateY(115%);
-  transition: transform 280ms cubic-bezier(0.22, 1, 0.3, 1);
+  /* The rise and the climb animation run on the same clock, so the character
+     reaches the top at the moment it finishes pulling itself up. */
+  transition: transform var(--peek-climb) cubic-bezier(0.3, 0.9, 0.4, 1);
 }
 
 .has-peek:hover > .button-peek > .button-peek-climb,
@@ -782,18 +785,23 @@
  *
  * The rail above is exactly one frame wide and clips, so it doubles as the
  * window: translating a strip by -100% with steps(n) walks it one pose at a
- * time, which is how a sprite sheet has always worked. One animation covers
- * any number of frames.
+ * time, which is how a sprite sheet has always worked.
  *
- * Both strips start at frame zero, so a character that is up but idle shows
- * its resting pose with nothing running.
+ * Three of them, played in sequence off one hover. The climb runs while the
+ * window is still revealing the character, so arriving is a character
+ * hauling itself up rather than a drawing being slid into place. Then the
+ * idle loop takes over, and a press interrupts both.
+ *
+ * The climb strip is the one in flow: it gives the stack its height, and it
+ * is what shows when nothing is running, so letting go drops them back to
+ * gripping the edge on the way down.
  */
 .peek-strip {
   display: block;
   transform: translateX(0);
 }
 
-/* Stacked on the idle strip and aligned to the same floor. */
+.peek-strip--idle,
 .peek-strip--press {
   position: absolute;
   bottom: 0;
@@ -801,30 +809,81 @@
   opacity: 0;
 }
 
+/* Climb: four poses over the same time the rail takes to rise. */
+.has-peek:hover .peek-strip--climb,
+.has-peek:focus-visible .peek-strip--climb {
+  animation:
+    peek-walk-4 var(--peek-climb) steps(3) 1 forwards,
+    peek-out 1ms linear var(--peek-climb) forwards;
+}
+
+/* Idle: eight poses, at whatever tempo the character keeps. */
 .has-peek:hover .peek-strip--idle,
 .has-peek:focus-visible .peek-strip--idle {
-  animation: peek-walk 1.5s steps(6) infinite;
+  animation:
+    peek-in 1ms linear var(--peek-climb) forwards,
+    peek-walk var(--peek-idle, 1500ms) steps(8) infinite var(--peek-climb);
 }
 
 /*
- * Held down: the idle loop gets out of the way and the press plays once,
+ * Held down: both of the above get out of the way and the press plays once,
  * forwards so the last pose stays put for as long as the button is held.
  */
+.has-peek:active .peek-strip--climb,
 .has-peek:active .peek-strip--idle {
   animation: none;
   opacity: 0;
 }
 
 .has-peek:active .peek-strip--press {
-  opacity: 1;
-  animation: peek-walk 180ms steps(3) 1 forwards;
+  animation:
+    peek-in 1ms linear forwards,
+    peek-walk-3 180ms steps(2) 1 forwards;
 }
 
+/*
+ * Looping: -100% is a whole strip, and because it never fills forwards the
+ * frame past the end is only ever the instant it wraps.
+ */
 @keyframes peek-walk {
   to {
     transform: translateX(-100%);
   }
 }
+
+/*
+ * Playing once: these stop ON the last frame rather than one past it.
+ *
+ * steps(n) across -100% hands out frames 0..n-1 while running and the blank
+ * past the end at exactly p=1, which is invisible in a loop and permanent
+ * under animation-fill-mode: forwards. Holding a button used to empty the
+ * window 180ms in for exactly that reason. So the range stops at the last
+ * frame and the step count drops by one to match.
+ */
+@keyframes peek-walk-4 {
+  to {
+    transform: translateX(-75%);
+  }
+}
+
+@keyframes peek-walk-3 {
+  to {
+    transform: translateX(-66.6667%);
+  }
+}
+
+@keyframes peek-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes peek-out {
+  to {
+    opacity: 0;
+  }
+}
+
 
 
 
