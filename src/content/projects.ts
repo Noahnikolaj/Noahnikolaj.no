@@ -115,7 +115,7 @@ export const projects: Project[] = [
     tagline:
       "Tidslinjebasert integreringsapp som samler nødvendig informasjon for innvandrere i Norge på ett sted.",
     role: "UX-design og prototyping",
-    period: "Universitetet i Oslo",
+    period: "Kristiania",
     stack: ["Figma", "Wireframing", "Prototyping", "Brukertesting"],
     image: {
       src: "/projectphotos/Bosett.png",
