@@ -3,10 +3,10 @@ import type { Sprite } from "./sprites";
 /*
  * Denji, doing a different job on every project.
  *
- * The first version of this was five abstract marks: a record, a phone, a
- * timeline. They worked, but they were icons, and the site already has a
- * cast. The same cat turning up in five jobs says more than five symbols
- * do, and it is the thing nobody else's portfolio has.
+ * She sits in the bottom left corner of the projects preview, and what she
+ * is doing there answers to whichever project you are looking at. The cat is
+ * already the site's mascot; this is her taking a job on each piece of work
+ * rather than five abstract icons standing in for them.
  *
  * Four frames each, all on the same 8x8 grid, so one steps(4) covers the
  * lot. Only the tempo differs.
@@ -23,7 +23,7 @@ const DEEP = "#9B2742";
 const NIGHT = "#1A0F18";
 const GLOW = "#FFBCC8";
 
-export type ProjectMark = {
+export type DenjiJob = {
   frames: Sprite[];
   /** One pass of the loop. */
   ms: number;
@@ -39,7 +39,7 @@ const sprite = (art: string[], palette: Record<string, string>, label: string): 
 
 const BOWL = { o: CAT, e: EYE, w: MUZZLE, m: ROSE };
 
-const GUEST_FOOD: ProjectMark = {
+const GUEST_FOOD: DenjiJob = {
   frames: [
     sprite([
       "........",
@@ -89,7 +89,7 @@ const GUEST_FOOD: ProjectMark = {
 
 const PHONES = { o: CAT, e: EYE, w: MUZZLE, h: INK };
 
-const DEADWAX: ProjectMark = {
+const DEADWAX: DenjiJob = {
   frames: [
     sprite([
       "..hhhh..",
@@ -139,7 +139,7 @@ const DEADWAX: ProjectMark = {
 
 const CASE = { o: CAT, e: EYE, w: MUZZLE, s: DEEP, k: INK };
 
-const BOSETT: ProjectMark = {
+const BOSETT: DenjiJob = {
   frames: [
     sprite([
       "........",
@@ -189,7 +189,7 @@ const BOSETT: ProjectMark = {
 
 const TALK = { o: CAT, e: EYE, w: MUZZLE, d: CAT_DARK, b: DEEP };
 
-const PIXIWORLD: ProjectMark = {
+const PIXIWORLD: DenjiJob = {
   frames: [
     sprite([
       "........",
@@ -239,7 +239,7 @@ const PIXIWORLD: ProjectMark = {
 
 const CAVE = { n: NIGHT, g: GLOW, m: CAT_DIM, w: MUZZLE };
 
-const DENJI_GAME: ProjectMark = {
+const DENJI_GAME: DenjiJob = {
   frames: [
     sprite([
       "nnnnnnnn",
@@ -285,8 +285,8 @@ const DENJI_GAME: ProjectMark = {
   ms: 1400,
 };
 
-/** Keyed by project slug. A project without one simply has no mark. */
-export const PROJECT_MARKS: Record<string, ProjectMark> = {
+/** Keyed by project slug. A project without one simply gets no cat. */
+export const DENJI_JOBS: Record<string, DenjiJob> = {
   "guest-food-payment": GUEST_FOOD,
   deadwax: DEADWAX,
   bosett: BOSETT,

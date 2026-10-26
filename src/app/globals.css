@@ -855,30 +855,39 @@
 }
 
 /*
- * A project's mark in the index.
+ * Denji in the projects preview.
  *
  * Same sprite-sheet trick as the companions: a window one frame wide, the
- * strip walked past it. It only runs on the row you are pointing at, because
- * five of them turning at once would be a page full of movement and none of
- * it would mean anything.
+ * strip walked past it.
+ *
+ * In the preview pane she runs continuously, because only one of her is on
+ * screen at a time and she is the only thing in that corner. Inline on a
+ * phone there is one per row, so there she waits until her row reaches the
+ * middle of the screen, which is what data-near means. Five cats working at
+ * once would be a page full of movement and none of it would mean anything.
  */
-.project-mark {
+.project-denji {
   display: block;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   overflow: hidden;
-  flex: none;
 }
 
-.project-mark-strip {
+.project-denji-strip {
   display: block;
   transform: translateX(0);
+  animation: strip-walk var(--denji-ms, 1000ms) steps(4) infinite;
 }
 
-.project-row:hover .project-mark-strip,
-.project-row:focus-visible .project-mark-strip,
-.project-row[data-near] .project-mark-strip {
-  animation: strip-walk var(--mark-ms, 1000ms) steps(4) infinite;
+/* Inline in a row: still until that row is the one you are looking at. */
+.project-row .project-denji-strip {
+  animation: none;
+}
+
+.project-row:hover .project-denji-strip,
+.project-row:focus-visible .project-denji-strip,
+.project-row[data-near] .project-denji-strip {
+  animation: strip-walk var(--denji-ms, 1000ms) steps(4) infinite;
 }
 
 /*

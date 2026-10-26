@@ -6,10 +6,8 @@ import Link from "next/link";
 
 import { DeviceFrame } from "@/components/site/DeviceFrame";
 import { Reveal } from "@/components/pixel/Reveal";
-import { Sprite } from "@/components/pixel/Sprite";
 import { SpriteStrip } from "@/components/pixel/SpriteStrip";
-import { PROJECT_MARKS } from "@/components/pixel/projectMarks";
-import { DENJI } from "@/components/pixel/sprites";
+import { DENJI_JOBS } from "@/components/pixel/denjiJobs";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/content/projects";
 
@@ -49,11 +47,8 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
                 index === active && "md:bg-secondary",
               )}
             >
-              <h2 className="flex items-center gap-3 font-display text-2xl leading-tight sm:text-3xl">
-                <ProjectMark slug={project.slug} />
-                <span className="group-hover:underline group-hover:decoration-4 group-hover:underline-offset-4">
-                  {project.title}
-                </span>
+              <h2 className="font-display text-2xl leading-tight group-hover:underline group-hover:decoration-4 group-hover:underline-offset-4 sm:text-3xl">
+                {project.title}
               </h2>
 
               {/*
@@ -77,8 +72,11 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
                * No hover on a phone, so the art comes inline under its own
                * row rather than into a pane nobody can reach.
                */}
-              <div className="mt-5 flex justify-center md:hidden">
-                <ProjectArt project={project} maxHeight="15rem" />
+              <div className="mt-5 md:hidden">
+                <div className="flex justify-center">
+                  <ProjectArt project={project} maxHeight="15rem" />
+                </div>
+                <ProjectDenji slug={project.slug} className="mt-4" />
               </div>
             </Link>
           </Reveal>
@@ -94,10 +92,11 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
           <div key={shown.slug} className="preview-swap flex justify-center">
             <ProjectArt project={shown} maxHeight="20rem" />
           </div>
-          {/* The cat came to look at the work too. */}
-          <div className="mt-6 self-start">
-            <Sprite sprite={DENJI} scale={5} decorative className="sprite-idle" />
-          </div>
+          {/*
+           * The cat came to look at the work, and ended up helping with it.
+           * What she is doing answers to the project on show.
+           */}
+          <ProjectDenji slug={shown.slug} className="mt-6 self-start" />
         </div>
       </div>
     </div>
@@ -105,24 +104,33 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
 }
 
 /*
- * The project's own drawn mark: a record that turns, a timeline that fills,
- * a pair of eyes in the dark. Decorative, and it only animates while you are
- * on the row.
+ * Denji, doing whatever this project has her doing: eating the guest lunch,
+ * wearing headphones, sitting with a suitcase. Decorative.
+ *
+ * In the preview she runs continuously, because there is only ever one of
+ * her on screen. Inline on a phone there are five, so there she waits for
+ * her row to reach the middle of the screen: see TouchSpotlight.
  */
-function ProjectMark({ slug }: { slug: string }) {
-  const mark = PROJECT_MARKS[slug];
-  if (!mark) return null;
+function ProjectDenji({
+  slug,
+  className,
+}: {
+  slug: string;
+  className?: string;
+}) {
+  const job = DENJI_JOBS[slug];
+  if (!job) return null;
 
   return (
     <span
       aria-hidden="true"
-      className="project-mark"
-      style={{ ["--mark-ms" as string]: `${mark.ms}ms` }}
+      className={cn("project-denji", className)}
+      style={{ ["--denji-ms" as string]: `${job.ms}ms` }}
     >
       <SpriteStrip
-        frames={mark.frames}
-        scale={4}
-        className="project-mark-strip"
+        frames={job.frames}
+        scale={5}
+        className="project-denji-strip"
       />
     </span>
   );
