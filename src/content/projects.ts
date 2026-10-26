@@ -59,10 +59,16 @@ export const projects: Project[] = [
     period: "aug. – okt. 2026",
     stack: ["Node.js", "TypeScript", "Backend", "intern APIs", "Firestore/Firebase"],
     image: {
-      src: "/projectphotos/guest-food-payment.png",
+      /*
+       * The screen only. The original export is a photoreal iPhone render,
+       * which inside a drawn phone was a frame around a frame; this is that
+       * export cropped to its screen rect so DeviceFrame can supply the
+       * device instead.
+       */
+      src: "/projectphotos/guest-food-payment-screen.png",
       device: "phone",
-      width: 450,
-      height: 920,
+      width: 402,
+      height: 873,
       alt: "Mobilskjerm fra Guest Food Payment for Welcome Workdays: landingsside for gjestelunsj på Skippergata 3",
       transparent: true,
     },

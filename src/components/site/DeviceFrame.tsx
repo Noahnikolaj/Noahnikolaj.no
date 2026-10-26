@@ -12,6 +12,11 @@ import { cn } from "@/lib/utils";
  *
  * The frame never imposes a ratio. Whatever goes inside keeps its own
  * proportions, which is the rule the project art has always followed.
+ *
+ * One rule for choosing a variant: the art must not already contain a
+ * device. A screenshot exported from a mockup tool arrives with its own
+ * photoreal phone around it, and framing that gives a frame around a frame.
+ * Crop to the screen first, or pass "none".
  */
 export type Device = "phone" | "browser" | "handheld" | "none";
 
@@ -56,15 +61,44 @@ export function DeviceFrame({
 
   if (device === "phone") {
     return (
-      <div className={cn(SHELL, "bg-foreground p-2", className)}>
-        <div aria-hidden="true" className="flex justify-center pb-2">
-          {/* Earpiece slot. */}
-          <span className="h-1 w-10 bg-background/50" />
-        </div>
-        <div className="overflow-hidden bg-secondary">{children}</div>
-        <div aria-hidden="true" className="flex justify-center pt-2">
-          {/* Home bar. */}
-          <span className="h-1 w-12 bg-background/50" />
+      <div className={cn(SHELL, "relative bg-foreground p-2", className)}>
+        {/*
+         * Side buttons, sized as a share of the body so they hold up at both
+         * tile and preview scale. These are what make a dark rectangle read
+         * as a phone at a glance, which is the job the title bar and its
+         * three squares already do for the browser.
+         */}
+        <span
+          aria-hidden="true"
+          className="absolute -left-2 top-[18%] h-[6%] w-2 bg-foreground"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute -left-2 top-[27%] h-[6%] w-2 bg-foreground"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute -right-2 top-[22%] h-[10%] w-2 bg-foreground"
+        />
+
+        {/*
+         * Dark behind the screen on purpose. A phone screenshot arrives with
+         * its own rounded corners already burned in, and on a dark ground
+         * those corners disappear into the shell instead of showing as four
+         * black arcs against the pink.
+         */}
+        <div className="relative overflow-hidden bg-foreground">
+          {children}
+          {/*
+           * Home indicator, drawn where a real one lives: on the screen, not
+           * on the bezel. It is the phone's answer to the browser's title
+           * bar, the one piece of chrome that is obviously drawn rather than
+           * photographed.
+           */}
+          <span
+            aria-hidden="true"
+            className="absolute bottom-[1.5%] left-1/2 h-1 w-1/3 -translate-x-1/2 bg-foreground/70"
+          />
         </div>
       </div>
     );
@@ -77,7 +111,9 @@ export function DeviceFrame({
    */
   return (
     <div className={cn(SHELL, "bg-foreground p-3", className)}>
-      <div className="overflow-hidden border-4 border-background/25 bg-secondary">
+      {/* A light inner bezel, or the near-black game screen merges into the
+          shell and you cannot tell where the screen starts. */}
+      <div className="overflow-hidden border-4 border-background/60 bg-foreground">
         {children}
       </div>
       <div
