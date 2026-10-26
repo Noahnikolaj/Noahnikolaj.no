@@ -196,23 +196,3 @@ export function settleTransition() {
   settle?.();
   settle = null;
 }
-
-/**
- * Theme changes are instant, but the nav animates differently for them, so
- * the document is marked for the duration.
- */
-export function flipTheme(commit: () => void) {
-  if (!supportsViewTransition() || prefersReducedMotion()) {
-    commit();
-    return;
-  }
-  const root = document.documentElement;
-  root.classList.add("theme-switch");
-  const transition = (document as DocumentWithVT).startViewTransition(() => {
-    commit();
-  });
-  // .finally() re-throws a rejection; .catch() is what actually swallows an
-  // abort when the viewport resizes mid-transition.
-  const done = () => root.classList.remove("theme-switch");
-  transition.finished.then(done).catch(done);
-}

@@ -27,6 +27,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#09060d",
+  // The root layout locks the site to light; this page is deliberately not.
+  colorScheme: "dark",
   viewportFit: "cover",
 };
 

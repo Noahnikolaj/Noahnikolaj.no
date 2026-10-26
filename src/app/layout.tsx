@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Lemon, M_PLUS_Rounded_1c } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 // Noah's existing display face. Bosett's own logo is a chunky rounded slab,
@@ -38,13 +37,22 @@ export const metadata: Metadata = {
   },
 };
 
+/*
+ * One palette, so the browser chrome is told about it directly rather than
+ * being left to guess from the reader's OS setting.
+ */
+export const viewport: Viewport = {
+  themeColor: "#FFEEF1",
+  colorScheme: "only light",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nb" suppressHydrationWarning>
+    <html lang="nb">
       <body className={`${lemon.variable} ${rounded.variable}`}>
         {/*
           Marks the document as reveal-capable before first paint. The scroll
@@ -56,14 +64,7 @@ export default function RootLayout({
             __html: "document.documentElement.classList.add('js-reveal')",
           }}
         />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        {children}
         <Toaster />
       </body>
     </html>

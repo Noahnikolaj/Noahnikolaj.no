@@ -3,25 +3,16 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 
 import { cn } from "@/lib/utils";
 import { roomFor } from "@/lib/rooms";
-import {
-  flipTheme,
-  flipTo,
-  setFlipDuration,
-  setFlipOrigin,
-} from "@/lib/viewTransition";
+import { flipTo, setFlipDuration, setFlipOrigin } from "@/lib/viewTransition";
 
 /*
  * Navigation lives along the floor rather than the top.
  *
  * It carries its own view-transition-name, so the coin flip only turns the
- * page behind it: the nav itself holds still while rooms change. The one time
- * it does move is a theme change, when the old set of buttons leaves to the
- * left and the new set arrives from the right in the new palette.
+ * page behind it: the nav itself holds still while rooms change.
  *
  * The highlight is a single element that slides to the active item rather
  * than each link toggling its own background.
@@ -35,16 +26,12 @@ const LINKS = [
 export function WorldStrip() {
   const pathname = usePathname();
   const router = useRouter();
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
 
   const listRef = React.useRef<HTMLUListElement>(null);
   const itemRefs = React.useRef<(HTMLAnchorElement | null)[]>([]);
   const [marker, setMarker] = React.useState<{ x: number; w: number } | null>(
     null,
   );
-
-  React.useEffect(() => setMounted(true), []);
 
   const activeIndex = LINKS.findIndex((link) =>
     link.href === "/" ? pathname === "/" : pathname.startsWith(link.href),
@@ -82,8 +69,6 @@ export function WorldStrip() {
    * fixed element is predictable, so let it do the work.
    */
 
-  const dark = mounted && resolvedTheme === "dark";
-
   /*
    * Keeps the strip usable while a flip is still running.
    *
@@ -94,7 +79,6 @@ export function WorldStrip() {
    * what lets you change your mind mid-flip.
    */
   const navRef = React.useRef<HTMLElement>(null);
-  const themeRef = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     const within = (el: Element, x: number, y: number) => {
       const r = el.getBoundingClientRect();
@@ -107,17 +91,6 @@ export function WorldStrip() {
       // Normal path: the event already found its target.
       if (nav.contains(event.target as Node)) return;
       if (!within(nav, event.clientX, event.clientY)) return;
-
-      const theme = themeRef.current;
-      if (theme && within(theme, event.clientX, event.clientY)) {
-        event.preventDefault();
-        event.stopPropagation();
-        const box = theme.getBoundingClientRect();
-        setFlipOrigin(box.left + box.width / 2, box.top + box.height / 2);
-        setFlipDuration(820);
-        flipTheme(() => setTheme(dark ? "light" : "dark"));
-        return;
-      }
 
       const link = Array.from(nav.querySelectorAll("a")).find((a) =>
         within(a, event.clientX, event.clientY),
@@ -135,7 +108,7 @@ export function WorldStrip() {
 
     document.addEventListener("click", rescue, true);
     return () => document.removeEventListener("click", rescue, true);
-  }, [dark, pathname, router, setTheme]);
+  }, [pathname, router]);
 
   return (
     <div
@@ -146,62 +119,36 @@ export function WorldStrip() {
         aria-label="Hovedmeny"
         className="pointer-events-auto w-full max-w-md overflow-hidden border-4 border-foreground bg-grunn shadow-[4px_4px_0_0_rgb(var(--foreground))] sm:w-auto"
       >
-        <div className="flex items-stretch">
-          <ul ref={listRef} className="relative flex flex-1 items-stretch">
-            {marker ? (
-              <li
-                aria-hidden="true"
-                className="nav-marker absolute inset-y-0 bg-foreground"
-                style={{
-                  transform: `translateX(${marker.x}px)`,
-                  width: `${marker.w}px`,
+        <ul ref={listRef} className="relative flex items-stretch">
+          {marker ? (
+            <li
+              aria-hidden="true"
+              className="nav-marker absolute inset-y-0 bg-foreground"
+              style={{
+                transform: `translateX(${marker.x}px)`,
+                width: `${marker.w}px`,
+              }}
+            />
+          ) : null}
+
+          {LINKS.map((link, i) => (
+            <li key={link.href} className="flex flex-1 basis-0">
+              <Link
+                ref={(el) => {
+                  itemRefs.current[i] = el;
                 }}
-              />
-            ) : null}
-
-            {LINKS.map((link, i) => (
-              <li key={link.href} className="flex flex-1 basis-0">
-                <Link
-                  ref={(el) => {
-                    itemRefs.current[i] = el;
-                  }}
-                  href={link.href}
-                  aria-current={i === activeIndex ? "page" : undefined}
-                  className={cn(
-                    "relative z-10 flex h-14 flex-1 items-center justify-center whitespace-nowrap px-1.5 text-center text-[0.8rem] font-bold transition-colors duration-200 sm:h-12 sm:px-5 sm:text-sm",
-                    i === activeIndex
-                      ? "text-background"
-                      : "text-grunn-foreground",
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            ref={themeRef}
-            type="button"
-            onClick={(event) => {
-              // The wave starts at the sun icon itself.
-              const icon = event.currentTarget.getBoundingClientRect();
-              setFlipOrigin(
-                icon.left + icon.width / 2,
-                icon.top + icon.height / 2,
-              );
-              flipTheme(() => setTheme(dark ? "light" : "dark"));
-            }}
-            aria-label={dark ? "Bytt til lyst tema" : "Bytt til mørkt tema"}
-            className="flex h-14 w-14 shrink-0 items-center justify-center border-l-4 border-foreground/25 text-grunn-foreground sm:h-12 sm:w-12"
-          >
-            {dark ? (
-              <Sun aria-hidden="true" className="h-5 w-5" />
-            ) : (
-              <Moon aria-hidden="true" className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+                href={link.href}
+                aria-current={i === activeIndex ? "page" : undefined}
+                className={cn(
+                  "relative z-10 flex h-14 flex-1 items-center justify-center whitespace-nowrap px-3 text-center text-sm font-bold transition-colors duration-200 sm:h-12 sm:px-6",
+                  i === activeIndex ? "text-background" : "text-grunn-foreground",
+                )}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </nav>
     </div>
   );

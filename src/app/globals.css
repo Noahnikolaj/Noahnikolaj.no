@@ -10,14 +10,18 @@
    Space-separated RGB channels, read as rgb(var(--x) / <alpha-value>).
    Never wrap a value in rgb()/rgba() here: that breaks opacity modifiers.
 
-   Noah's original pink scheme. The one rule that governs everything:
-   #E4647C scores 2.92:1 on #FFEEF1, so it cannot carry text on light ground.
-   It is a FILL. The plum ink does the reading.
+   One palette, no theme switch. The site used to carry a second set of
+   tokens for a dark mode, which meant every colour had to work twice and no
+   colour could be chosen purely because it was right. It is Noah's pink and
+   nothing else now.
+
+   The one rule that governs everything: #E4647C scores 2.92:1 on #FFEEF1, so
+   it cannot carry text. It is a FILL. The plum ink does the reading.
    ========================================================================== */
 
 @layer base {
   :root {
-    /* DAG. Rosa papir. */
+    /* Rosa papir. */
     --papir: 255 238 241; /* #FFEEF1 */
     --lys: 255 188 200; /* #FFBCC8 */
     --rosa: 228 100 124; /* #E4647C  fill only */
@@ -51,9 +55,10 @@
     --ring: var(--dyp);
 
     /*
-     * Ground: the solid band the world stands on, and the nav strip. It is a
-     * LARGE fill, so it cannot reuse --rosa: at night --rosa is the light pink
-     * meant to read AS TEXT on dark, and using it as a big fill glares.
+     * Ground: the solid band the world stands on, and the nav strip. Named
+     * apart from --rosa even though it holds the same value, because it is
+     * the one large fill on the page and a fill that size is a different
+     * decision from a brand colour.
      */
     --grunn: var(--rosa); /* #E4647C */
     --grunn-foreground: var(--blekk); /* 5.35 on rosa */
@@ -66,53 +71,12 @@
     --blokk: var(--lys); /* hard offset block shadow */
 
     --radius: 0;
-    color-scheme: light;
-  }
-
-  .dark {
-    /* NATT. Same world after dark. */
-    --papir: 255 238 241;
-    --lys: 74 35 52; /* #4A2334  fills become deep plum */
-    --rosa: 242 129 155; /* #F2819B  7.45 on night ground */
-    --dyp: 255 188 200; /* #FFBCC8  11.80 */
-    --blekk: 26 15 24; /* #1A0F18  the night ground */
-
-    --background: var(--blekk);
-    --foreground: var(--papir); /* 16.66 */
-    --card: 36 19 32; /* #241320 */
-    --card-foreground: var(--papir);
-    --popover: 36 19 32;
-    --popover-foreground: var(--papir);
-
-    --primary: var(--rosa);
-    --primary-foreground: var(--blekk);
-
-    --secondary: var(--lys);
-    --secondary-foreground: var(--papir);
-
-    --muted: var(--lys);
-    --muted-foreground: 201 154 168; /* #C99AA8  7.70 */
-
-    --accent: var(--dyp);
-    --accent-foreground: var(--blekk);
-
-    --destructive: 255 138 138;
-    --destructive-foreground: 26 15 24;
-
-    --border: 93 48 68; /* #5D3044 */
-    --input: 93 48 68;
-    --ring: var(--dyp);
-
-    /* #93384F. Papir reads on it at 6.42, and it separates from both the
-       night ground (2.59) and the feature band (1.85). */
-    --grunn: 147 56 79;
-    --grunn-foreground: var(--papir);
-
-    --line: var(--papir);
-    --dither: var(--rosa);
-    --blokk: 93 48 68;
-
-    color-scheme: dark;
+    /*
+     * "only light" rather than "light": there is no dark palette to fall back
+     * to any more, so the browser must not dark-ify form controls, scrollbars
+     * or the canvas on a reader whose OS is set to dark.
+     */
+    color-scheme: only light;
   }
 }
 
@@ -306,14 +270,6 @@
     mask-size: 290px 145px;
     -webkit-mask-size: 290px 145px;
     animation: sky-drift-near 26s linear infinite;
-  }
-
-  .dark .sky-layer--far {
-    opacity: 0.4;
-  }
-
-  .dark .sky-layer--near {
-    opacity: 0.25;
   }
 }
 
@@ -604,41 +560,6 @@
 ::view-transition-new(verdensstripe) {
   animation: none;
   mix-blend-mode: normal;
-}
-
-/*
- * Changing the theme: a palette swap, the way the hardware does it.
- *
- * The bar does not move at all. The old snapshot is dropped immediately and
- * the new one steps through two intermediate tints before settling, which
- * reads as the palette registers being rewritten rather than a page element
- * animating. Nothing shifts under the finger that just pressed the button.
- *
- * Two changes over ~210ms on a small element, once per press. Well inside the
- * flash thresholds, which are about large areas and repeated flashing.
- */
-.theme-switch::view-transition-old(verdensstripe) {
-  animation: none;
-  opacity: 0;
-}
-
-.theme-switch::view-transition-new(verdensstripe) {
-  animation: palette-swap 210ms linear forwards;
-}
-
-@keyframes palette-swap {
-  0%,
-  44% {
-    filter: brightness(1.45) saturate(0.3);
-  }
-  45%,
-  89% {
-    filter: brightness(0.85) saturate(1.55);
-  }
-  90%,
-  100% {
-    filter: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
