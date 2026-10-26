@@ -743,7 +743,17 @@
 .button-peek {
   position: absolute;
   left: 50%;
-  bottom: calc(100% - var(--u));
+  /*
+   * The clip line has to sit on the button's OUTER top edge, or the
+   * character is cut off by a line drawn across the button's face and reads
+   * as climbing out of the middle of it rather than from behind it.
+   *
+   * An absolutely positioned box resolves against its ancestor's PADDING
+   * box, which excludes the 4px border. So bottom: 100% is already 4px
+   * inside the button, and the previous calc(100% - var(--u)) was 8px in.
+   * Adding the border width back puts it exactly on the edge.
+   */
+  bottom: calc(100% + var(--u));
   translate: -50% 0;
   pointer-events: none;
   /*

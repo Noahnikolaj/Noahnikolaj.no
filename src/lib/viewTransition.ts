@@ -85,23 +85,32 @@ type DocumentWithVT = Document & {
 };
 
 /*
- * A view transition aborts if the viewport resizes while it is running, and
- * on a phone that happens routinely: the URL bar slides away as the page
- * changes. The browser rejects `ready` and `finished` with an
- * InvalidStateError, which surfaces as an unhandled rejection and an error
- * overlay in development.
+ * A view transition can abort for reasons that are nobody's fault: the
+ * viewport resizes mid-run (on a phone the URL bar slides away as the page
+ * changes), or the document goes hidden because the tab was switched. The
+ * browser then rejects the transition's promises with an InvalidStateError.
  *
- * Nothing is actually broken when this happens; the navigation still
- * completes, it just skips the animation. So swallow the abort and make sure
- * the route is released either way.
+ * Nothing is broken when this happens; the navigation still completes, it
+ * just skips the animation. But a rejected promise with no handler is an
+ * unhandled rejection, which is a runtime error overlay in development.
+ *
+ * EVERY promise a transition exposes has to be handled, not just the ones
+ * being waited on. `ready` in particular is easy to forget because nothing
+ * reads it.
  */
+function handleAllRejections(transition: ViewTransition, onAbort?: () => void) {
+  const swallow = () => onAbort?.();
+  transition.ready.catch(swallow);
+  transition.finished.catch(swallow);
+  transition.updateCallbackDone.catch(swallow);
+}
+
+/** Swallows an abort and makes sure the route is released either way. */
 function survivesAbort(transition: ViewTransition) {
-  const released = () => {
+  handleAllRejections(transition, () => {
     settle?.();
     settle = null;
-  };
-  transition.ready.catch(released);
-  transition.finished.catch(released);
+  });
 }
 
 /** Runs `commit` inside a view transition, resolving when the route lands. */
@@ -171,6 +180,12 @@ let warmed = false;
 
 export function warmFlip() {
   if (warmed || !supportsViewTransition() || prefersReducedMotion()) return;
+  /*
+   * A transition started on a hidden document is aborted immediately, so
+   * there is nothing to warm and the attempt is pure noise. Leave `warmed`
+   * alone so the next idle callback can try again once the tab is back.
+   */
+  if (document.visibilityState !== "visible") return;
   warmed = true;
 
   const root = document.documentElement;
@@ -185,7 +200,8 @@ export function warmFlip() {
     const transition = (document as DocumentWithVT).startViewTransition(
       () => {},
     );
-    transition.finished.then(restore).catch(restore);
+    transition.finished.then(restore);
+    handleAllRejections(transition, restore);
   } catch {
     restore();
   }

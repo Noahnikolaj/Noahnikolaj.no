@@ -286,19 +286,57 @@ const NOAH_KNEE: Sprite = {
   label: "Noah får kneet over kanten",
 };
 
-/** Both front paws hooked over the edge. */
+/*
+ * Denji's climb, in silhouettes rather than details.
+ *
+ * The first version changed two or three pixels a frame and read as nothing
+ * happening. These change the shape of the whole cat instead: hanging thin,
+ * then bunched up, then sprawled over the edge, then sitting.
+ */
+
+/** Hanging by the front paws, body stretched thin, back legs together. */
 const DENJI_HANG: Sprite = {
   art: [
     "oo...oo.",
-    "oo...oo.",
     ".ooooo..",
-    ".oeoeo.d",
-    ".oowoo.d",
-    ".ooooo.d",
-    "o.....o.",
+    ".oeoeo..",
+    ".oowoo..",
+    "..ooo..d",
+    "..ooo..d",
+    "..o.o...",
   ],
   palette: DENJI_PALETTE,
   label: "Denji henger i kanten",
+};
+
+/** Bunched up: shoulders wide, hauling herself over. */
+const DENJI_PULL: Sprite = {
+  art: [
+    "oo...oo.",
+    "oooooooo",
+    ".oeoeo.d",
+    ".oowoo.d",
+    ".ooooo.d",
+    "ooooooo.",
+    "o.....o.",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji drar seg opp",
+};
+
+/** Belly over the edge, legs out sideways. */
+const DENJI_OVER: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    "oooooood",
+    "oo...oo.",
+    "o.....o.",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji ruller over kanten",
 };
 
 export type CompanionFrames = {
@@ -329,7 +367,7 @@ export const NOAH_FRAMES: CompanionFrames = {
  * thing twice without warning. Same eight slots, two thirds of the time.
  */
 export const DENJI_FRAMES: CompanionFrames = {
-  climb: [DENJI_HANG, DENJI_PAW, DENJI_STRETCH, DENJI],
+  climb: [DENJI_HANG, DENJI_PULL, DENJI_OVER, DENJI],
   idle: [DENJI, DENJI, DENJI, DENJI_WINK, DENJI, DENJI_PAW, DENJI, DENJI_PAW],
   press: [DENJI_STRETCH, DENJI_PAW, DENJI_PRESS],
   idleMs: 1100,
