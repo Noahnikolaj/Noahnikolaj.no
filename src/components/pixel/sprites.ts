@@ -88,27 +88,41 @@ export const DENJI: Sprite = {
   label: "Pikselfigur av katten Denji",
 };
 
+/* ==========================================================================
+   COMPANION ANIMATION
+
+   What the characters do on a button.
+
+   A sprite animates by being redrawn, so these are whole poses, not one
+   drawing pushed around by CSS. Only the distinct poses are authored; the
+   loops below repeat them, which is why six frames of animation cost three
+   drawings.
+
+   Every pose in a set must share a grid or the strip will not line up: Noah
+   is 8x8 throughout, Denji 8x7.
+   ========================================================================== */
+
 /*
- * Companion frames.
- *
- * What the characters do on a button. Three poses each, swapped by CSS rather
- * than tweened: resting, reaching for the button, and pressing it. A sprite
- * animates by being redrawn, not by being transformed, so these are three
- * separate grids and the stylesheet decides which one is showing.
- *
- * Every frame of a set must be the same grid size or the stack will not line
- * up: Noah is 8x8 throughout, Denji 8x7.
+ * A wink, not a blink. Closing both eyes at this size deletes the face, and
+ * at 250ms a frame that is long enough to read as a blank rather than as an
+ * eyelid. Keeping one eye open says the same thing and stays a face.
  */
-export type CompanionFrames = {
-  /** Standing or sitting, doing nothing. */
-  rest: Sprite;
-  /** Arms or a paw out towards the button. */
-  reach: Sprite;
-  /** Mid-press: crouched, weight on the button. */
-  press: Sprite;
+const NOAH_WINK: Sprite = {
+  art: [
+    "..hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesssh.",
+    "..ssss..",
+    ".bbbbbb.",
+    ".bbbbbb.",
+    "..d..d..",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah blunker",
 };
 
-/** Arms straight out to the sides, hands at the edges. */
+/** Arms straight out to the sides: winding up. */
 const NOAH_REACH: Sprite = {
   art: [
     "..hhhh..",
@@ -124,7 +138,23 @@ const NOAH_REACH: Sprite = {
   label: "Noah strekker seg",
 };
 
-/** Dropped a pixel, knees bent, hands planted down at his sides. */
+/** Hands planted down at his sides, still at full height. */
+const NOAH_TAP: Sprite = {
+  art: [
+    "..hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    ".bbbbbb.",
+    ".bbbbbb.",
+    "sdd..dds",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah strekker hendene ned",
+};
+
+/** The same, dropped a pixel: the landing. */
 const NOAH_PRESS: Sprite = {
   art: [
     "........",
@@ -140,8 +170,40 @@ const NOAH_PRESS: Sprite = {
   label: "Noah trykker",
 };
 
-/** Stretched out wide, the moment before a pounce. */
-const DENJI_REACH: Sprite = {
+const DENJI_PALETTE = DENJI.palette;
+
+/** A wink, for the same reason as Noah's. */
+const DENJI_WINK: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeooo.d",
+    ".oowoo.d",
+    ".ooooo.d",
+    ".o...o..",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji blunker",
+};
+
+/** A paw out to the side, batting at the button. */
+const DENJI_PAW: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    ".oowoo.d",
+    "oooooo.d",
+    ".o...o..",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji slår etter knappen",
+};
+
+/** Legs out wide: the stretch before a pounce. */
+const DENJI_STRETCH: Sprite = {
   art: [
     "o.....o.",
     "oo...oo.",
@@ -151,8 +213,8 @@ const DENJI_REACH: Sprite = {
     ".ooooo.d",
     "o.....o.",
   ],
-  palette: DENJI.palette,
-  label: "Denji strekker ut labben",
+  palette: DENJI_PALETTE,
+  label: "Denji strekker seg",
 };
 
 /** Flattened against the button, paws spread. */
@@ -166,18 +228,27 @@ const DENJI_PRESS: Sprite = {
     ".oowoo.d",
     "oo...oo.",
   ],
-  palette: DENJI.palette,
+  palette: DENJI_PALETTE,
   label: "Denji trykker",
 };
 
+export type CompanionFrames = {
+  /** Loops while the character is up on the button. */
+  idle: Sprite[];
+  /** Plays once while the button is held, and holds its last pose. */
+  press: Sprite[];
+};
+
+/*
+ * Waits, blinks, waits, then has a go at the button. The repeats are what
+ * make the blink read as a blink rather than as a second character.
+ */
 export const NOAH_FRAMES: CompanionFrames = {
-  rest: NOAH,
-  reach: NOAH_REACH,
-  press: NOAH_PRESS,
+  idle: [NOAH, NOAH, NOAH_WINK, NOAH, NOAH_REACH, NOAH_TAP],
+  press: [NOAH_REACH, NOAH_TAP, NOAH_PRESS],
 };
 
 export const DENJI_FRAMES: CompanionFrames = {
-  rest: DENJI,
-  reach: DENJI_REACH,
-  press: DENJI_PRESS,
+  idle: [DENJI, DENJI, DENJI_WINK, DENJI, DENJI_PAW, DENJI_STRETCH],
+  press: [DENJI_STRETCH, DENJI_PAW, DENJI_PRESS],
 };

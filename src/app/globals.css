@@ -746,8 +746,12 @@
   bottom: calc(100% - var(--u));
   translate: -50% 0;
   pointer-events: none;
-  /* The window. Tall enough for the tallest sprite at scale 5. */
-  width: 2.75rem;
+  /*
+   * The window. Exactly one frame wide (8 art pixels at scale 5) so the
+   * strips are clipped to a single pose, and tall enough for the tallest
+   * sprite plus the climb.
+   */
+  width: 2.5rem;
   height: 2.75rem;
   overflow: hidden;
   display: flex;
@@ -758,6 +762,7 @@
 /* Parked just below the window: present, rendered, out of frame. */
 .button-peek-climb {
   display: block;
+  position: relative;
   transform: translateY(115%);
   transition: transform 280ms cubic-bezier(0.22, 1, 0.3, 1);
 }
@@ -768,78 +773,54 @@
 }
 
 /*
- * The frame stack.
+ * The strips.
  *
- * A sprite animates by being redrawn, not by being tweened, so all three
- * poses are rendered on top of each other and the only thing that changes is
- * which one is opaque. The resting frame stays in flow and gives the stack
- * its size; the other two are laid over it.
+ * The rail above is exactly one frame wide and clips, so it doubles as the
+ * window: translating a strip by -100% with steps(n) walks it one pose at a
+ * time, which is how a sprite sheet has always worked. One animation covers
+ * any number of frames.
  *
- * This replaced a bob and a scale squash. Both were transforms standing in
- * for animation the character could not do, and with real frames they would
- * only fight the art.
+ * Both strips start at frame zero, so a character that is up but idle shows
+ * its resting pose with nothing running.
  */
-.peek-frames {
-  position: relative;
+.peek-strip {
   display: block;
+  transform: translateX(0);
 }
 
-.peek-frame--reach,
-.peek-frame--press {
+/* Stacked on the idle strip and aligned to the same floor. */
+.peek-strip--press {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   opacity: 0;
 }
 
-/* Up and waiting: rest and reach trade places. */
-.has-peek:hover .peek-frame--rest,
-.has-peek:focus-visible .peek-frame--rest {
-  animation: peek-rest 1.4s steps(1, end) infinite;
-}
-
-.has-peek:hover .peek-frame--reach,
-.has-peek:focus-visible .peek-frame--reach {
-  animation: peek-reach 1.4s steps(1, end) infinite;
+.has-peek:hover .peek-strip--idle,
+.has-peek:focus-visible .peek-strip--idle {
+  animation: peek-walk 1.5s steps(6) infinite;
 }
 
 /*
- * Held down: one frame, no cycling. The button is already travelling four
- * pixels onto its own shadow and the character is inside it, so the pose is
- * the only thing left to supply.
+ * Held down: the idle loop gets out of the way and the press plays once,
+ * forwards so the last pose stays put for as long as the button is held.
  */
-.has-peek:active .peek-frame {
+.has-peek:active .peek-strip--idle {
   animation: none;
   opacity: 0;
 }
 
-.has-peek:active .peek-frame--press {
+.has-peek:active .peek-strip--press {
   opacity: 1;
+  animation: peek-walk 180ms steps(3) 1 forwards;
 }
 
-@keyframes peek-rest {
-  0% {
-    opacity: 1;
-  }
-  55% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
+@keyframes peek-walk {
+  to {
+    transform: translateX(-100%);
   }
 }
 
-@keyframes peek-reach {
-  0% {
-    opacity: 0;
-  }
-  55% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 
 
 @keyframes sprite-idle {

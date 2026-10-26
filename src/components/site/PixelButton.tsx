@@ -2,7 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { Sprite } from "@/components/pixel/Sprite";
+import { SpriteStrip } from "@/components/pixel/SpriteStrip";
 import { DENJI_FRAMES, NOAH_FRAMES } from "@/components/pixel/sprites";
 import { cn } from "@/lib/utils";
 
@@ -86,34 +86,22 @@ export function PixelButton({
   const classes = cn(pixelButton({ variant, size }), className);
 
   /*
-   * Rail, climber, frame stack. The rail clips, the climber slides, and the
-   * three frames sit on top of each other with the stylesheet choosing which
-   * one is showing: see the note in globals.css.
+   * Rail, climber, strips. The rail is exactly one frame wide and clips on
+   * both axes, so it is the window the strips are walked past; the climber
+   * carries the slide up and down. See the note in globals.css.
    */
   const frames = companion ? COMPANIONS[companion] : null;
   const peek = frames ? (
     <span aria-hidden="true" className="button-peek">
       <span className="button-peek-climb">
-        <span className="peek-frames">
-          <Sprite
-            sprite={frames.rest}
-            scale={5}
-            decorative
-            className="peek-sprite peek-frame peek-frame--rest"
-          />
-          <Sprite
-            sprite={frames.reach}
-            scale={5}
-            decorative
-            className="peek-sprite peek-frame peek-frame--reach"
-          />
-          <Sprite
-            sprite={frames.press}
-            scale={5}
-            decorative
-            className="peek-sprite peek-frame peek-frame--press"
-          />
-        </span>
+        <SpriteStrip
+          frames={frames.idle}
+          className="peek-sprite peek-strip peek-strip--idle"
+        />
+        <SpriteStrip
+          frames={frames.press}
+          className="peek-sprite peek-strip peek-strip--press"
+        />
       </span>
     </span>
   ) : null;
