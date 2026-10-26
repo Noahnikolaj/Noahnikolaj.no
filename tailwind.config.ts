@@ -58,9 +58,9 @@ export default {
         ring: "rgb(var(--ring) / <alpha-value>)",
       },
       fontFamily: {
-        // Two families only. Lemon is already Noah's, and Bosett's own logo is
-        // a chunky rounded slab, so it is literally his existing voice.
-        display: ["var(--font-lemon)", "Georgia", "serif"],
+        // Two families only. Bungee is signage: flat slabs, no taper, no
+        // softness. See the note in layout.tsx for why it replaced Lemon.
+        display: ["var(--font-display)", "Impact", "Haettenschweiler", "sans-serif"],
         // Rounded terminals echo soft pixel corners; game-UI heritage; legible
         // at paragraph size; covers æ ø å.
         sans: ["var(--font-rounded)", "ui-rounded", "system-ui", "sans-serif"],

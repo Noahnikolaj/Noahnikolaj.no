@@ -1,14 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Lemon, M_PLUS_Rounded_1c } from "next/font/google";
+import { Bungee, M_PLUS_Rounded_1c } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-// Noah's existing display face. Bosett's own logo is a chunky rounded slab,
-// so this is already his voice rather than an imported one.
-const lemon = Lemon({
+/*
+ * Display face.
+ *
+ * Was Lemon, which a designer read as "the default font in Word": rounded
+ * serif terminals that say word processor rather than pixel art. Bungee is
+ * drawn for vertical signage, so it is built from flat slabs with no
+ * tapering at all. It keeps the weight Lemon had and throws away the
+ * softness, and it draws æ ø å itself rather than falling back.
+ *
+ * One weight, by design. It is a display face and never sets running text.
+ */
+const display = Bungee({
   weight: "400",
-  subsets: ["latin"],
-  variable: "--font-lemon",
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -53,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nb">
-      <body className={`${lemon.variable} ${rounded.variable}`}>
+      <body className={`${display.variable} ${rounded.variable}`}>
         {/*
           Marks the document as reveal-capable before first paint. The scroll
           reveal styles are scoped to this class, so with JS disabled nothing
