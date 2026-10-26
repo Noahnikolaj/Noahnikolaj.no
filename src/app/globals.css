@@ -443,36 +443,25 @@
    what removes the black frame: there is never a moment when a flat colour is
    all that is on screen.
 
-   The OUTGOING view simply stays put. The INCOMING view is masked by a paint
-   worklet that opens one block at a time in a wave from whatever you clicked,
-   so the new page lands on top of the old one block by block.
+   The OUTGOING view simply stays put. The INCOMING view is masked row by row:
+   each row is one tiled gradient, and the tile is one block wide, so widening
+   the black part of the tile opens every block in that row at once. Rows are
+   ranked by distance from whatever you pressed, so the row under your finger
+   turns first and the rest peel away above and below it.
+
+   This used to be a paint worklet. WebKit has never shipped the CSS Painting
+   API, so on an iPhone the flip silently degraded to a crossfade. Tiled
+   gradients say the same thing in plain CSS and run the same everywhere.
 
    The nav carries its own transition name, so the flip only turns what is
    behind it.
    ========================================================================== */
 
+/* The one value that animates. Registered so it interpolates as a number. */
 @property --flip-progress {
   syntax: "<number>";
   inherits: true;
   initial-value: 0;
-}
-@property --flip-x {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-@property --flip-y {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-@property --flip-block {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 64;
-}
-:root {
-  --flip-block: 64;
 }
 
 /*
@@ -499,11 +488,95 @@
   z-index: 0;
 }
 
-/* The page you are going to lands on top of it, block by block. */
-.pixel-flip-ready::view-transition-new(root) {
+/*
+ * The page you are going to lands on top of it, block by block.
+ *
+ * Each row opens over a 0.45 slice of the run; --row-begins-* says when its
+ * slice starts, and is written from the click position before the flip.
+ */
+::view-transition-new(root) {
   z-index: 1;
-  mask-image: paint(pixelFlip);
-  -webkit-mask-image: paint(pixelFlip);
+  --turn-0: clamp(0, (var(--flip-progress) - var(--row-begins-0, 0)) / 0.45, 1);
+  --turn-1: clamp(0, (var(--flip-progress) - var(--row-begins-1, 0)) / 0.45, 1);
+  --turn-2: clamp(0, (var(--flip-progress) - var(--row-begins-2, 0)) / 0.45, 1);
+  --turn-3: clamp(0, (var(--flip-progress) - var(--row-begins-3, 0)) / 0.45, 1);
+  --turn-4: clamp(0, (var(--flip-progress) - var(--row-begins-4, 0)) / 0.45, 1);
+  --turn-5: clamp(0, (var(--flip-progress) - var(--row-begins-5, 0)) / 0.45, 1);
+  --turn-6: clamp(0, (var(--flip-progress) - var(--row-begins-6, 0)) / 0.45, 1);
+  --turn-7: clamp(0, (var(--flip-progress) - var(--row-begins-7, 0)) / 0.45, 1);
+  --turn-8: clamp(0, (var(--flip-progress) - var(--row-begins-8, 0)) / 0.45, 1);
+  --turn-9: clamp(0, (var(--flip-progress) - var(--row-begins-9, 0)) / 0.45, 1);
+  --turn-10: clamp(0, (var(--flip-progress) - var(--row-begins-10, 0)) / 0.45, 1);
+  --turn-11: clamp(0, (var(--flip-progress) - var(--row-begins-11, 0)) / 0.45, 1);
+  --turn-12: clamp(0, (var(--flip-progress) - var(--row-begins-12, 0)) / 0.45, 1);
+  --turn-13: clamp(0, (var(--flip-progress) - var(--row-begins-13, 0)) / 0.45, 1);
+
+  mask-image:
+    linear-gradient(to right, #000 0 calc(var(--turn-0) * 100%), #0000 calc(var(--turn-0) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-1) * 100%), #0000 calc(var(--turn-1) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-2) * 100%), #0000 calc(var(--turn-2) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-3) * 100%), #0000 calc(var(--turn-3) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-4) * 100%), #0000 calc(var(--turn-4) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-5) * 100%), #0000 calc(var(--turn-5) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-6) * 100%), #0000 calc(var(--turn-6) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-7) * 100%), #0000 calc(var(--turn-7) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-8) * 100%), #0000 calc(var(--turn-8) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-9) * 100%), #0000 calc(var(--turn-9) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-10) * 100%), #0000 calc(var(--turn-10) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-11) * 100%), #0000 calc(var(--turn-11) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-12) * 100%), #0000 calc(var(--turn-12) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-13) * 100%), #0000 calc(var(--turn-13) * 100%));
+  mask-size: calc(100vh / 14) calc(100% / 14);
+  mask-repeat: repeat-x;
+  mask-position:
+    var(--flip-nudge, 0px) calc(100% * 0 / 13),
+    var(--flip-nudge, 0px) calc(100% * 1 / 13),
+    var(--flip-nudge, 0px) calc(100% * 2 / 13),
+    var(--flip-nudge, 0px) calc(100% * 3 / 13),
+    var(--flip-nudge, 0px) calc(100% * 4 / 13),
+    var(--flip-nudge, 0px) calc(100% * 5 / 13),
+    var(--flip-nudge, 0px) calc(100% * 6 / 13),
+    var(--flip-nudge, 0px) calc(100% * 7 / 13),
+    var(--flip-nudge, 0px) calc(100% * 8 / 13),
+    var(--flip-nudge, 0px) calc(100% * 9 / 13),
+    var(--flip-nudge, 0px) calc(100% * 10 / 13),
+    var(--flip-nudge, 0px) calc(100% * 11 / 13),
+    var(--flip-nudge, 0px) calc(100% * 12 / 13),
+    var(--flip-nudge, 0px) calc(100% * 13 / 13);
+
+  -webkit-mask-image:
+    linear-gradient(to right, #000 0 calc(var(--turn-0) * 100%), #0000 calc(var(--turn-0) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-1) * 100%), #0000 calc(var(--turn-1) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-2) * 100%), #0000 calc(var(--turn-2) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-3) * 100%), #0000 calc(var(--turn-3) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-4) * 100%), #0000 calc(var(--turn-4) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-5) * 100%), #0000 calc(var(--turn-5) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-6) * 100%), #0000 calc(var(--turn-6) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-7) * 100%), #0000 calc(var(--turn-7) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-8) * 100%), #0000 calc(var(--turn-8) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-9) * 100%), #0000 calc(var(--turn-9) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-10) * 100%), #0000 calc(var(--turn-10) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-11) * 100%), #0000 calc(var(--turn-11) * 100%)),
+    linear-gradient(to right, #000 0 calc(var(--turn-12) * 100%), #0000 calc(var(--turn-12) * 100%)),
+    linear-gradient(to left, #000 0 calc(var(--turn-13) * 100%), #0000 calc(var(--turn-13) * 100%));
+  -webkit-mask-size: calc(100vh / 14) calc(100% / 14);
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-position:
+    var(--flip-nudge, 0px) calc(100% * 0 / 13),
+    var(--flip-nudge, 0px) calc(100% * 1 / 13),
+    var(--flip-nudge, 0px) calc(100% * 2 / 13),
+    var(--flip-nudge, 0px) calc(100% * 3 / 13),
+    var(--flip-nudge, 0px) calc(100% * 4 / 13),
+    var(--flip-nudge, 0px) calc(100% * 5 / 13),
+    var(--flip-nudge, 0px) calc(100% * 6 / 13),
+    var(--flip-nudge, 0px) calc(100% * 7 / 13),
+    var(--flip-nudge, 0px) calc(100% * 8 / 13),
+    var(--flip-nudge, 0px) calc(100% * 9 / 13),
+    var(--flip-nudge, 0px) calc(100% * 10 / 13),
+    var(--flip-nudge, 0px) calc(100% * 11 / 13),
+    var(--flip-nudge, 0px) calc(100% * 12 / 13),
+    var(--flip-nudge, 0px) calc(100% * 13 / 13);
+
   animation: pixel-flip-wave var(--flip-duration, 1400ms) linear forwards;
 }
 
@@ -513,21 +586,6 @@
   }
   to {
     --flip-progress: 1;
-  }
-}
-
-/* No paint worklet (Safari, Firefox): a short plain fade instead. */
-.no-pixel-flip::view-transition-new(root) {
-  z-index: 1;
-  animation: pixel-flip-fade 420ms ease-out forwards;
-}
-
-@keyframes pixel-flip-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -588,6 +646,16 @@
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+
+  /*
+   * With the animation gone --flip-progress never leaves 0, and an unopened
+   * mask hides the incoming page completely. Drop the mask so the new view
+   * simply arrives.
+   */
+  ::view-transition-new(*) {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
   }
 }
 

@@ -17,18 +17,45 @@
 let settle: (() => void) | null = null;
 
 /*
- * The wave starts from whatever was clicked. The worklet reads these off the
- * root element, and custom properties inherit down into the view transition
+ * The wave starts from whatever was clicked.
+ *
+ * Rows are ranked by how far they sit from the click, and each one is told
+ * when its slice of the run begins. The stylesheet reads these off the root
+ * element, and custom properties inherit down into the view transition
  * pseudo-elements.
+ *
+ * Kept in step with globals.css by hand: both sides have to agree on how many
+ * rows there are and how long one row takes.
  */
+const FLIP_ROWS = 14;
+const FLIP_SLICE = 0.45;
+
 export function setFlipDuration(ms: number) {
   document.documentElement.style.setProperty("--flip-duration", `${ms}ms`);
 }
 
 export function setFlipOrigin(x: number, y: number) {
   const root = document.documentElement;
-  root.style.setProperty("--flip-x", String(Math.round(x)));
-  root.style.setProperty("--flip-y", String(Math.round(y)));
+  const height = window.innerHeight || 1;
+  const clicked = (y / height) * FLIP_ROWS;
+
+  // Line the block grid up with the column that was pressed, so the first
+  // shutter to move has an edge under the finger rather than near it.
+  const block = height / FLIP_ROWS;
+  root.style.setProperty("--flip-nudge", `${(x % block).toFixed(1)}px`);
+
+  const away: number[] = [];
+  for (let row = 0; row < FLIP_ROWS; row++) {
+    away.push(Math.abs(row + 0.5 - clicked));
+  }
+  // Normalised against the furthest row, so the last one to turn always
+  // starts late enough to finish exactly on time.
+  const furthest = Math.max(...away) || 1;
+
+  for (let row = 0; row < FLIP_ROWS; row++) {
+    const begins = (away[row] / furthest) * (1 - FLIP_SLICE);
+    root.style.setProperty(`--row-begins-${row}`, begins.toFixed(4));
+  }
 }
 
 export function supportsViewTransition() {
@@ -50,6 +77,7 @@ type ViewTransition = {
   finished: Promise<void>;
   ready: Promise<void>;
   updateCallbackDone: Promise<void>;
+  skipTransition?: () => void;
 };
 
 type DocumentWithVT = Document & {
@@ -88,18 +116,43 @@ export function flipTo(commit: () => void) {
   settle?.();
   settle = null;
 
+  let landed = false;
+  let abandon: (() => void) | null = null;
+
   const transition = (document as DocumentWithVT).startViewTransition(
     () =>
       new Promise<void>((resolve) => {
-        settle = resolve;
+        settle = () => {
+          landed = true;
+          resolve();
+        };
         commit();
-        // Safety net: never leave the page frozen if the route never settles.
+        /*
+         * Safety net.
+         *
+         * Resolving this early is worse than not flipping at all. The browser
+         * captures the incoming snapshot the moment the promise settles, so
+         * an early resolve captures the page we are leaving: the flip then
+         * turns one view into an identical copy of itself, and the real page
+         * arrives afterwards with no animation on it.
+         *
+         * On a phone that was the normal case, not the edge case. A cold
+         * route measured close to four seconds over a throttled connection,
+         * where the old 1200ms limit fired long before the route landed.
+         *
+         * So give the route room, and if it still has not arrived, drop the
+         * transition rather than animate nothing. Chrome kills a transition
+         * of its own accord at four seconds, so stay under that.
+         */
         setTimeout(() => {
+          if (landed) return;
+          abandon?.();
           settle?.();
           settle = null;
-        }, 1200);
+        }, 2500);
       }),
   );
+  abandon = () => transition.skipTransition?.();
   survivesAbort(transition);
 }
 
