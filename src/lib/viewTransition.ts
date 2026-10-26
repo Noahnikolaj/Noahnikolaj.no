@@ -156,6 +156,41 @@ export function flipTo(commit: () => void) {
   survivesAbort(transition);
 }
 
+/*
+ * The first flip on a page is the expensive one, and it is expensive in ways
+ * that have nothing to do with the flip itself: the browser has to allocate
+ * two full-screen snapshot textures, meet the registered property for the
+ * first time, and parse the row masks from scratch. Paying for all of that on
+ * the first tap is what makes the first transition feel heavier than every
+ * one after it.
+ *
+ * So spend it while the page is sitting idle instead. A transition with no
+ * DOM change and a 1ms run is invisible, and it leaves the machinery warm.
+ */
+let warmed = false;
+
+export function warmFlip() {
+  if (warmed || !supportsViewTransition() || prefersReducedMotion()) return;
+  warmed = true;
+
+  const root = document.documentElement;
+  const previous = root.style.getPropertyValue("--flip-duration");
+  const restore = () => {
+    if (previous) root.style.setProperty("--flip-duration", previous);
+    else root.style.removeProperty("--flip-duration");
+  };
+  root.style.setProperty("--flip-duration", "1ms");
+
+  try {
+    const transition = (document as DocumentWithVT).startViewTransition(
+      () => {},
+    );
+    transition.finished.then(restore).catch(restore);
+  } catch {
+    restore();
+  }
+}
+
 /** Called once the new route has rendered. */
 export function settleTransition() {
   settle?.();
