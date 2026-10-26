@@ -61,12 +61,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nb">
+    /*
+     * suppressHydrationWarning is for the script below, which puts a class on
+     * <html> before React hydrates. The class deliberately is not in the
+     * server HTML, so the two differ by design and React would otherwise
+     * report it as a mismatch on every load.
+     *
+     * It used to be here for next-themes and was removed with it. The script
+     * had always needed it too.
+     */
+    <html lang="nb" suppressHydrationWarning>
       <body className={`${display.variable} ${rounded.variable}`}>
         {/*
           Marks the document as reveal-capable before first paint. The scroll
           reveal styles are scoped to this class, so with JS disabled nothing
-          is ever hidden.
+          is ever hidden, which is why it cannot be rendered on the server.
         */}
         <script
           dangerouslySetInnerHTML={{
