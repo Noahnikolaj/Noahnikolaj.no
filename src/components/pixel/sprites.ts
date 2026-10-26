@@ -87,3 +87,97 @@ export const DENJI: Sprite = {
   },
   label: "Pikselfigur av katten Denji",
 };
+
+/*
+ * Companion frames.
+ *
+ * What the characters do on a button. Three poses each, swapped by CSS rather
+ * than tweened: resting, reaching for the button, and pressing it. A sprite
+ * animates by being redrawn, not by being transformed, so these are three
+ * separate grids and the stylesheet decides which one is showing.
+ *
+ * Every frame of a set must be the same grid size or the stack will not line
+ * up: Noah is 8x8 throughout, Denji 8x7.
+ */
+export type CompanionFrames = {
+  /** Standing or sitting, doing nothing. */
+  rest: Sprite;
+  /** Arms or a paw out towards the button. */
+  reach: Sprite;
+  /** Mid-press: crouched, weight on the button. */
+  press: Sprite;
+};
+
+/** Arms straight out to the sides, hands at the edges. */
+const NOAH_REACH: Sprite = {
+  art: [
+    "..hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    "sbbbbbbs",
+    ".bbbbbb.",
+    "..d..d..",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah strekker seg",
+};
+
+/** Dropped a pixel, knees bent, hands planted down at his sides. */
+const NOAH_PRESS: Sprite = {
+  art: [
+    "........",
+    "..hhhh..",
+    ".hhhhhh.",
+    ".hssssh.",
+    ".sesesh.",
+    "..ssss..",
+    ".bbbbbb.",
+    "sdd..dds",
+  ],
+  palette: NOAH_PALETTE,
+  label: "Noah trykker",
+};
+
+/** Stretched out wide, the moment before a pounce. */
+const DENJI_REACH: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    ".oowoo.d",
+    ".ooooo.d",
+    "o.....o.",
+  ],
+  palette: DENJI.palette,
+  label: "Denji strekker ut labben",
+};
+
+/** Flattened against the button, paws spread. */
+const DENJI_PRESS: Sprite = {
+  art: [
+    "........",
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo.d",
+    ".oeoeo.d",
+    ".oowoo.d",
+    "oo...oo.",
+  ],
+  palette: DENJI.palette,
+  label: "Denji trykker",
+};
+
+export const NOAH_FRAMES: CompanionFrames = {
+  rest: NOAH,
+  reach: NOAH_REACH,
+  press: NOAH_PRESS,
+};
+
+export const DENJI_FRAMES: CompanionFrames = {
+  rest: DENJI,
+  reach: DENJI_REACH,
+  press: DENJI_PRESS,
+};

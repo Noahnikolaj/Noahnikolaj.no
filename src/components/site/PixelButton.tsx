@@ -3,7 +3,7 @@ import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { Sprite } from "@/components/pixel/Sprite";
-import { DENJI, NOAH } from "@/components/pixel/sprites";
+import { DENJI_FRAMES, NOAH_FRAMES } from "@/components/pixel/sprites";
 import { cn } from "@/lib/utils";
 
 /*
@@ -57,7 +57,7 @@ const pixelButton = cva(
   },
 );
 
-const COMPANIONS = { noah: NOAH, denji: DENJI } as const;
+const COMPANIONS = { noah: NOAH_FRAMES, denji: DENJI_FRAMES } as const;
 
 type Props = VariantProps<typeof pixelButton> & {
   className?: string;
@@ -86,19 +86,34 @@ export function PixelButton({
   const classes = cn(pixelButton({ variant, size }), className);
 
   /*
-   * Rail, climber, sprite. The rail clips, the climber slides, the sprite
-   * breathes and squashes: see the note in globals.css for why they are
-   * three elements and not one.
+   * Rail, climber, frame stack. The rail clips, the climber slides, and the
+   * three frames sit on top of each other with the stylesheet choosing which
+   * one is showing: see the note in globals.css.
    */
-  const peek = companion ? (
+  const frames = companion ? COMPANIONS[companion] : null;
+  const peek = frames ? (
     <span aria-hidden="true" className="button-peek">
       <span className="button-peek-climb">
-        <Sprite
-          sprite={COMPANIONS[companion]}
-          scale={5}
-          decorative
-          className="peek-sprite"
-        />
+        <span className="peek-frames">
+          <Sprite
+            sprite={frames.rest}
+            scale={5}
+            decorative
+            className="peek-sprite peek-frame peek-frame--rest"
+          />
+          <Sprite
+            sprite={frames.reach}
+            scale={5}
+            decorative
+            className="peek-sprite peek-frame peek-frame--reach"
+          />
+          <Sprite
+            sprite={frames.press}
+            scale={5}
+            decorative
+            className="peek-sprite peek-frame peek-frame--press"
+          />
+        </span>
       </span>
     </span>
   ) : null;

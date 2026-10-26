@@ -767,38 +767,80 @@
   transform: translateY(0);
 }
 
-/* Breathing, so they read as waiting rather than as parked. */
-.has-peek:hover .peek-sprite,
-.has-peek:focus-visible .peek-sprite {
-  animation: peek-bob 1.8s steps(2, end) infinite;
+/*
+ * The frame stack.
+ *
+ * A sprite animates by being redrawn, not by being tweened, so all three
+ * poses are rendered on top of each other and the only thing that changes is
+ * which one is opaque. The resting frame stays in flow and gives the stack
+ * its size; the other two are laid over it.
+ *
+ * This replaced a bob and a scale squash. Both were transforms standing in
+ * for animation the character could not do, and with real frames they would
+ * only fight the art.
+ */
+.peek-frames {
+  position: relative;
+  display: block;
+}
+
+.peek-frame--reach,
+.peek-frame--press {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+/* Up and waiting: rest and reach trade places. */
+.has-peek:hover .peek-frame--rest,
+.has-peek:focus-visible .peek-frame--rest {
+  animation: peek-rest 1.4s steps(1, end) infinite;
+}
+
+.has-peek:hover .peek-frame--reach,
+.has-peek:focus-visible .peek-frame--reach {
+  animation: peek-reach 1.4s steps(1, end) infinite;
 }
 
 /*
- * Riding the press. The button already travels four pixels down onto its own
- * shadow, and the sprite is inside the button so it makes that journey for
- * free; all that is left is the landing. animation: none is load bearing,
- * because an animation would otherwise outrank this transform.
+ * Held down: one frame, no cycling. The button is already travelling four
+ * pixels onto its own shadow and the character is inside it, so the pose is
+ * the only thing left to supply.
  */
-.has-peek:active .peek-sprite {
+.has-peek:active .peek-frame {
   animation: none;
-  transform: scale(1.14, 0.82);
-  transform-origin: 50% 100%;
+  opacity: 0;
 }
 
-.peek-sprite {
-  transition: transform 90ms ease-out;
-  transform-origin: 50% 100%;
+.has-peek:active .peek-frame--press {
+  opacity: 1;
 }
 
-@keyframes peek-bob {
-  0%,
+@keyframes peek-rest {
+  0% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0;
+  }
   100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(calc(-1 * var(--u) / 2));
+    opacity: 1;
   }
 }
+
+@keyframes peek-reach {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 @keyframes sprite-idle {
   0%,
