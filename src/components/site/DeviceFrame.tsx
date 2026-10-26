@@ -82,12 +82,12 @@ export function DeviceFrame({
         />
 
         {/*
-         * Dark behind the screen on purpose. A phone screenshot arrives with
-         * its own rounded corners already burned in, and on a dark ground
-         * those corners disappear into the shell instead of showing as four
-         * black arcs against the pink.
+         * What goes in here has to be a plain rectangle of screen. Anything
+         * still carrying a render's rounded corners reads as clipped once it
+         * sits inside a square frame. See the note on the Guest Food Payment
+         * image in content/projects.ts.
          */}
-        <div className="relative overflow-hidden bg-foreground">
+        <div className="relative overflow-hidden bg-secondary">
           {children}
           {/*
            * Home indicator, drawn where a real one lives: on the screen, not

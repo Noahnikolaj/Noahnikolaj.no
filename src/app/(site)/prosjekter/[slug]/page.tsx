@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { DeviceFrame } from "@/components/site/DeviceFrame";
 import { PixelButton } from "@/components/site/PixelButton";
 import { getProject, projects } from "@/content/projects";
 
@@ -65,7 +66,27 @@ export default async function ProjectPage({
         </dl>
 
         {image ? (
-          image.transparent ? (
+          /*
+           * Art that is a raw capture gets its drawn device here too, the
+           * same one the index and the home tiles use. Without this the
+           * project's own page is the one place the screenshot floats
+           * unframed.
+           */
+          image.device ? (
+            <div className="mt-10 flex justify-center bg-secondary p-6 sm:p-10">
+              <DeviceFrame device={image.device} className="max-w-full">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  priority
+                  sizes="(max-width: 768px) 80vw, 32rem"
+                  className="block h-auto w-auto max-h-[34rem] max-w-full"
+                />
+              </DeviceFrame>
+            </div>
+          ) : image.transparent ? (
             <div className="mt-10 flex justify-center border-4 border-foreground bg-secondary px-4 py-8">
               <Image
                 src={image.src}

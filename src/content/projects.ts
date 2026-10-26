@@ -60,17 +60,21 @@ export const projects: Project[] = [
     stack: ["Node.js", "TypeScript", "Backend", "intern APIs", "Firestore/Firebase"],
     image: {
       /*
-       * The screen only. The original export is a photoreal iPhone render,
-       * which inside a drawn phone was a frame around a frame; this is that
-       * export cropped to its screen rect so DeviceFrame can supply the
-       * device instead.
+       * The app screen on its own. The original export is a photoreal iPhone
+       * render, which inside a drawn phone was a frame around a frame, and
+       * cropping only to the screen rect still left the render's rounded
+       * corners and its Dynamic Island behind, so the content read as
+       * clipped by a shape that was no longer there.
+       *
+       * This is cropped inside all of that: no bezel, no corner arcs, no
+       * island. A plain rectangle of app, which is what DeviceFrame needs to
+       * supply the device itself. The original export is kept untouched.
        */
-      src: "/projectphotos/guest-food-payment-screen.png",
+      src: "/projectphotos/guest-food-payment-app.png",
       device: "phone",
-      width: 402,
-      height: 873,
+      width: 398,
+      height: 792,
       alt: "Mobilskjerm fra Guest Food Payment for Welcome Workdays: landingsside for gjestelunsj på Skippergata 3",
-      transparent: true,
     },
     featured: true,
     body: [
