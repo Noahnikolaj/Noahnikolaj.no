@@ -339,6 +339,72 @@ const DENJI_OVER: Sprite = {
   label: "Denji ruller over kanten",
 };
 
+/* --- Denji's smaller tells ------------------------------------------------
+ *
+ * A cat sitting still is not still. The tail is the 'd' column on the right,
+ * and moving it two rows is most of what sells her as alive.
+ */
+
+/** Tail up. */
+const DENJI_TAIL_UP: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...ood",
+    ".ooooo.d",
+    ".oeoeo.d",
+    ".oowoo..",
+    ".ooooo..",
+    ".o...o..",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji vifter med halen",
+};
+
+/** Tail down and curling under. */
+const DENJI_TAIL_DOWN: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo..",
+    ".oowoo.d",
+    ".ooooo.d",
+    ".o...o.d",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji senker halen",
+};
+
+/** Ears flattened: something caught her attention. */
+const DENJI_EARS: Sprite = {
+  art: [
+    "........",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    ".oowoo.d",
+    ".ooooo.d",
+    ".o...o..",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji legger ørene bak",
+};
+
+/** Hunched, feet gathered: the wiggle before a pounce. */
+const DENJI_WIGGLE: Sprite = {
+  art: [
+    "o.....o.",
+    "oo...oo.",
+    ".ooooo..",
+    ".oeoeo.d",
+    ".oowoo.d",
+    "ooooooo.",
+    "..o.o...",
+  ],
+  palette: DENJI_PALETTE,
+  label: "Denji gjør seg klar",
+};
+
 export type CompanionFrames = {
   /** Plays once on arrival, while the window is still revealing them. */
   climb: Sprite[];
@@ -357,18 +423,39 @@ export type CompanionFrames = {
  */
 export const NOAH_FRAMES: CompanionFrames = {
   climb: [NOAH_HANG, NOAH_PULL, NOAH_KNEE, NOAH],
-  idle: [NOAH, NOAH, NOAH_WINK, NOAH, NOAH_REACH, NOAH_TAP, NOAH_REACH, NOAH_TAP],
+  idle: [
+    NOAH, NOAH, NOAH,
+    NOAH_WINK,
+    NOAH, NOAH,
+    NOAH_REACH, NOAH_TAP,
+    NOAH_REACH, NOAH_TAP,
+    NOAH, NOAH,
+  ],
   press: [NOAH_REACH, NOAH_TAP, NOAH_PRESS],
-  idleMs: 1800,
+  idleMs: 2400,
 };
 
 /*
- * Denji is a cat. She scrambles up, sits very still, and then bats at the
- * thing twice without warning. Same eight slots, two thirds of the time.
+ * Denji is a cat, and never quite still. Tail up, tail down, ears back,
+ * a wink, then the wiggle and the pounce. Same twelve slots as Noah in
+ * barely half the time, so she reads as twitchy next to him.
  */
 export const DENJI_FRAMES: CompanionFrames = {
   climb: [DENJI_HANG, DENJI_PULL, DENJI_OVER, DENJI],
-  idle: [DENJI, DENJI, DENJI, DENJI_WINK, DENJI, DENJI_PAW, DENJI, DENJI_PAW],
+  idle: [
+    DENJI,
+    DENJI_TAIL_UP,
+    DENJI,
+    DENJI_TAIL_DOWN,
+    DENJI_EARS,
+    DENJI,
+    DENJI_WINK,
+    DENJI,
+    DENJI_WIGGLE,
+    DENJI_WIGGLE,
+    DENJI_PAW,
+    DENJI_STRETCH,
+  ],
   press: [DENJI_STRETCH, DENJI_PAW, DENJI_PRESS],
-  idleMs: 1100,
+  idleMs: 1320,
 };

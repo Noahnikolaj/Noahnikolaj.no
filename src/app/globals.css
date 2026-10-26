@@ -832,7 +832,7 @@
 .has-peek:focus-visible .peek-strip--idle {
   animation:
     peek-in 1ms linear var(--peek-climb) forwards,
-    peek-walk var(--peek-idle, 1500ms) steps(8) infinite var(--peek-climb);
+    peek-walk var(--peek-idle, 1500ms) steps(12) infinite var(--peek-climb);
 }
 
 /*
