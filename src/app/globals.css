@@ -750,19 +750,24 @@
    * The window. Exactly one frame wide (8 art pixels at scale 5) so the
    * strips are clipped to a single pose, and tall enough for the tallest
    * sprite plus the climb.
+   *
+   * NOT a centring flex container. It was one while the content was a single
+   * sprite the same width as the window, where centring was a no-op. Against
+   * a six frame strip it centred 240px of art in a 40px window and showed
+   * the middle of it, which put the seam between two frames on screen and
+   * split the character in half. The strip is pinned to the left edge
+   * instead, so frame zero is what frame zero shows.
    */
   width: 2.5rem;
   height: 2.75rem;
   overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
 }
 
 /* Parked just below the window: present, rendered, out of frame. */
 .button-peek-climb {
-  display: block;
-  position: relative;
+  position: absolute;
+  left: 0;
+  bottom: 0;
   transform: translateY(115%);
   transition: transform 280ms cubic-bezier(0.22, 1, 0.3, 1);
 }
