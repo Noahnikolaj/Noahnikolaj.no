@@ -823,7 +823,7 @@
 .has-peek:hover .peek-strip--climb,
 .has-peek:focus-visible .peek-strip--climb {
   animation:
-    peek-walk-4 var(--peek-climb) steps(3) 1 forwards,
+    strip-walk-4 var(--peek-climb) steps(3) 1 forwards,
     peek-out 1ms linear var(--peek-climb) forwards;
 }
 
@@ -832,7 +832,7 @@
 .has-peek:focus-visible .peek-strip--idle {
   animation:
     peek-in 1ms linear var(--peek-climb) forwards,
-    peek-walk var(--peek-idle, 1500ms) steps(12) infinite var(--peek-climb);
+    strip-walk var(--peek-idle, 1500ms) steps(12) infinite var(--peek-climb);
 }
 
 /*
@@ -848,14 +848,40 @@
 .has-peek:active .peek-strip--press {
   animation:
     peek-in 1ms linear forwards,
-    peek-walk-3 180ms steps(2) 1 forwards;
+    strip-walk-3 180ms steps(2) 1 forwards;
+}
+
+/*
+ * A project's mark in the index.
+ *
+ * Same sprite-sheet trick as the companions: a window one frame wide, the
+ * strip walked past it. It only runs on the row you are pointing at, because
+ * five of them turning at once would be a page full of movement and none of
+ * it would mean anything.
+ */
+.project-mark {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  flex: none;
+}
+
+.project-mark-strip {
+  display: block;
+  transform: translateX(0);
+}
+
+.project-row:hover .project-mark-strip,
+.project-row:focus-visible .project-mark-strip {
+  animation: strip-walk var(--mark-ms, 1000ms) steps(4) infinite;
 }
 
 /*
  * Looping: -100% is a whole strip, and because it never fills forwards the
  * frame past the end is only ever the instant it wraps.
  */
-@keyframes peek-walk {
+@keyframes strip-walk {
   to {
     transform: translateX(-100%);
   }
@@ -870,13 +896,13 @@
  * window 180ms in for exactly that reason. So the range stops at the last
  * frame and the step count drops by one to match.
  */
-@keyframes peek-walk-4 {
+@keyframes strip-walk-4 {
   to {
     transform: translateX(-75%);
   }
 }
 
-@keyframes peek-walk-3 {
+@keyframes strip-walk-3 {
   to {
     transform: translateX(-66.6667%);
   }

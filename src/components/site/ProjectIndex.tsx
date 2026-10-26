@@ -7,6 +7,8 @@ import Link from "next/link";
 import { DeviceFrame } from "@/components/site/DeviceFrame";
 import { Reveal } from "@/components/pixel/Reveal";
 import { Sprite } from "@/components/pixel/Sprite";
+import { SpriteStrip } from "@/components/pixel/SpriteStrip";
+import { PROJECT_MARKS } from "@/components/pixel/projectMarks";
 import { DENJI } from "@/components/pixel/sprites";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/content/projects";
@@ -41,22 +43,31 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
               onPointerEnter={() => setActive(index)}
               onFocus={() => setActive(index)}
               className={cn(
-                "group block border-b-4 border-foreground px-3 py-5 transition-colors duration-100",
+                "project-row group block border-b-4 border-foreground px-3 py-5 transition-colors duration-100",
                 "hover:bg-secondary focus-visible:bg-secondary",
                 index === active && "md:bg-secondary",
               )}
             >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h2 className="font-display text-2xl leading-tight group-hover:underline group-hover:decoration-4 group-hover:underline-offset-4 sm:text-3xl">
+              <h2 className="flex items-center gap-3 font-display text-2xl leading-tight sm:text-3xl">
+                <ProjectMark slug={project.slug} />
+                <span className="group-hover:underline group-hover:decoration-4 group-hover:underline-offset-4">
                   {project.title}
-                </h2>
+                </span>
+              </h2>
+
+              {/*
+               * Role and period share a line. The period used to sit beside
+               * the title, which left the longest one wrapping onto its own
+               * line once the mark took 32px off the front. They are both
+               * metadata, so they belong together and the title gets the
+               * full width.
+               */}
+              <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+                <p className="text-sm font-bold text-accent">{project.role}</p>
                 <p className="text-sm font-bold text-muted-foreground">
                   {project.period}
                 </p>
               </div>
-              <p className="mt-1 text-sm font-bold text-accent">
-                {project.role}
-              </p>
               <p className="mt-2 max-w-[48ch] text-[0.95rem] leading-relaxed">
                 {project.tagline}
               </p>
@@ -89,6 +100,30 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/*
+ * The project's own drawn mark: a record that turns, a timeline that fills,
+ * a pair of eyes in the dark. Decorative, and it only animates while you are
+ * on the row.
+ */
+function ProjectMark({ slug }: { slug: string }) {
+  const mark = PROJECT_MARKS[slug];
+  if (!mark) return null;
+
+  return (
+    <span
+      aria-hidden="true"
+      className="project-mark"
+      style={{ ["--mark-ms" as string]: `${mark.ms}ms` }}
+    >
+      <SpriteStrip
+        frames={mark.frames}
+        scale={4}
+        className="project-mark-strip"
+      />
+    </span>
   );
 }
 
