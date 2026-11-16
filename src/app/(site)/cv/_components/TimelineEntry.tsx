@@ -11,6 +11,7 @@ export function TimelineEntry({
   description,
   bullets,
   index = 0,
+  id,
 }: {
   heading: string;
   subheading: string;
@@ -18,13 +19,16 @@ export function TimelineEntry({
   description?: string;
   bullets?: string[];
   index?: number;
+  /** Anchor the world map points at. */
+  id?: string;
 }) {
   return (
     <Reveal
       as="li"
       delay={Math.min(index, 3) * 80}
-      className="relative pl-9 pb-11 last:pb-0"
+      className="cv-entry relative pl-9 pb-11 last:pb-0"
     >
+      {id ? <span id={id} className="cv-anchor" aria-hidden="true" /> : null}
       <span
         aria-hidden="true"
         className="absolute left-[6px] top-3 h-full w-1 bg-border"

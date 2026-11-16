@@ -7,17 +7,18 @@ export function SkillsSection() {
         Verktøy jeg bruker
       </h2>
 
-      <div className="mt-8 space-y-7">
+      {/* An inventory: each group is a slot with what is in it. */}
+      <div className="skill-grid mt-8">
         {skillGroups.map((group) => (
-          <div key={group.title}>
-            <h3 className="font-bold">{group.title}</h3>
+          <div key={group.title} className="skill-slot ps-well">
+            <h3 className="skill-slot-title">{group.title}</h3>
             <ul className="mt-3 flex flex-wrap gap-2">
               {group.skills.map((skill) => {
                 const Icon = skillIcons[skill];
                 return (
                   <li
                     key={skill}
-                    className="flex items-center gap-2 border-4 border-foreground bg-card px-3 py-1 text-sm font-bold"
+                    className="ps-chip"
                   >
                     {Icon ? (
                       <Icon aria-hidden="true" className="h-3.5 w-3.5" />

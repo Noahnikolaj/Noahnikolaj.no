@@ -117,6 +117,14 @@
     @apply font-display;
   }
 
+  /* Solid but not heavy: the face is already wide. */
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
   /* Body copy stays under 80 characters per line wherever it is set. */
   p {
     max-width: 68ch;
@@ -127,8 +135,8 @@
    * drawing system as everything else.
    */
   :focus-visible {
-    outline: var(--u) solid rgb(var(--ring));
-    outline-offset: var(--u);
+    outline: 2px solid rgb(var(--blekk));
+    outline-offset: 3px;
   }
 }
 
@@ -236,62 +244,6 @@
 }
 
 /* ==========================================================================
-   DRIFTING SKY
-
-   Two parallax layers of pixel clouds. The shape is a mask, so the colour
-   comes from the theme token. Each layer travels exactly one tile width, so
-   the loop has no seam.
-   ========================================================================== */
-
-@layer components {
-  .sky-layer {
-    position: absolute;
-    top: -8%;
-    left: -320px;
-    right: -320px;
-    bottom: -8%;
-    mask-repeat: repeat;
-    -webkit-mask-repeat: repeat;
-    will-change: transform;
-  }
-
-  /* Texture, not wallpaper: the headline has to win. */
-  .sky-layer--far {
-    background-color: rgb(var(--lys));
-    opacity: 0.5;
-    mask-size: 440px 220px;
-    -webkit-mask-size: 440px 220px;
-    animation: sky-drift-far 50s linear infinite;
-  }
-
-  .sky-layer--near {
-    background-color: rgb(var(--lys));
-    opacity: 0.3;
-    mask-size: 290px 145px;
-    -webkit-mask-size: 290px 145px;
-    animation: sky-drift-near 26s linear infinite;
-  }
-}
-
-@keyframes sky-drift-far {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-440px, 0, 0);
-  }
-}
-
-@keyframes sky-drift-near {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-290px, 0, 0);
-  }
-}
-
-/* ==========================================================================
    SCROLL REVEAL
 
    Content slides in from the right as it enters view. The hidden state is
@@ -324,360 +276,6 @@
     will-change: auto;
   }
 }
-
-/* ==========================================================================
-   ROOMS
-
-   Each route tints the air and hangs its own wallpaper. Measured: the worst
-   body-text pair under any wash is 7.38:1, so a room cannot push anything
-   below AA. Neither layer ever carries text.
-
-   The arrival itself is drawn on a canvas, see RoomCurtain.tsx. It sits at
-   z-40 so the navigation at z-50 stays lit throughout.
-   ========================================================================== */
-
-@layer components {
-  /* The travelling highlight in the nav. Transform and width animate together
-     so the block appears to slide and stretch into its new home. */
-  .nav-marker {
-    transition:
-      transform 420ms cubic-bezier(0.22, 1, 0.3, 1),
-      width 420ms cubic-bezier(0.22, 1, 0.3, 1);
-    will-change: transform, width;
-  }
-
-  .room-wash {
-    position: fixed;
-    inset: 0;
-    /*
-     * Negative, not 0. These decorations sit inside the content's stacking
-     * context, and a positioned element at z-index 0 paints ABOVE sibling
-     * in-flow content: that is what put the wallpaper grid on top of the
-     * project screenshots.
-     */
-    z-index: -1;
-    pointer-events: none;
-    background-color: rgb(var(--rom-tint) / 0.07);
-  }
-
-  /* --- Wallpaper, one per room ------------------------------------------ */
-
-  /* Gallery: pictures hang on a gridded wall. */
-  .room-wash[data-pattern="grid"] {
-    background-image:
-      linear-gradient(rgb(var(--rom-tint) / 0.14) 2px, transparent 2px),
-      linear-gradient(90deg, rgb(var(--rom-tint) / 0.14) 2px, transparent 2px);
-    background-size: 54px 54px;
-  }
-
-  /*
-   * The torch: the same wall again at full strength, masked to a soft disc
-   * and moved to the pointer. See RoomTorch for why it is a small square
-   * rather than a full-screen layer.
-   *
-   * --torch-x/--torch-y are viewport coordinates. The transform carries the
-   * patch there and background-position cancels that same travel, so the
-   * grid underneath stays pinned to the viewport while the light slides
-   * across it.
-   */
-  .room-torch {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    width: 460px;
-    height: 460px;
-    margin: -230px 0 0 -230px;
-    pointer-events: none;
-
-    background-image:
-      linear-gradient(rgb(var(--rom-tint) / 0.38) 2px, transparent 2px),
-      linear-gradient(90deg, rgb(var(--rom-tint) / 0.38) 2px, transparent 2px);
-    background-size: 54px 54px;
-    background-position: calc(230px - var(--torch-x, 0px))
-      calc(230px - var(--torch-y, 0px));
-
-    mask-image: radial-gradient(
-      circle closest-side,
-      #000 22%,
-      #000a 48%,
-      transparent 74%
-    );
-    -webkit-mask-image: radial-gradient(
-      circle closest-side,
-      #000 22%,
-      #000a 48%,
-      transparent 74%
-    );
-
-    transform: translate3d(var(--torch-x, -9999px), var(--torch-y, -9999px), 0);
-    opacity: 0;
-    transition: opacity 260ms ease-out;
-  }
-
-  /* Archive: ruled paper. */
-  .room-wash[data-pattern="rules"] {
-    background-image: linear-gradient(
-      rgb(var(--rom-tint) / 0.16) 2px,
-      transparent 2px
-    );
-    background-size: 100% 38px;
-  }
-
-  /* Prototype room: dotted pegboard. */
-  .room-wash[data-pattern="dots"] {
-    background-image: linear-gradient(
-      45deg,
-      rgb(var(--rom-tint) / 0.2) 25%,
-      transparent 25%
-    );
-    background-size: 12px 12px;
-  }
-
-  /* Outside and the cave both skip wallpaper: one has clouds, one has nothing. */
-}
-
-/*
- * The projects preview changing over.
- *
- * Stepped, not faded. A cross-fade is the one transition this world does not
- * own: everything else here either cuts or jumps in whole pixels, so the new
- * art arrives in three frames rather than dissolving into place.
- */
-.preview-swap {
-  animation: preview-swap 180ms steps(3, end) 1;
-}
-
-@keyframes preview-swap {
-  from {
-    opacity: 0;
-    transform: translateY(calc(-2 * var(--u)));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ==========================================================================
-   THE PIXEL FLIP
-
-   The browser holds the outgoing and incoming views at the same time, which is
-   what removes the black frame: there is never a moment when a flat colour is
-   all that is on screen.
-
-   The OUTGOING view simply stays put. The INCOMING view is masked row by row:
-   each row is one tiled gradient, and the tile is one block wide, so widening
-   the black part of the tile opens every block in that row at once. Rows are
-   ranked by distance from whatever you pressed, so the row under your finger
-   turns first and the rest peel away above and below it.
-
-   This used to be a paint worklet. WebKit has never shipped the CSS Painting
-   API, so on an iPhone the flip silently degraded to a crossfade. Tiled
-   gradients say the same thing in plain CSS and run the same everywhere.
-
-   The nav carries its own transition name, so the flip only turns what is
-   behind it.
-   ========================================================================== */
-
-/* The one value that animates. Registered so it interpolates as a number. */
-@property --flip-progress {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-
-/*
- * The snapshot tree sits above the live page and defaults to pointer-events:
- * auto, which swallows clicks for the whole transition. Letting them through
- * means the nav stays usable mid-flip, so you can change your mind.
- */
-::view-transition {
-  pointer-events: none;
-}
-
-::view-transition-group(root) {
-  animation-duration: var(--flip-duration, 1400ms);
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  mix-blend-mode: normal;
-}
-
-/* The page you were on holds still underneath the whole time. */
-::view-transition-old(root) {
-  animation: none;
-  z-index: 0;
-}
-
-/*
- * The page you are going to lands on top of it, block by block.
- *
- * Each row opens over a 0.45 slice of the run; --row-begins-* says when its
- * slice starts, and is written from the click position before the flip.
- */
-::view-transition-new(root) {
-  z-index: 1;
-  --turn-0: clamp(0, (var(--flip-progress) - var(--row-begins-0, 0)) / 0.45, 1);
-  --turn-1: clamp(0, (var(--flip-progress) - var(--row-begins-1, 0)) / 0.45, 1);
-  --turn-2: clamp(0, (var(--flip-progress) - var(--row-begins-2, 0)) / 0.45, 1);
-  --turn-3: clamp(0, (var(--flip-progress) - var(--row-begins-3, 0)) / 0.45, 1);
-  --turn-4: clamp(0, (var(--flip-progress) - var(--row-begins-4, 0)) / 0.45, 1);
-  --turn-5: clamp(0, (var(--flip-progress) - var(--row-begins-5, 0)) / 0.45, 1);
-  --turn-6: clamp(0, (var(--flip-progress) - var(--row-begins-6, 0)) / 0.45, 1);
-  --turn-7: clamp(0, (var(--flip-progress) - var(--row-begins-7, 0)) / 0.45, 1);
-  --turn-8: clamp(0, (var(--flip-progress) - var(--row-begins-8, 0)) / 0.45, 1);
-  --turn-9: clamp(0, (var(--flip-progress) - var(--row-begins-9, 0)) / 0.45, 1);
-  --turn-10: clamp(0, (var(--flip-progress) - var(--row-begins-10, 0)) / 0.45, 1);
-  --turn-11: clamp(0, (var(--flip-progress) - var(--row-begins-11, 0)) / 0.45, 1);
-  --turn-12: clamp(0, (var(--flip-progress) - var(--row-begins-12, 0)) / 0.45, 1);
-  --turn-13: clamp(0, (var(--flip-progress) - var(--row-begins-13, 0)) / 0.45, 1);
-
-  mask-image:
-    linear-gradient(to right, #000 0 calc(var(--turn-0) * 100%), #0000 calc(var(--turn-0) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-1) * 100%), #0000 calc(var(--turn-1) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-2) * 100%), #0000 calc(var(--turn-2) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-3) * 100%), #0000 calc(var(--turn-3) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-4) * 100%), #0000 calc(var(--turn-4) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-5) * 100%), #0000 calc(var(--turn-5) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-6) * 100%), #0000 calc(var(--turn-6) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-7) * 100%), #0000 calc(var(--turn-7) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-8) * 100%), #0000 calc(var(--turn-8) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-9) * 100%), #0000 calc(var(--turn-9) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-10) * 100%), #0000 calc(var(--turn-10) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-11) * 100%), #0000 calc(var(--turn-11) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-12) * 100%), #0000 calc(var(--turn-12) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-13) * 100%), #0000 calc(var(--turn-13) * 100%));
-  mask-size: calc(100vh / 14) calc(100% / 14);
-  mask-repeat: repeat-x;
-  mask-position:
-    var(--flip-nudge, 0px) calc(100% * 0 / 13),
-    var(--flip-nudge, 0px) calc(100% * 1 / 13),
-    var(--flip-nudge, 0px) calc(100% * 2 / 13),
-    var(--flip-nudge, 0px) calc(100% * 3 / 13),
-    var(--flip-nudge, 0px) calc(100% * 4 / 13),
-    var(--flip-nudge, 0px) calc(100% * 5 / 13),
-    var(--flip-nudge, 0px) calc(100% * 6 / 13),
-    var(--flip-nudge, 0px) calc(100% * 7 / 13),
-    var(--flip-nudge, 0px) calc(100% * 8 / 13),
-    var(--flip-nudge, 0px) calc(100% * 9 / 13),
-    var(--flip-nudge, 0px) calc(100% * 10 / 13),
-    var(--flip-nudge, 0px) calc(100% * 11 / 13),
-    var(--flip-nudge, 0px) calc(100% * 12 / 13),
-    var(--flip-nudge, 0px) calc(100% * 13 / 13);
-
-  -webkit-mask-image:
-    linear-gradient(to right, #000 0 calc(var(--turn-0) * 100%), #0000 calc(var(--turn-0) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-1) * 100%), #0000 calc(var(--turn-1) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-2) * 100%), #0000 calc(var(--turn-2) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-3) * 100%), #0000 calc(var(--turn-3) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-4) * 100%), #0000 calc(var(--turn-4) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-5) * 100%), #0000 calc(var(--turn-5) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-6) * 100%), #0000 calc(var(--turn-6) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-7) * 100%), #0000 calc(var(--turn-7) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-8) * 100%), #0000 calc(var(--turn-8) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-9) * 100%), #0000 calc(var(--turn-9) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-10) * 100%), #0000 calc(var(--turn-10) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-11) * 100%), #0000 calc(var(--turn-11) * 100%)),
-    linear-gradient(to right, #000 0 calc(var(--turn-12) * 100%), #0000 calc(var(--turn-12) * 100%)),
-    linear-gradient(to left, #000 0 calc(var(--turn-13) * 100%), #0000 calc(var(--turn-13) * 100%));
-  -webkit-mask-size: calc(100vh / 14) calc(100% / 14);
-  -webkit-mask-repeat: repeat-x;
-  -webkit-mask-position:
-    var(--flip-nudge, 0px) calc(100% * 0 / 13),
-    var(--flip-nudge, 0px) calc(100% * 1 / 13),
-    var(--flip-nudge, 0px) calc(100% * 2 / 13),
-    var(--flip-nudge, 0px) calc(100% * 3 / 13),
-    var(--flip-nudge, 0px) calc(100% * 4 / 13),
-    var(--flip-nudge, 0px) calc(100% * 5 / 13),
-    var(--flip-nudge, 0px) calc(100% * 6 / 13),
-    var(--flip-nudge, 0px) calc(100% * 7 / 13),
-    var(--flip-nudge, 0px) calc(100% * 8 / 13),
-    var(--flip-nudge, 0px) calc(100% * 9 / 13),
-    var(--flip-nudge, 0px) calc(100% * 10 / 13),
-    var(--flip-nudge, 0px) calc(100% * 11 / 13),
-    var(--flip-nudge, 0px) calc(100% * 12 / 13),
-    var(--flip-nudge, 0px) calc(100% * 13 / 13);
-
-  animation: pixel-flip-wave var(--flip-duration, 1400ms) linear forwards;
-}
-
-@keyframes pixel-flip-wave {
-  from {
-    --flip-progress: 0;
-  }
-  to {
-    --flip-progress: 1;
-  }
-}
-
-/* --- The navigation strip ------------------------------------------------ */
-
-.world-strip nav {
-  view-transition-name: verdensstripe;
-}
-
-::view-transition-group(verdensstripe) {
-  animation-duration: var(--flip-duration, 1400ms);
-}
-
-/* Walking between rooms: the nav does not move at all. */
-::view-transition-old(verdensstripe),
-::view-transition-new(verdensstripe) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-  }
-
-  /*
-   * With the animation gone --flip-progress never leaves 0, and an unopened
-   * mask hides the incoming page completely. Drop the mask so the new view
-   * simply arrives.
-   */
-  ::view-transition-new(*) {
-    mask-image: none !important;
-    -webkit-mask-image: none !important;
-  }
-}
-
-/* ==========================================================================
-   CLOUD PORTRAIT
-
-   The photo sits in a pink pixel cloud drawn from the same vocabulary as the
-   ones drifting across the sky, rather than in a hard square frame. The
-   cutout already has transparent edges, so the cloud reads around him.
-   ========================================================================== */
-
-@layer components {
-  .pixel-cloud {
-    background-color: rgb(var(--lys));
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
-    mask-size: 100% 100%;
-    -webkit-mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-  }
-
-  /* A second cloud behind, offset, standing in for a pixel drop shadow. */
-  .pixel-cloud-shadow {
-    background-color: rgb(var(--rosa) / 0.45);
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 22' preserveAspectRatio='none'%3E%3Crect x='9' y='0' width='6' height='1'/%3E%3Crect x='23' y='0' width='6' height='1'/%3E%3Crect x='7' y='1' width='10' height='1'/%3E%3Crect x='21' y='1' width='10' height='1'/%3E%3Crect x='5' y='2' width='14' height='1'/%3E%3Crect x='19' y='2' width='13' height='1'/%3E%3Crect x='4' y='3' width='29' height='1'/%3E%3Crect x='3' y='4' width='31' height='1'/%3E%3Crect x='2' y='5' width='33' height='1'/%3E%3Crect x='1' y='6' width='34' height='1'/%3E%3Crect x='1' y='7' width='34' height='1'/%3E%3Crect x='0' y='8' width='36' height='1'/%3E%3Crect x='0' y='9' width='36' height='1'/%3E%3Crect x='0' y='10' width='36' height='1'/%3E%3Crect x='0' y='11' width='36' height='1'/%3E%3Crect x='0' y='12' width='36' height='1'/%3E%3Crect x='0' y='13' width='36' height='1'/%3E%3Crect x='0' y='14' width='36' height='1'/%3E%3Crect x='0' y='15' width='36' height='1'/%3E%3Crect x='1' y='16' width='34' height='1'/%3E%3Crect x='1' y='17' width='34' height='1'/%3E%3Crect x='2' y='18' width='32' height='1'/%3E%3Crect x='4' y='19' width='28' height='1'/%3E%3Crect x='7' y='20' width='22' height='1'/%3E%3Crect x='11' y='21' width='15' height='1'/%3E%3C/svg%3E");
-    mask-size: 100% 100%;
-    -webkit-mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-  }
-}
-
 
 /* ==========================================================================
    COMPANIONS
@@ -965,5 +563,2124 @@
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   THE SYSTEM
+
+   What everything you read sits on. Frosted panels over the world, one
+   bevelled corner, thin white edges. Light is white and lives on lines and
+   on the one thing being shown; it never pools under things in colour.
+   Text is always plum on paper or on a measured sky, so the contrast pairs
+   in TOKENS still hold.
+   ========================================================================== */
+
+:root {
+  /* A sharp start and a long settle: how every panel and item arrives. */
+  --ease-ps: cubic-bezier(0.07, 1, 0.1, 1);
+  --bevel: 14px;
+  --edge: rgb(255 255 255 / 0.9);
+}
+
+@layer utilities {
+  .font-display {
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .bevel {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--bevel)),
+      calc(100% - var(--bevel)) 100%,
+      0 100%
+    );
+  }
+
+  /*
+   * Layers, top to bottom: a plum corner bracket (the same mark as the
+   * cursor's), the edge line across the bevelled corner, a gloss across the
+   * top like the light on a console's plastic, and the frosted paper. Over
+   * that, under the content, a halftone: see below.
+   */
+  .ps-panel {
+    position: relative;
+    background:
+      linear-gradient(rgb(var(--blekk)) 0 0) 12px 12px / 16px 2px no-repeat,
+      linear-gradient(rgb(var(--blekk)) 0 0) 12px 12px / 2px 16px no-repeat,
+      linear-gradient(
+          to top left,
+          transparent 50%,
+          var(--edge) 50%,
+          var(--edge) calc(50% + 1.5px),
+          transparent calc(50% + 1.5px)
+        )
+        right bottom / var(--bevel) var(--bevel) no-repeat,
+      linear-gradient(180deg, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0) 42%),
+      rgb(var(--papir) / 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 0 1px var(--edge);
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--bevel)),
+      calc(100% - var(--bevel)) 100%,
+      0 100%
+    );
+  }
+
+  /*
+   * Halftone, the way print shades with dots. One screen of dots on a
+   * 9px grid, drawn twice: big dots fading out from the bevelled corner,
+   * and small dots on the same grid carrying on further before they fade.
+   * Where the two meet the dots look half-size, so the shade steps down in
+   * dot size as well as strength. Rose, and kept faint, so text over it
+   * reads as before. Behind the content (the panel's clip makes it its own
+   * stacking context, so -1 stays inside it).
+   */
+  .ps-panel::before,
+  .ps-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .ps-panel::before {
+    background: radial-gradient(circle, rgb(var(--rosa) / 0.45) 0 2.7px, transparent 3.1px) 0 0 /
+      9px 9px;
+    -webkit-mask-image: radial-gradient(60% 80% at 100% 100%, #000 0%, transparent 70%);
+    mask-image: radial-gradient(60% 80% at 100% 100%, #000 0%, transparent 70%);
+  }
+
+  .ps-panel::after {
+    background: radial-gradient(circle, rgb(var(--rosa) / 0.4) 0 1.3px, transparent 1.7px) 0 0 /
+      9px 9px;
+    -webkit-mask-image: radial-gradient(
+      110% 130% at 100% 100%,
+      transparent 20%,
+      #000 42%,
+      transparent 80%
+    );
+    mask-image: radial-gradient(110% 130% at 100% 100%, transparent 20%, #000 42%, transparent 80%);
+  }
+
+  /* An inset area inside a panel, where a picture or a game sits. */
+  .ps-well {
+    background: rgb(255 255 255 / 0.36);
+    box-shadow: inset 0 0 0 1px var(--edge);
+  }
+
+  /* A photo's edge: a hairline and a soft second line outside it. */
+  .ps-frame {
+    box-shadow:
+      0 0 0 1px var(--edge),
+      0 0 0 5px rgb(255 255 255 / 0.28);
+  }
+
+  .ps-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgb(var(--blekk));
+    background: rgb(255 255 255 / 0.55);
+    box-shadow: inset 0 0 0 1px rgb(var(--blekk) / 0.35);
+  }
+
+  /* Full-width frosted band, for the footer. */
+  .ps-bar {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 60%),
+      rgb(var(--papir) / 0.82);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 0 var(--edge);
+  }
+
+  /*
+   * Buttons. The face is a pseudo-element so the bevel can clip it without
+   * clipping the character who peeks over the top edge. The bar on the left
+   * is the press target growing toward you: thin at rest, a block on hover,
+   * the way a system menu marks the item under the cursor.
+   */
+  .ps-btn {
+    --btn-bg: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.8));
+    --btn-bar: rgb(var(--blekk));
+    color: rgb(var(--blekk));
+    transition: transform 0.5s var(--ease-ps);
+  }
+
+  .ps-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--btn-bg);
+    box-shadow:
+      inset 3px 0 var(--btn-bar),
+      inset 0 0 0 1px var(--edge);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+    transition: box-shadow 0.5s var(--ease-ps);
+  }
+
+  .ps-btn:hover::before,
+  .ps-btn:focus-visible::before {
+    box-shadow:
+      inset 12px 0 var(--btn-bar),
+      inset 0 0 0 1px #fff;
+  }
+
+  .ps-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* White: a plain outline at rest. The bar is the "you are on this" mark
+     across the site, so a white button shows it only under the pointer. */
+  .ps-btn--papir {
+    --btn-bg: #fff;
+  }
+
+  .ps-btn--papir::before {
+    box-shadow: inset 0 0 0 1.5px rgb(var(--blekk) / 0.7);
+  }
+
+  .ps-btn--papir:hover::before,
+  .ps-btn--papir:focus-visible::before {
+    box-shadow:
+      inset 12px 0 rgb(var(--blekk)),
+      inset 0 0 0 1.5px rgb(var(--blekk));
+  }
+
+  /* Rose is a fill; plum on it is 5.35:1. */
+  .ps-btn--rosa {
+    --btn-bg: linear-gradient(180deg, rgb(238 130 150), rgb(var(--rosa)) 55%);
+  }
+
+  .ps-btn--lys {
+    --btn-bg: linear-gradient(180deg, rgb(255 214 222), rgb(var(--lys)) 55%);
+  }
+}
+
+/* ==========================================================================
+   THE WORLD
+
+   The scene behind every page (WorldBackdrop.tsx), and how a page arrives
+   in it. The colour of the air is set here as well as in the scene, so a
+   browser without WebGL still gets the room.
+   ========================================================================== */
+
+@layer components {
+  .world-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    transition: background-color 0.9s var(--ease-ps);
+  }
+
+  .world-backdrop canvas {
+    display: block;
+  }
+
+  /* Each page comes in from the left as the camera arrives. */
+  .room-enter {
+    animation: room-enter 0.9s var(--ease-ps) both;
+  }
+}
+
+@keyframes tap-snap {
+  0% {
+    opacity: 0;
+    scale: 1.3;
+  }
+  30% {
+    opacity: 1;
+    scale: 1;
+  }
+  70% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+@keyframes room-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-4vw);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Power on. Once per visit: <html data-boot> is set before first paint and
+ * taken away by PowerOn.tsx. The pieces land one after another from the
+ * left, the floor rises, and that is the whole ceremony.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-boot] .slam {
+    animation: slam-in 1.1s var(--ease-ps) both;
+    animation-delay: calc(var(--slam, 0) * 120ms + 150ms);
+  }
+
+  html[data-boot] .floor-nav {
+    animation: floor-up 0.9s var(--ease-ps) both 0.1s;
+  }
+}
+
+@keyframes slam-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6vw);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes floor-up {
+  from {
+    transform: translateY(calc(100% + 1rem));
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   THE CONSOLE FRONT
+
+   The navigation. See WorldFloor.tsx. The face of the machine along the
+   bottom of the screen: dark plastic, three push buttons with lights, the
+   one for this page pressed in. On top, a teleport pad with Noah on it:
+   a beam takes him up when you press another button and brings him down
+   on the new page. The footer is the back of this same console.
+   ========================================================================== */
+
+@layer components {
+  .world-floor {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  .console-front {
+    position: relative;
+    width: min(32rem, calc(100% - 1rem));
+    margin: 0 auto calc(0.5rem + env(safe-area-inset-bottom));
+    pointer-events: none;
+  }
+
+  /* One strip: the bay with Noah, then the keys. */
+  .console-body {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.45rem;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #4a2a3c 0, #3b2130 20%, #2a1520 70%, #1f0f18);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.28),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08),
+      0 12px 26px -12px rgb(0 0 0 / 0.7);
+    pointer-events: auto;
+  }
+
+  .console-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+
+  /* Keys moulded into the plastic: raised at rest, sunk and lit when on. */
+  .console-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 42px;
+    padding: 0 0.4rem;
+    font-family: var(--font-unbounded);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: #f3dfe7;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
+    border-radius: 9px;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      0 2px 0 rgb(0 0 0 / 0.5);
+    transition:
+      background-color 0.15s,
+      transform 0.08s,
+      box-shadow 0.08s;
+  }
+
+  .console-button:hover {
+    background: rgb(255 255 255 / 0.14);
+  }
+
+  .console-button.is-on,
+  .console-button.is-pressed,
+  .console-button:active {
+    color: #fff;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.18));
+    box-shadow:
+      inset 0 2px 4px rgb(0 0 0 / 0.6),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08);
+    transform: translateY(1px);
+  }
+
+  .console-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .console-led {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6d5864;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .console-button.is-on .console-led,
+  .console-button.is-pressed .console-led {
+    background: rgb(var(--rosa));
+    box-shadow: 0 0 6px rgb(var(--rosa));
+  }
+
+  /* --- The teleporter bay ----------------------------------------- */
+
+  .console-pad {
+    position: relative;
+    height: 42px;
+    border-radius: 9px;
+    background: radial-gradient(ellipse at 50% 85%, rgb(255 255 255 / 0.12), rgb(0 0 0 / 0.35) 70%);
+    box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.6);
+    pointer-events: none;
+  }
+
+  .pad-ring {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 2.6rem;
+    height: 0.6rem;
+    margin-left: -1.3rem;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    background: radial-gradient(ellipse, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 70%);
+    box-shadow: 0 0 8px rgb(255 255 255 / 0.9);
+    animation: pedestal-breathe 3s ease-in-out infinite;
+  }
+
+  .pad-noah {
+    position: absolute;
+    left: 50%;
+    bottom: 7px;
+    width: 32px;
+    height: 32px;
+    margin-left: -16px;
+  }
+
+  /* The beam rises out of the bay, above the strip, only while it runs.
+     Centred with a margin, since it also animates transform. */
+  .pad-beam {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 2.6rem;
+    height: 7rem;
+    margin-left: -1.3rem;
+    border-radius: 45% 45% 0 0;
+    background: linear-gradient(0deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0));
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+  }
+
+  .console-pad.is-leaving .pad-beam {
+    animation: beam-rise 0.45s var(--ease-ps) forwards;
+  }
+
+  /* Up in slices, from the feet. */
+  .console-pad.is-leaving .pad-noah > svg {
+    animation: noah-out 0.4s steps(6) 0.08s forwards;
+  }
+
+  .console-pad.is-arriving .pad-beam {
+    animation: beam-fall 0.8s var(--ease-ps) forwards;
+  }
+
+  .console-pad.is-arriving .pad-noah > svg {
+    animation: noah-in 0.45s steps(6) 0.12s both;
+  }
+
+  /* What Noah says, over his head. A system voice, in the bitmap face. */
+  .floor-bubble {
+    position: absolute;
+    bottom: calc(100% + 16px);
+    z-index: 3;
+    width: max-content;
+    max-width: 14rem;
+    padding: 0.4rem 0.65rem 0.45rem;
+    font-family: var(--font-system);
+    font-size: 0.85rem;
+    line-height: 1.3;
+    color: rgb(var(--blekk));
+    background: rgb(255 255 255 / 0.95);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--blekk)),
+      3px 3px 0 0 rgb(var(--blekk) / 0.25);
+    pointer-events: none;
+    animation: bubble-in 0.35s var(--ease-ps) both;
+  }
+
+  .floor-bubble::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 10px;
+    height: 7px;
+    background: rgb(var(--blekk));
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  /* Run frames, still used by the CV map. */
+  .floor-run-window {
+    display: block;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+  }
+
+  .floor-run {
+    animation: strip-walk 240ms steps(2) infinite;
+  }
+
+  /* A phone: smaller keys, and out of the way while you read. */
+  @media (max-width: 767px) {
+    .console-body {
+      grid-template-columns: 2.9rem minmax(0, 1fr);
+    }
+
+    .console-button {
+      min-height: 40px;
+      gap: 0.3rem;
+      font-size: 0.54rem;
+      letter-spacing: 0.02em;
+    }
+
+    .floor-nav {
+      transition: transform 0.45s var(--ease-ps);
+    }
+
+    .world-floor.is-tucked .floor-nav {
+      transform: translateY(calc(100% + 1rem));
+    }
+
+    /* No speech on a phone, even if the window was narrowed mid-line. */
+    .floor-bubble {
+      display: none;
+    }
+  }
+}
+
+@keyframes beam-rise {
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes beam-fall {
+  0%,
+  55% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes noah-out {
+  to {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes noah-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(-12px);
+  }
+  to {
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pedestal-breathe {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scaleX(1.08);
+  }
+}
+
+/* ==========================================================================
+   THE POINTER
+
+   A reticle: four corner brackets and a dot. The dot is the pointer and
+   never lags. The brackets are on a spring: they trail it loosely in open
+   space, and when the pointer comes onto something you can press they fly
+   out and lock around it, glowing, while the thing itself leans toward you.
+   See PixelCursor.tsx.
+   ========================================================================== */
+
+@layer components {
+  html.pixel-cursor,
+  html.pixel-cursor * {
+    cursor: none !important;
+  }
+
+  html.pixel-cursor :is(input, textarea, select, [contenteditable="true"]) {
+    cursor: auto !important;
+  }
+
+  .ps-cursor-ring,
+  .ps-cursor-dot {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .ps-cursor-ring.is-hidden,
+  .ps-cursor-dot.is-hidden {
+    visibility: hidden;
+  }
+
+  .ps-cursor-ring > i,
+  .ps-tap-ring > i {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border: 0 solid #fff;
+    filter: drop-shadow(0 0 1px rgb(var(--blekk)));
+    transition:
+      width 0.35s var(--ease-ps),
+      height 0.35s var(--ease-ps),
+      filter 0.35s var(--ease-ps);
+  }
+
+  .ps-cursor-ring > i:nth-child(1),
+  .ps-tap-ring > i:nth-child(1) { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+  .ps-cursor-ring > i:nth-child(2),
+  .ps-tap-ring > i:nth-child(2) { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+  .ps-cursor-ring > i:nth-child(3),
+  .ps-tap-ring > i:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+  .ps-cursor-ring > i:nth-child(4),
+  .ps-tap-ring > i:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+  .ps-cursor-ring.is-locked > i {
+    width: 12px;
+    height: 12px;
+    filter: drop-shadow(0 0 1px rgb(var(--blekk))) drop-shadow(0 0 6px #fff);
+  }
+
+  /* The tap: brackets snap shut around what you touched, then fade. */
+  .ps-tap-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .ps-tap-ring > i {
+    width: 12px;
+    height: 12px;
+    filter: drop-shadow(0 0 1px rgb(var(--blekk))) drop-shadow(0 0 6px #fff);
+  }
+
+  .ps-tap-ring.is-tap {
+    animation: tap-snap 0.6s var(--ease-ps) forwards;
+  }
+
+  /* The tilt key, on phones that have to be asked. */
+  .tilt-key {
+    position: fixed;
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: 0.75rem;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 36px;
+    padding: 0 0.7rem 0 0.6rem;
+    font-family: var(--font-system);
+    font-size: 0.8rem;
+    color: rgb(var(--blekk));
+    background: rgb(255 255 255 / 0.9);
+    box-shadow:
+      inset 2px 0 rgb(var(--blekk)),
+      inset 0 0 0 1px #fff;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%);
+  }
+
+  .tilt-key[aria-pressed="true"] {
+    color: rgb(var(--papir));
+    background: rgb(var(--blekk));
+    box-shadow: inset 2px 0 rgb(var(--rosa));
+  }
+
+  .ps-cursor-dot > i {
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 1px rgb(var(--blekk));
+  }
+}
+
+/* ==========================================================================
+   THE MACHINE
+
+   Prosjekter as cartridges and a projector. See ProjectIndex.tsx. The
+   picked cartridge drops into the slot on the machine, a beam rises, and
+   the project's screenshot appears in it at full colour. The hologram is
+   light around the picture, never over it: the scanlines are faint and the
+   glow sits outside the frame, so the work itself stays clear.
+   ========================================================================== */
+
+@layer components {
+  .cart-index {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  /*
+   * Desktop: the rack stands in a column on the left, the machine in the
+   * middle, what it is on the right. Everything on one screen.
+   */
+  @media (min-width: 1024px) {
+    .cart-index {
+      grid-template-columns: 12rem minmax(0, 1fr) 19rem;
+      grid-template-areas: "rack stage details";
+      column-gap: 2.25rem;
+      align-items: center;
+    }
+
+    .rack.rack {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.5rem;
+      padding: 0;
+      overflow: visible;
+    }
+
+    /* Doubled selectors: these must beat the phone rules further down. */
+    .rack .rack-item {
+      flex-direction: row;
+      gap: 0.75rem;
+    }
+
+    .rack .rack-item:hover {
+      transform: translateX(4px);
+    }
+
+    .rack .rack-item .cart {
+      --cw: 4rem;
+    }
+
+    .rack .rack-caption {
+      max-width: none;
+      text-align: left;
+    }
+
+    .holo-stage {
+      grid-area: stage;
+    }
+
+    .rack {
+      grid-area: rack;
+    }
+
+    .cart-details {
+      grid-area: details;
+      align-self: center;
+    }
+  }
+
+  /* --- The hologram ----------------------------------------------------- */
+
+  .holo-stage {
+    --ry: 0deg;
+    --rx: 0deg;
+    position: relative;
+  }
+
+  .holo-view {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: min(23rem, 48vh);
+    padding: 1rem 0 0.5rem;
+  }
+
+  /* The beam: a cone of light out of the slot, widening upward. */
+  .holo-beam {
+    position: absolute;
+    left: 50%;
+    bottom: -0.5rem;
+    width: min(28rem, 96%);
+    height: 100%;
+    translate: -50% 0;
+    transform-origin: 50% 100%;
+    clip-path: polygon(45% 100%, 55% 100%, 100% 0, 0 0);
+    background: linear-gradient(
+      0deg,
+      rgb(255 255 255 / 0.7),
+      rgb(255 255 255 / 0.18) 55%,
+      rgb(255 255 255 / 0) 100%
+    );
+    mix-blend-mode: screen;
+    pointer-events: none;
+    animation: beam-up 0.45s var(--ease-ps) 0.35s both;
+  }
+
+  .holo-art {
+    position: relative;
+    z-index: 1;
+    perspective: 900px;
+    animation: holo-in 0.9s var(--ease-ps) 0.5s both;
+  }
+
+  .holo-float {
+    position: relative;
+    display: block;
+    transform: rotateY(var(--ry)) rotateX(var(--rx));
+    transition: transform 0.6s var(--ease-ps);
+    filter: drop-shadow(0 0 14px rgb(255 255 255 / 0.85));
+    animation: holo-bob 4s ease-in-out infinite;
+  }
+
+  /* Faint enough to read as a projection without washing the picture. */
+  .holo-scan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgb(255 255 255 / 0.07) 0 1px,
+      transparent 1px 4px
+    );
+    animation: scan-drift 3s linear infinite;
+  }
+
+  /* --- The machine ------------------------------------------------------ */
+
+  .holo-machine {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 5.75rem;
+  }
+
+  .holo-base {
+    position: relative;
+    z-index: 2;
+    width: min(21rem, 82%);
+    height: 3.4rem;
+    background: linear-gradient(180deg, #5a3248, #2a121f 70%);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.6),
+      inset 0 0 0 1px rgb(255 255 255 / 0.25);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  /* The slot, and the grille along the front. */
+  .holo-base::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 5.4rem;
+    height: 5px;
+    translate: -50% 0;
+    background: #0d0508;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+
+  .holo-base::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    height: 10px;
+    background: repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.18) 0 2px,
+      transparent 2px 7px
+    );
+  }
+
+  /* Blinks while a cartridge loads, then stays lit. */
+  .holo-led {
+    position: absolute;
+    right: 18px;
+    top: 14px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(var(--rosa));
+    box-shadow: 0 0 6px rgb(var(--rosa));
+    /* An even count of alternating blinks ends lit. */
+    animation: led-load 0.15s steps(1) 0.1s 8 alternate both;
+  }
+
+  /* The cartridge in the slot, sunk in until only its top half shows. */
+  .holo-cart {
+    position: absolute;
+    left: 50%;
+    bottom: 1.35rem;
+    z-index: 1;
+    translate: -50% 0;
+    animation: cart-in 0.5s var(--ease-ps) both;
+  }
+
+  .holo-cart .cart {
+    --cw: 4.8rem;
+  }
+
+  .holo-denji {
+    position: absolute;
+    right: 4%;
+    bottom: 3.3rem;
+    z-index: 3;
+  }
+
+  /* --- Cartridges ------------------------------------------------------- */
+
+  /*
+   * A small dark shell, rounded, with a step cut into the top right. Sizes
+   * all run off --cw so the same cartridge works in the rack, in the slot
+   * and anywhere else.
+   */
+  .cart {
+    --cw: 7rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: var(--cw);
+    aspect-ratio: 0.94;
+    padding: calc(var(--cw) * 0.07) calc(var(--cw) * 0.06) 0;
+    border-radius: calc(var(--cw) * 0.05);
+    background: linear-gradient(180deg, #3a3a3e, #262629 45%, #1d1d20);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 0 0 1px rgb(0 0 0 / 0.6),
+      0 6px 14px -8px rgb(0 0 0 / 0.7);
+    clip-path: polygon(0 0, 84% 0, 84% 3%, 100% 3%, 100% 100%, 0 100%);
+  }
+
+  /* The sticker. */
+  .cart-sticker {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    border-radius: calc(var(--cw) * 0.03);
+    background: #fff;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35);
+  }
+
+  .cart-brand {
+    padding: calc(var(--cw) * 0.025) 0;
+    font-family: var(--font-unbounded);
+    font-size: calc(var(--cw) * 0.06);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #2a2a2e;
+  }
+
+  .cart-art {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    background: var(--cover);
+  }
+
+  /* Moulded into the plastic under the sticker. */
+  .cart-code {
+    padding: calc(var(--cw) * 0.04) 0 calc(var(--cw) * 0.05);
+    font-family: var(--font-archivo);
+    font-size: calc(var(--cw) * 0.068);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-align: center;
+    white-space: nowrap;
+    color: rgb(255 255 255 / 0.55);
+    text-shadow: 0 -1px 0 rgb(0 0 0 / 0.6);
+  }
+
+  /* --- On the home page ----------------------------------------------- */
+
+  /* Four across on a desktop, two by two on a phone: always a full row. */
+  .home-carts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .home-carts {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  .home-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    text-decoration: none;
+    color: rgb(var(--blekk));
+  }
+
+  /* Sized from its own column, so the logo and code scale with it. */
+  .home-cart-shell {
+    width: 100%;
+    margin-bottom: 0.6rem;
+    container-type: inline-size;
+    display: flex;
+    justify-content: center;
+    transition:
+      transform 0.5s var(--ease-ps),
+      filter 0.5s var(--ease-ps);
+  }
+
+  .home-cart-shell .cart {
+    --cw: min(92cqi, 11rem);
+  }
+
+  /* Lifted off the shelf and lit, the way a game is picked up. */
+  .home-cart:hover .home-cart-shell,
+  .home-cart:focus-visible .home-cart-shell {
+    transform: translateY(-8px) rotate(-2deg);
+    filter: drop-shadow(0 0 12px #fff);
+  }
+
+  .home-cart:focus-visible {
+    outline: none;
+  }
+
+  .home-cart:focus-visible .home-cart-title {
+    outline: 2px solid rgb(var(--blekk));
+    outline-offset: 3px;
+  }
+
+  .home-cart-title {
+    font-family: var(--font-unbounded);
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .home-cart-role {
+    font-size: 0.8rem;
+    color: rgb(var(--muted-foreground));
+  }
+
+  /* --- The rack --------------------------------------------------------- */
+
+  .rack {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .rack::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* On a phone the first and last cartridges can come to the middle too. */
+  @media (max-width: 767px) {
+    .rack {
+      padding-inline: calc(50vw - 1.25rem - 3.5rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .rack {
+      justify-content: center;
+      overflow: visible;
+    }
+  }
+
+  .rack-slot {
+    flex: none;
+    scroll-snap-align: center;
+  }
+
+  .rack-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    transition: transform 0.5s var(--ease-ps);
+  }
+
+  .rack-item:hover {
+    transform: translateY(-4px);
+  }
+
+  .rack-item .cart {
+    transition: opacity 0.4s var(--ease-ps);
+  }
+
+  /* The one in the machine leaves an empty space in the rack. */
+  .rack-item[aria-pressed="true"] .cart {
+    opacity: 0.3;
+  }
+
+  .rack-caption {
+    max-width: 7.5rem;
+    padding: 0.1rem 0.4rem;
+    font-family: var(--font-unbounded);
+    font-size: 0.64rem;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    color: rgb(var(--blekk));
+  }
+
+  .rack-item[aria-pressed="true"] .rack-caption {
+    color: rgb(var(--papir));
+    background: rgb(var(--blekk));
+  }
+
+  /* --- What it is ------------------------------------------------------- */
+
+  .shop-details > * {
+    animation: detail-in 0.7s var(--ease-ps) both;
+    animation-delay: calc(var(--i, 0) * 60ms + 450ms);
+  }
+
+  .shop-title {
+    display: inline-block;
+    padding: 0.08em 0.35em;
+    color: rgb(var(--papir));
+    background: rgb(var(--blekk));
+    font-weight: 500;
+    line-height: 1.15;
+  }
+}
+
+@keyframes cart-in {
+  from {
+    opacity: 0;
+    transform: translateY(-140%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes beam-up {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Materialises: a sliver of light opens into the picture, with one flicker. */
+@keyframes holo-in {
+  0% {
+    opacity: 0;
+    scale: 0.6 0.02;
+    translate: 0 30px;
+  }
+  45% {
+    opacity: 1;
+    scale: 1.02 1.03;
+    translate: 0 0;
+  }
+  55% {
+    opacity: 0.55;
+  }
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    scale: 1 1;
+  }
+}
+
+@keyframes holo-bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@keyframes scan-drift {
+  to {
+    background-position: 0 8px;
+  }
+}
+
+@keyframes led-load {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+  }
+}
+
+@keyframes detail-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   NAMED BY DATA
+
+   Classes whose names are built at runtime (a project's id, which side of
+   Noah a bubble sits on). They live outside @layer on purpose: Tailwind
+   drops any layered rule whose class it cannot find written out in the
+   source, and these are never written out whole.
+   ========================================================================== */
+
+  /* --- Each game's logo ------------------------------------------------- */
+
+  .cart-logo {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: 7%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 0.95;
+    white-space: nowrap;
+  }
+
+  /* Guest Food Payment: a clean white wordmark on a rose plate, like an app's. */
+  .logo--guest-food-payment {
+    padding: 4% 6% 5%;
+    border-radius: calc(var(--cw) * 0.03);
+    font-family: var(--font-unbounded);
+    font-size: calc(var(--cw) * 0.085);
+    font-weight: 700;
+    color: #fff;
+    background: #d4475f;
+    box-shadow: 0 1px 0 rgb(0 0 0 / 0.25);
+  }
+
+  /* Deadwax: lowercase and quiet, white on the black of a record sleeve. */
+  .logo--deadwax {
+    font-family: var(--font-archivo);
+    font-size: calc(var(--cw) * 0.15);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-shadow: 0 0 calc(var(--cw) * 0.06) rgb(0 0 0 / 0.9);
+  }
+
+  .logo--deadwax > span::after {
+    content: ".";
+    color: #ff5c8a;
+  }
+
+  /* Bosett: chunky and friendly, coral with a plum outline and a 3D drop. */
+  .logo--bosett {
+    font-family: var(--font-unbounded);
+    font-size: calc(var(--cw) * 0.16);
+    font-weight: 800;
+    color: #ff9a80;
+    -webkit-text-stroke: calc(var(--cw) * 0.012) #4a1428;
+    paint-order: stroke fill;
+    text-shadow: calc(var(--cw) * 0.015) calc(var(--cw) * 0.02) 0 #4a1428;
+  }
+
+  /* PixiWorld: a pixel title in gold, outlined like a scroll's lettering. */
+  .logo--pixiworld {
+    font-family: var(--font-system);
+    font-size: calc(var(--cw) * 0.13);
+    color: #ffd25e;
+    text-shadow:
+      1px 0 #5a3412,
+      -1px 0 #5a3412,
+      0 1px #5a3412,
+      0 -1px #5a3412,
+      calc(var(--cw) * 0.015) calc(var(--cw) * 0.02) 0 #5a3412;
+  }
+
+  /* Finding Denji: a night-time game, pixel type with a red and cyan split. */
+  .logo--denji {
+    font-family: var(--font-system);
+    font-size: calc(var(--cw) * 0.12);
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow:
+      calc(var(--cw) * -0.012) 0 #ff3b5c,
+      calc(var(--cw) * 0.012) 0 #3be0ff;
+  }
+
+  .floor-bubble.is-middle {
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  .floor-bubble.is-middle::after {
+    left: calc(50% - 5px);
+  }
+
+
+
+
+
+/* ==========================================================================
+   THE CV
+
+   A world map over the entries (LevelMap.tsx): islands with landmarks on a
+   winding road, the current one with Noah and the arrow, a locked grey
+   island at the end. Entries light up when you arrive from the map, and
+   the skills are an inventory.
+   ========================================================================== */
+
+@layer components {
+  .world-map-wrap {
+    margin-top: 2.75rem;
+  }
+
+  .level-hint {
+    font-family: var(--font-system);
+    font-size: 0.9rem;
+    color: rgb(var(--muted-foreground));
+  }
+
+  .world-map {
+    position: relative;
+    margin-top: 0.5rem;
+    aspect-ratio: 2.6;
+  }
+
+  @media (max-width: 639px) {
+    .world-map {
+      aspect-ratio: 1.3;
+    }
+  }
+
+  .world-road {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .world-road polyline {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .road-edge {
+    stroke: rgb(var(--blekk) / 0.6);
+    stroke-width: 14;
+  }
+
+  .road {
+    stroke: #a8979f;
+    stroke-width: 9;
+  }
+
+  /* Not walked yet: a dotted track. */
+  .road-locked {
+    stroke: rgb(var(--blekk) / 0.45);
+    stroke-width: 4;
+    stroke-dasharray: 1 9;
+  }
+
+  .world-isles {
+    position: absolute;
+    inset: 0;
+  }
+
+  .world-node {
+    position: absolute;
+    translate: -50% -50%;
+  }
+
+  .isle {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: rgb(var(--blekk));
+  }
+
+  .isle-mark {
+    position: relative;
+    z-index: 1;
+    width: 48px;
+    margin-bottom: -2px;
+    transition: transform 0.35s var(--ease-ps);
+  }
+
+  /* Grass on top, earth below, outlined like everything else. */
+  .isle-ground {
+    display: block;
+    width: 64px;
+    height: 14px;
+    border-radius: 3px;
+    background: linear-gradient(#7cc36b 0 5px, #6aa95b 5px 6px, #c98a5a 6px);
+    box-shadow: inset 0 0 0 2px rgb(var(--blekk));
+  }
+
+  .isle-badge {
+    position: absolute;
+    right: -0.9rem;
+    top: 30px;
+    z-index: 2;
+    font-family: var(--font-system);
+    font-size: 0.85rem;
+    line-height: 1;
+    color: #fff;
+    text-shadow:
+      1px 0 rgb(var(--blekk)),
+      -1px 0 rgb(var(--blekk)),
+      0 1px rgb(var(--blekk)),
+      0 -1px rgb(var(--blekk)),
+      1px 1px rgb(var(--blekk));
+  }
+
+  .isle-name {
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .isle:hover .isle-mark,
+  .isle:focus-visible .isle-mark {
+    transform: translateY(-4px);
+  }
+
+  .isle:focus-visible {
+    outline: none;
+  }
+
+  .isle:focus-visible .isle-name {
+    outline: 2px solid rgb(var(--blekk));
+    outline-offset: 2px;
+  }
+
+  .isle.is-current .isle-mark {
+    filter: drop-shadow(0 0 6px #fff);
+  }
+
+  /* Not reached yet: a grey silhouette. */
+  .isle.is-locked .isle-mark,
+  .isle.is-locked .isle-ground {
+    filter: grayscale(1) brightness(1.2) contrast(0.85);
+    opacity: 0.8;
+  }
+
+  .world-noah {
+    position: absolute;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    translate: -50% calc(-100% + 14px);
+    transition:
+      left var(--d, 0ms) linear,
+      top var(--d, 0ms) linear;
+    pointer-events: none;
+  }
+
+  .world-arrow {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    translate: -50% 0;
+    font-size: 0.8rem;
+    color: rgb(var(--blekk));
+    animation: arrow-bob 0.9s steps(2) infinite;
+  }
+
+  @media (max-width: 639px) {
+    .isle-mark {
+      width: 34px;
+    }
+
+    .isle-ground {
+      width: 46px;
+      height: 11px;
+    }
+
+    .isle-badge {
+      top: 20px;
+      right: -0.7rem;
+      font-size: 0.72rem;
+    }
+
+    .isle-name {
+      font-size: 0.6rem;
+    }
+  }
+
+  /* Where the map lands you: clear of the top, lit for a moment. */
+  .cv-anchor {
+    position: absolute;
+    top: -1.5rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .cv-entry.is-chosen {
+    animation: entry-lit 2.2s var(--ease-ps);
+  }
+
+  /* --- Skills as an inventory --------------------------------------- */
+
+  .skill-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .skill-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .skill-slot {
+    padding: 0.85rem 0.9rem 1rem;
+  }
+
+  .skill-slot-title {
+    margin-bottom: 0.6rem;
+    font-family: var(--font-system);
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+}
+
+@keyframes arrow-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes entry-lit {
+  0% {
+    background-color: rgb(255 255 255 / 0);
+  }
+  15% {
+    background-color: rgb(255 255 255 / 0.75);
+  }
+  100% {
+    background-color: rgb(255 255 255 / 0);
+  }
+}
+
+/* ==========================================================================
+   PRINT
+
+   "Last ned som PDF" prints the page. Everything that is the game goes:
+   the world, the floor, the pointer, the map, the footer, every animation.
+   What is left is a clean CV in black on white.
+   ========================================================================== */
+
+@media print {
+  .world-backdrop,
+  .world-floor,
+  .ps-cursor-ring,
+  .ps-cursor-dot,
+  .ps-tap-ring,
+  .tilt-key,
+  .world-map-wrap,
+  .has-peek,
+  footer {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ps-panel,
+  .ps-well {
+    background: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+  }
+
+  .ps-panel::before,
+  .ps-panel::after {
+    display: none !important;
+  }
+
+  .room-enter {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .js-reveal [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   THE BACK OF THE CONSOLE
+
+   The footer. See Footer.tsx. Dark plastic with a lit rim, screws, a vent,
+   a rating sticker and a power socket, and three ports that light and take
+   a cable when you point at them. Text on the plastic is white or a pale
+   rose that measures 9:1 on it.
+   ========================================================================== */
+
+@layer components {
+  .console-back {
+    --plastic: #2a1520;
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    padding: 2.25rem 1.75rem 2rem;
+    border-radius: 18px;
+    color: #fff;
+    background: linear-gradient(180deg, #3b2130, var(--plastic) 40%, #1f0f18);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.25),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08),
+      0 18px 40px -24px rgb(0 0 0 / 0.8);
+  }
+
+  @media (min-width: 900px) {
+    .console-back {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+      grid-template-areas:
+        "head sticker"
+        "ports sticker";
+      column-gap: 3rem;
+      padding: 2.5rem 3rem 2.75rem;
+    }
+
+    .console-head {
+      grid-area: head;
+    }
+
+    .console-ports {
+      grid-area: ports;
+    }
+
+    .console-sticker {
+      grid-area: sticker;
+      align-self: center;
+    }
+  }
+
+  .screw {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background:
+      linear-gradient(45deg, transparent 44%, rgb(0 0 0 / 0.6) 44% 56%, transparent 56%),
+      radial-gradient(circle at 35% 35%, #8b7380, #3d2834);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.15);
+  }
+
+  .screw--tl { top: 12px; left: 12px; }
+  .screw--tr { top: 12px; right: 12px; }
+  .screw--bl { bottom: 12px; left: 12px; }
+  .screw--br { bottom: 12px; right: 12px; }
+
+  .console-vents {
+    position: absolute;
+    top: 18px;
+    right: 3rem;
+    width: 8rem;
+    height: 18px;
+    background: repeating-linear-gradient(90deg, #0f070b 0 4px, transparent 4px 9px);
+    opacity: 0.8;
+  }
+
+  .console-title {
+    font-weight: 500;
+    font-size: 1.6rem;
+    color: #fff;
+  }
+
+  .console-hint {
+    margin-top: 0.3rem;
+    font-family: var(--font-system);
+    color: #e2c3d0;
+  }
+
+  /* --- The ports ----------------------------------------------------- */
+
+  .console-ports {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .port {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding-top: 4.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+  }
+
+  .port-socket {
+    position: relative;
+    display: block;
+    height: 22px;
+    background: #0d0609;
+    box-shadow:
+      inset 0 2px 3px rgb(0 0 0 / 0.8),
+      0 1px 0 rgb(255 255 255 / 0.18);
+  }
+
+  .port--usb .port-socket {
+    width: 46px;
+    border-radius: 3px;
+  }
+
+  /* The tongue inside a USB socket. */
+  .port--usb .port-socket::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 5px;
+    height: 5px;
+    background: #6d5864;
+  }
+
+  .port--jack .port-socket {
+    width: 22px;
+    border-radius: 50%;
+    box-shadow:
+      inset 0 2px 3px rgb(0 0 0 / 0.8),
+      0 0 0 3px #4a3340;
+  }
+
+  .port--hdmi .port-socket {
+    width: 50px;
+    clip-path: polygon(0 0, 100% 0, 100% 55%, 86% 100%, 14% 100%, 0 55%);
+  }
+
+  .port-led {
+    position: absolute;
+    top: -12px;
+    right: -14px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a3340;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .port--hdmi .port-led {
+    top: 2px;
+    right: 2px;
+  }
+
+  .port-label {
+    font-family: var(--font-unbounded);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .port-sub {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 0.78rem;
+    color: #e2c3d0;
+  }
+
+  /*
+   * The cable: hangs out of sight above the port until you point at it.
+   * Its length is set so that, pushed home, the plug sits over the top half
+   * of the socket: 4.5rem down to the socket, plus half the socket's 22px.
+   */
+  .port-cable {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 2;
+    width: 8px;
+    height: calc(4.5rem + 7px);
+    /* Centred with a margin rather than the translate property: the build
+       drops that when the rule also sets transform. */
+    margin-left: -4px;
+    transform: translateY(-115%);
+    opacity: 0;
+    background: linear-gradient(90deg, #1a0d14, #5a3a4a 45%, #1a0d14);
+    transition:
+      transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.15s;
+  }
+
+  .port-plug {
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    translate: -50% 0;
+    width: 30px;
+    height: 16px;
+    border-radius: 3px 3px 2px 2px;
+    background: linear-gradient(180deg, #fff, #e8d6dd);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35);
+  }
+
+  .port--usb .port-plug {
+    width: 40px;
+    background: linear-gradient(180deg, #ffd2dc, rgb(var(--rosa)));
+  }
+
+  .port--jack .port-plug {
+    width: 16px;
+    border-radius: 6px 6px 3px 3px;
+    background: linear-gradient(180deg, #e9e2ff, #a99ad6);
+  }
+
+  .port--hdmi .port-plug {
+    width: 44px;
+    background: linear-gradient(180deg, #ffe0d4, #f0907a);
+  }
+
+  /* Pointed at: lowered until the plug hovers just over the socket. */
+  .port:hover .port-cable,
+  .port:focus-visible .port-cable {
+    transform: translateY(-12px);
+    opacity: 1;
+  }
+
+  /* Clicked: pushed home, with a little bounce, and the light comes on. */
+  .port.is-plugged .port-cable {
+    transform: none;
+    opacity: 1;
+    animation: none;
+    transition:
+      transform 0.32s cubic-bezier(0.34, 1.8, 0.64, 1),
+      opacity 0.1s;
+  }
+
+  .port.is-plugged .port-led,
+  .port:hover .port-led,
+  .port:focus-visible .port-led {
+    background: #7cf0a0;
+    box-shadow: 0 0 8px #7cf0a0;
+  }
+
+  /* On a phone: the cables peek down one after another, once. */
+  @media (hover: none) {
+    .console-back.is-awake .port-cable {
+      animation: cable-peek 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .console-back.is-awake li:nth-child(2) .port-cable {
+      animation-delay: 0.2s;
+    }
+
+    .console-back.is-awake li:nth-child(3) .port-cable {
+      animation-delay: 0.4s;
+    }
+  }
+
+  .port:focus-visible {
+    outline: none;
+  }
+
+  .port:focus-visible .port-label {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  /* --- The sticker and the power socket ------------------------------ */
+
+  .console-sticker {
+    padding: 0.9rem 1rem 1rem;
+    font-family: var(--font-system);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: rgb(var(--blekk));
+    background: #fff7f9;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgb(0 0 0 / 0.4);
+    rotate: -1.5deg;
+  }
+
+  .console-sticker-name {
+    font-family: var(--font-unbounded);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .console-barcode {
+    display: block;
+    height: 26px;
+    margin: 0.6rem 0 0.5rem;
+    background: repeating-linear-gradient(
+      90deg,
+      rgb(var(--blekk)) 0 2px,
+      transparent 2px 3px,
+      rgb(var(--blekk)) 3px 4px,
+      transparent 4px 7px,
+      rgb(var(--blekk)) 7px 10px,
+      transparent 10px 12px
+    );
+  }
+
+  .console-copy {
+    font-size: 0.72rem;
+  }
+
+  .console-power {
+    position: absolute;
+    right: 3rem;
+    bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-system);
+    font-size: 0.7rem;
+    color: #e2c3d0;
+  }
+
+  .console-power > span {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #0d0609 0 3px, #4a3340 3px);
+  }
+
+  @media (max-width: 899px) {
+    .console-power {
+      display: none;
+    }
+  }
+}
+
+@keyframes cable-peek {
+  0% {
+    transform: translateY(-115%);
+    opacity: 0;
+  }
+  40% {
+    transform: translateY(-20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-115%);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   THE TITLE SCREEN
+
+   See TitleScreen.tsx. A screen's height of sky with the name standing in
+   it (drawn in the world, not here), what Noah does, and a blinking prompt.
+   Shown only while <html data-boot> is set, i.e. on the first page of a
+   visit, so it never flashes on a return to home.
+   ========================================================================== */
+
+@layer components {
+  .title-screen {
+    position: relative;
+    z-index: 1;
+    display: none;
+    height: 100svh;
+    min-height: 28rem;
+    padding: 0 1.25rem 19svh;
+    place-items: end center;
+    overflow: hidden;
+    text-align: center;
+    transition:
+      height 0.9s var(--ease-ps),
+      min-height 0.9s var(--ease-ps),
+      padding 0.9s var(--ease-ps),
+      opacity 0.45s;
+  }
+
+  html[data-boot] .title-screen {
+    display: grid;
+  }
+
+  /* Started: folds away, and the hero below rises into its place. */
+  .title-screen.is-started {
+    height: 0;
+    min-height: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .title-sub {
+    margin: 0 auto;
+    font-family: var(--font-unbounded);
+    font-size: clamp(1rem, 3.2vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .title-start {
+    min-height: 44px;
+    margin-top: 2.25rem;
+    padding: 0 1rem;
+    font-family: var(--font-system);
+    font-size: 1.15rem;
+    color: rgb(var(--blekk));
+    animation: title-blink 1.1s steps(1) infinite;
+  }
+
+  .title-start:focus-visible {
+    outline: 2px solid rgb(var(--blekk));
+    outline-offset: 4px;
+  }
+
+  /* Only when there is no world to draw the name in. */
+  .title-name-fallback {
+    display: none;
+    margin: 0 auto 1rem;
+    font-family: var(--font-unbounded);
+    font-size: clamp(3rem, 12vw, 7rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  html.no-webgl .title-name-fallback {
+    display: block;
+  }
+}
+
+/*
+ * Held until start: the hero's slam-in and the floor's rise are staged for
+ * the first page of a visit, and wait here, paused on their first frame,
+ * until the title screen is started.
+ */
+html[data-boot]:has(.title-screen:not(.is-started)) .slam,
+html[data-boot]:has(.title-screen:not(.is-started)) .floor-nav {
+  animation-play-state: paused;
+}
+
+@keyframes title-blink {
+  50% {
+    opacity: 0;
   }
 }

@@ -1,32 +1,47 @@
 import type { Metadata, Viewport } from "next";
-import { Bungee, M_PLUS_Rounded_1c } from "next/font/google";
+import { Archivo, BIZ_UDPMincho, DotGothic16, Unbounded } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 /*
- * Display face.
- *
- * Was Lemon, which a designer read as "the default font in Word": rounded
- * serif terminals that say word processor rather than pixel art. Bungee is
- * drawn for vertical signage, so it is built from flat slabs with no
- * tapering at all. It keeps the weight Lemon had and throws away the
- * softness, and it draws æ ø å itself rather than falling back.
- *
- * One weight, by design. It is a display face and never sets running text.
+ * Titles and menus: Unbounded. Wide and rounded, the shape of a 2000s
+ * console's own lettering, softer than a grotesk and drawn with æ ø å.
  */
-const display = Bungee({
-  weight: "400",
+const display = Unbounded({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-display",
+  variable: "--font-unbounded",
   display: "swap",
 });
 
-// Rounded terminals echo the soft pixel corners, and it stays legible at
-// paragraph size. Covers æ ø å.
-const rounded = M_PLUS_Rounded_1c({
-  weight: ["400", "500", "700", "800"],
-  subsets: ["latin"],
-  variable: "--font-rounded",
+/*
+ * Everything you read in paragraphs: BIZ UDPMincho. A Japanese mincho, its
+ * Latin slim and a little condensed, the voice of a console's own text
+ * screens. The proportional cut, so long CV paragraphs still read evenly.
+ */
+const mincho = BIZ_UDPMincho({
+  weight: ["400", "700"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-mincho",
+  display: "swap",
+});
+
+/* Kept for the few places that want a sturdy grotesk: a cartridge's
+   moulded code and the Deadwax logo. */
+const archivo = Archivo({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+/*
+ * The system voice. A Japanese bitmap gothic from the era these menus come
+ * from, used only for the small lines the machine says to you. It is also
+ * the one place the pixel grid still shows in the type.
+ */
+const system = DotGothic16({
+  weight: "400",
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-system",
   display: "swap",
 });
 
@@ -71,15 +86,20 @@ export default function RootLayout({
      * had always needed it too.
      */
     <html lang="nb" suppressHydrationWarning>
-      <body className={`${display.variable} ${rounded.variable}`}>
+      <body className={`${display.variable} ${mincho.variable} ${archivo.variable} ${system.variable}`}>
         {/*
           Marks the document as reveal-capable before first paint. The scroll
           reveal styles are scoped to this class, so with JS disabled nothing
           is ever hidden, which is why it cannot be rendered on the server.
+
+          It also marks the first page of a visit for the power-on sequence
+          (PowerOn.tsx), before paint, so nothing shows and then jumps back.
         */}
         <script
           dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js-reveal')",
+            __html:
+              "document.documentElement.classList.add('js-reveal');" +
+              "try{if(!sessionStorage.getItem('startet'))document.documentElement.setAttribute('data-boot','')}catch(e){}",
           }}
         />
         {children}

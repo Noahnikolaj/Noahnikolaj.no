@@ -1,5 +1,4 @@
 import { PixelButton } from "@/components/site/PixelButton";
-import { RoomTransition } from "@/components/pixel/RoomTransition";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Sprite } from "@/components/pixel/Sprite";
 import { NOAH } from "@/components/pixel/sprites";
@@ -11,10 +10,9 @@ import { NOAH } from "@/components/pixel/sprites";
 export default function NotFound() {
   return (
     <SiteShell>
-      <RoomTransition />
       <main
         id="hovedinnhold"
-        className="mx-auto flex w-full max-w-3xl flex-col items-start px-5 py-24 sm:px-8"
+        className="room-enter mx-auto my-16 flex w-[calc(100%-1.5rem)] max-w-3xl flex-col items-start px-5 py-14 ps-panel sm:px-10"
       >
         <Sprite sprite={NOAH} scale={10} decorative />
 

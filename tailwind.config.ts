@@ -58,12 +58,9 @@ export default {
         ring: "rgb(var(--ring) / <alpha-value>)",
       },
       fontFamily: {
-        // Two families only. Bungee is signage: flat slabs, no taper, no
-        // softness. See the note in layout.tsx for why it replaced Lemon.
-        display: ["var(--font-display)", "Impact", "Haettenschweiler", "sans-serif"],
-        // Rounded terminals echo soft pixel corners; game-UI heritage; legible
-        // at paragraph size; covers æ ø å.
-        sans: ["var(--font-rounded)", "ui-rounded", "system-ui", "sans-serif"],
+        display: ["var(--font-unbounded)", "system-ui", "sans-serif"],
+        sans: ["var(--font-mincho)", "ui-serif", "serif"],
+        system: ["var(--font-system)", "ui-monospace", "monospace"],
       },
       // Pixel world: nothing is rounded.
       borderRadius: {

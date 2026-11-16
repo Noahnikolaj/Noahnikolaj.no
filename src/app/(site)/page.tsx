@@ -1,37 +1,63 @@
 import Image from "next/image";
+import Link from "next/link";
 
+import { HeroPortrait } from "@/components/site/HeroPortrait";
 import { PixelButton } from "@/components/site/PixelButton";
-import { ProjectTile } from "@/components/site/ProjectTile";
-import { GroundCompanions } from "@/components/pixel/GroundCompanions";
-import { featuredProjects } from "@/content/projects";
+import { TitleScreen } from "@/components/site/TitleScreen";
+import { Cartridge } from "@/components/site/Cartridge";
+import { projects } from "@/content/projects";
+
+/*
+ * Four on the home page, so they line up: four across on a desktop, two by
+ * two on a phone. Finding Denji sits out here, since it is a game you play
+ * on its own page rather than a project you read about.
+ */
+const HOME_CARTS = projects.filter((project) => project.slug !== "denji").slice(0, 4);
 
 export default function HomePage() {
   return (
     <main id="hovedinnhold">
+      <TitleScreen />
       {/*
         The hero opens with the most characteristic thing Noah makes: pixel art
         he wrote by hand in code. The sprites below are his own, lifted out of
         the Game Boy game and redrawn as SVG.
       */}
       <section className="relative overflow-hidden">
-        <div className="relative z-10 mx-auto grid w-full max-w-5xl gap-10 px-5 pb-0 pt-16 sm:px-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-center md:gap-14 md:pt-24">
+        <div className="relative z-10 mx-auto grid w-full max-w-5xl gap-4 px-5 pb-0 pt-8 sm:px-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-center md:gap-14 md:pt-24">
+          {/*
+            The power-on order, top to bottom: each piece lands one beat after
+            the one above it. See the slam rules in globals.css.
+          */}
           <div>
-          <p className="mb-3 text-lg font-medium text-muted-foreground">
+          <p
+            className="slam mb-3 text-lg font-medium text-muted-foreground"
+            style={{ ["--slam" as string]: 0 }}
+          >
             Hei, jeg er
           </p>
           {/* The name the site is actually known by, matching the domain. */}
-          <h1 className="font-display text-[clamp(3rem,12vw,6.5rem)] leading-[0.92]">
+          <h1
+            className="slam font-display text-[clamp(2.4rem,10vw,5.25rem)] leading-[0.92]"
+            style={{ ["--slam" as string]: 1 }}
+          >
             <span className="block">Noah</span>
             <span className="block">Nikolaj</span>
           </h1>
 
-          <p className="mt-7 text-lg leading-relaxed sm:text-xl">
+          <p
+            className="slam mt-7 text-lg leading-relaxed sm:text-xl"
+            style={{ ["--slam" as string]: 2 }}
+          >
             Jeg designer og koder. For tiden masterstudent i Human Computer
             Interaction ved Høyskolen Kristiania, med en bachelor i informatikk
             fra UiO og praksis som fullstack-utvikler bak meg.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-4 pb-14">
+          <div
+            className="slam mt-9 flex flex-wrap gap-4 pb-14"
+            style={{ ["--slam" as string]: 3 }}
+          >
             <PixelButton href="/prosjekter" size="lg" companion="noah">
               Se prosjektene
             </PixelButton>
@@ -43,60 +69,53 @@ export default function HomePage() {
 
           {/*
             Noah himself, so the first thing on the page is a person rather
-            than only type. He sits in a pink pixel cloud drawn from the same
-            shapes as the ones drifting behind him, not a square frame.
+            than only type. He stands out of the world in depth, turning to
+            follow the pointer.
           */}
-          <div className="relative mx-auto w-full max-w-[18rem] mb-14 md:mb-0 md:mx-0 md:max-w-sm md:justify-self-end">
-            <div
-              aria-hidden="true"
-              className="pixel-cloud-shadow absolute inset-x-0 bottom-[2%] top-[14%]"
-            />
-            <div
-              aria-hidden="true"
-              className="pixel-cloud absolute inset-x-0 bottom-[4%] top-[12%]"
-            />
-            <Image
-              src="/Profpic.png"
-              alt="Noah Nikolaj, portrett"
-              width={515}
-              height={512}
-              priority
-              sizes="(max-width: 768px) 62vw, 21rem"
-              className="relative mx-auto w-[86%]"
-            />
+          <div
+            className="slam relative order-first mx-auto w-full max-w-[12.5rem] md:order-none md:mx-0 md:max-w-sm md:justify-self-end"
+            style={{ ["--slam" as string]: 4 }}
+          >
+            <HeroPortrait />
           </div>
         </div>
 
-        {/* The ground. 1-bit dithering ramps the pink the way pixel art shades. */}
-        <div id="bakken" className="relative z-10 h-28 w-full sm:h-32">
-          <div aria-hidden="true" className="dither-25 absolute inset-x-0 top-0 h-1/4" />
-          <div aria-hidden="true" className="dither-50 absolute inset-x-0 top-1/4 h-1/4" />
-          <div aria-hidden="true" className="absolute inset-x-0 top-1/2 h-1/2 bg-grunn" />
-
-          {/* The one pair of characters. They stand here; they do not follow. */}
-          <GroundCompanions />
-        </div>
+        {/*
+          No ground band here any more: the floor at the foot of the screen
+          is the ground now, and Noah stands on it. See WorldFloor.tsx.
+        */}
       </section>
 
       <section
         aria-labelledby="utvalgte"
-        className="border-t-4 border-foreground bg-secondary"
+        className="mx-auto w-full max-w-5xl px-3 sm:px-5"
       >
-        <div className="mx-auto w-full max-w-5xl px-5 py-16 sm:px-8 md:py-20">
+        <div className="ps-panel px-5 py-14 sm:px-8 md:py-16">
           <h2
             id="utvalgte"
             className="font-display text-3xl text-secondary-foreground sm:text-4xl"
           >
-            Tre ting jeg har laget
+            Fire ting jeg har laget
           </h2>
 
-          <ul className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2">
-            {featuredProjects.map((project, index) => (
-              <ProjectTile
-                key={project.slug}
-                project={project}
-                index={index}
-              />
+          {/*
+            Each cartridge goes straight into the machine on Prosjekter: the
+            link carries ?velg, and the page loads that one.
+          */}
+          <ul className="home-carts mt-10">
+            {HOME_CARTS.map((project) => (
+              <li key={project.slug}>
+                <Link
+                  href={`/prosjekter?velg=${project.slug}`}
+                  className="home-cart"
+                >
+                  <span className="home-cart-shell">
+                    <Cartridge project={project} />
+                  </span>
+                  <span className="home-cart-title">{project.title}</span>
+                  <span className="home-cart-role">{project.role}</span>
+                </Link>
+              </li>
             ))}
           </ul>
 
@@ -108,14 +127,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-5 py-16 sm:px-8">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-center">
+      <section className="mx-auto mt-6 w-full max-w-5xl px-3 sm:px-5">
+        <div className="ps-panel flex flex-col items-start gap-8 px-5 py-12 sm:flex-row sm:items-center sm:px-8">
           <Image
             src="/andreprofil.png"
             alt="Noah Klavestad-Christensen"
             width={488}
             height={512}
-            className="w-32 border-4 border-foreground bg-secondary object-cover sm:w-40"
+            className="ps-frame w-32 object-cover sm:w-40"
           />
           <div>
             <h2 className="font-display text-2xl sm:text-3xl">

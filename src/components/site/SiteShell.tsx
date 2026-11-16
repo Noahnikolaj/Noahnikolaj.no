@@ -1,8 +1,11 @@
 import { TouchSpotlight } from "@/components/pixel/TouchSpotlight";
-import { FlipLinks } from "@/components/site/FlipLinks";
 import { Footer } from "@/components/site/Footer";
+import { PixelCursor } from "@/components/site/PixelCursor";
+import { PowerOn } from "@/components/site/PowerOn";
 import { SkipLink } from "@/components/site/SkipLink";
-import { WorldStrip } from "@/components/site/WorldStrip";
+import { TiltKey } from "@/components/site/TiltKey";
+import { WorldBackdrop } from "@/components/site/WorldBackdrop";
+import { WorldFloor } from "@/components/site/WorldFloor";
 
 /*
  * Chrome for every public page. Deliberately not in the root layout: the
@@ -12,9 +15,12 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <SkipLink />
-      <FlipLinks />
+      <WorldBackdrop />
+      <PowerOn />
+      <PixelCursor />
+      <TiltKey />
       <TouchSpotlight />
-      {/* Above the room wash and the sky, which are fixed at z-0. */}
+      {/* Above the world, which is fixed at z-0. */}
       <div className="relative z-10 flex flex-1 flex-col">
         {/*
          * Bottom room so the document can always scroll clear of the sticky
@@ -24,7 +30,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
          */}
         <div className="flex-1">{children}</div>
         <Footer />
-        <WorldStrip />
+        <WorldFloor />
       </div>
     </div>
   );

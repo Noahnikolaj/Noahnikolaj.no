@@ -26,7 +26,7 @@ export default function BosettPage() {
           innebygd fra Figma og krever JavaScript.
         </p>
 
-        <div className="mt-10 border-4 border-foreground bg-card p-2 sm:p-3">
+        <div className="ps-panel mt-10 p-2 sm:p-3">
           <iframe
             title="Figma-prototype av Bosett"
             src="https://embed.figma.com/proto/xvV9sajUKm56pGfZxn41R2/THE-REAL-WIREFRAME?page-id=0%3A1&node-id=87-4974&starting-point-node-id=87%3A4974&embed-host=share"

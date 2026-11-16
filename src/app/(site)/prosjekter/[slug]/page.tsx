@@ -42,7 +42,7 @@ export default async function ProjectPage({
 
   return (
     <main id="hovedinnhold">
-      <article className="mx-auto my-10 w-full max-w-3xl border-4 border-foreground bg-background px-5 py-12 sm:my-14 sm:px-10">
+      <article className="mx-auto my-10 w-[calc(100%-1.5rem)] max-w-3xl ps-panel px-5 py-12 sm:my-14 sm:px-10">
         <Link
           href="/prosjekter"
           className="inline-flex min-h-[44px] items-center font-medium underline decoration-2 underline-offset-4"
@@ -73,7 +73,7 @@ export default async function ProjectPage({
            * unframed.
            */
           image.device ? (
-            <div className="mt-10 flex justify-center bg-secondary p-6 sm:p-10">
+            <div className="ps-well mt-10 flex justify-center p-6 sm:p-10">
               <DeviceFrame device={image.device} className="max-w-full">
                 <Image
                   src={image.src}
@@ -87,7 +87,7 @@ export default async function ProjectPage({
               </DeviceFrame>
             </div>
           ) : image.transparent ? (
-            <div className="mt-10 flex justify-center border-4 border-foreground bg-secondary px-4 py-8">
+            <div className="ps-well mt-10 flex justify-center px-4 py-8">
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -106,11 +106,11 @@ export default async function ProjectPage({
               height={image.height}
               priority
               sizes="(max-width: 768px) 92vw, 44rem"
-              className="mt-10 h-auto w-full border-4 border-foreground"
+              className="ps-frame mt-10 h-auto w-full"
             />
           )
         ) : (
-          <div className="dither-25 mt-10 border-4 border-foreground p-10">
+          <div className="ps-well mt-10 p-10">
             <p className="text-center font-medium">
               Arbeidet eies av Welcome Workdays, så det kan ikke vises her.
             </p>
@@ -128,7 +128,7 @@ export default async function ProjectPage({
           {project.stack.map((item) => (
             <li
               key={item}
-              className="border-4 border-foreground bg-secondary px-3 py-1 text-sm font-bold text-secondary-foreground"
+              className="ps-chip"
             >
               {item}
             </li>

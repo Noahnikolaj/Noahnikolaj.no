@@ -11,8 +11,9 @@ import { cn } from "@/lib/utils";
  * single <button>: never a link nested inside a button, which is what the old
  * markup did and what makes screen readers announce nested interactives.
  *
- * Pressing it moves the button down onto its own shadow, the way a physical
- * key travels. That is motion answering an action, so it stays.
+ * The face is frosted, bevelled at one corner, with a bar on the left that
+ * grows into a block under the pointer, the way a system menu marks the
+ * item you are on. Pressing presses it in.
  *
  * `companion` puts one of the sprites behind the top edge, popping up on
  * hover or keyboard focus. It is a child of the single <a>/<button> rather
@@ -22,20 +23,14 @@ import { cn } from "@/lib/utils";
 const pixelButton = cva(
   [
     // `has-peek` and `relative` are what let the companion hang off the top
-    // edge and react to hover/focus on the button itself. Its own class, not
-    // Tailwind's shared `group`: see the note in globals.css.
-    "has-peek relative inline-flex items-center justify-center gap-2 font-bold",
-    "border-4 border-foreground",
-    "shadow-[4px_4px_0_0_rgb(var(--foreground))]",
-    "transition-[transform,box-shadow] duration-75",
-    "hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_rgb(var(--foreground))]",
-    "active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
-    "motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0",
+    // edge and react to hover/focus on the button itself. `isolate` keeps
+    // the face (a pseudo-element behind the label) inside the button.
+    "has-peek ps-btn relative isolate inline-flex items-center justify-center gap-2",
+    "font-display font-medium uppercase tracking-[0.04em]",
     "disabled:pointer-events-none disabled:opacity-50",
     /*
      * Sizes icons passed as children to the label. Scoped past the
-     * companion, which is art at its own scale rather than an icon and was
-     * being squashed to 1.1em by this.
+     * companion, which is art at its own scale rather than an icon.
      */
     "[&_svg:not(.peek-sprite)]:size-[1.1em] [&_svg:not(.peek-sprite)]:shrink-0",
   ],
@@ -43,14 +38,14 @@ const pixelButton = cva(
     variants: {
       // Rose is a fill; the label on top of it is always the dark ink (5.35:1).
       variant: {
-        rosa: "bg-primary text-primary-foreground",
-        papir: "bg-card text-card-foreground",
-        lys: "bg-secondary text-secondary-foreground",
+        rosa: "ps-btn--rosa",
+        papir: "ps-btn--papir",
+        lys: "ps-btn--lys",
       },
       size: {
-        sm: "h-9 px-3 text-sm",
-        md: "h-11 px-5",
-        lg: "h-14 px-7 text-lg",
+        sm: "h-9 pl-5 pr-4 text-[0.62rem]",
+        md: "h-11 pl-6 pr-5 text-[0.7rem]",
+        lg: "h-14 pl-8 pr-7 text-[0.8rem]",
       },
     },
     defaultVariants: { variant: "rosa", size: "md" },
@@ -121,7 +116,16 @@ export function PixelButton({
 
   if ("href" in props && props.href) {
     const { href, ...rest } = props;
-    const external = /^https?:|^mailto:/.test(href);
+    // Mail opens the mail app; it is not a page, so no new tab.
+    const external = /^https?:/.test(href);
+    if (/^mailto:/.test(href)) {
+      return (
+        <a href={href} className={classes} {...spotlight} {...rest}>
+          {peek}
+          {children}
+        </a>
+      );
+    }
 
     if (external) {
       return (
