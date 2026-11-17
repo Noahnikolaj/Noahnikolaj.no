@@ -1,5 +1,6 @@
 import { TouchSpotlight } from "@/components/pixel/TouchSpotlight";
 import { Footer } from "@/components/site/Footer";
+import { PauseMenu } from "@/components/site/PauseMenu";
 import { PixelCursor } from "@/components/site/PixelCursor";
 import { PowerOn } from "@/components/site/PowerOn";
 import { SkipLink } from "@/components/site/SkipLink";
@@ -20,6 +21,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <PixelCursor />
       <TiltKey />
       <TouchSpotlight />
+      <PauseMenu />
       {/* Above the world, which is fixed at z-0. */}
       <div className="relative z-10 flex flex-1 flex-col">
         {/*

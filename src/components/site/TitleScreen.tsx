@@ -21,7 +21,7 @@ import { setTitleActive } from "@/lib/titleScreen";
  * still until now, come in. The page's own heading is in the hero below,
  * so nothing is lost to anyone who never sees this.
  */
-const SKIP_KEYS = new Set(["Tab", "Shift", "Alt", "Control", "Meta", "CapsLock"]);
+const SKIP_KEYS = new Set(["Escape", "Tab", "Shift", "Alt", "Control", "Meta", "CapsLock"]);
 
 export function TitleScreen() {
   const ref = React.useRef<HTMLElement>(null);

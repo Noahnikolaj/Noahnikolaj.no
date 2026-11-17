@@ -131,11 +131,11 @@ export default function HomePage() {
       <section className="mx-auto mt-6 w-full max-w-5xl px-3 sm:px-5">
         <div className="flex flex-col items-start gap-8 px-2 py-12 sm:flex-row sm:items-center sm:px-3">
           <Image
-            src="/andreprofil.png"
+            src="/kort-om-meg.png"
             alt="Noah Klavestad-Christensen"
-            width={488}
-            height={512}
-            className="ps-frame w-32 object-cover sm:w-40"
+            width={320}
+            height={320}
+            className="w-32 object-contain sm:w-40"
           />
           <div>
             <h2 className="tag-title font-display text-2xl sm:text-3xl">
