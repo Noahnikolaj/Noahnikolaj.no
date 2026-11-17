@@ -6,10 +6,18 @@ import { NOAH } from "@/components/pixel/sprites";
 /*
  * Root-level by Next's convention, so it wraps itself in SiteShell: the
  * (site) route group layout does not apply here.
+ *
+ * Served for every missing path, so it also carries the one redirect the
+ * site has: /Halloween, as printed on the invitations, to /halloween. Paths
+ * are case-sensitive and the site is static files with no server to
+ * redirect, so the page does it before it paints.
  */
+const HALLOWEEN = `if(location.pathname==="/Halloween")location.replace("/halloween"+location.search+location.hash)`;
+
 export default function NotFound() {
   return (
     <SiteShell>
+      <script dangerouslySetInnerHTML={{ __html: HALLOWEEN }} />
       <main
         id="hovedinnhold"
         className="room-enter mx-auto my-16 flex w-[calc(100%-1.5rem)] max-w-3xl flex-col items-start px-5 py-14 ps-panel sm:px-10"

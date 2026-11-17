@@ -47,3 +47,7 @@ next-env.d.ts
 
 # depth map tooling
 /.depth-venv/
+
+# static export and its prebuilt image sizes
+/out/
+/public/_img/

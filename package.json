@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "predev": "node scripts/build-images.mjs",
     "build": "next build",
-    "start": "next start",
+    "prebuild": "node scripts/build-images.mjs",
     "lint": "eslint .",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.20.16",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
@@ -40,6 +40,7 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
-    "wrangler": "^4.159.0"
+    "wrangler": "^4.159.0",
+    "sharp": "^0.35.5"
   }
 }

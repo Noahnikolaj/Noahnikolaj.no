@@ -1,29 +1,18 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "noahnikolaj-no",
-  "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // Static files only: `next build` exports the whole site to out/, and
+  // Cloudflare serves it straight from its asset store. There is no Worker
+  // script, so requests use no CPU time and are free and unlimited.
   "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
   },
-  // Backs next/image, replacing Vercel's image optimizer.
-  "images": {
-    "binding": "IMAGES"
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "noahnikolaj-no"
-    }
-  ],
   "workers_dev": true,
   "routes": [
     { "pattern": "noahnikolaj.no", "custom_domain": true },
     { "pattern": "www.noahnikolaj.no", "custom_domain": true }
-  ],
-  "observability": {
-    "enabled": true
-  }
+  ]
 }
