@@ -17,7 +17,7 @@ const MAGNETIC = "a[href], button:not(:disabled), [role='button'], summary";
 const REST = 22; // reticle size in open space
 const PAD = 6; // breathing room when locked on
 const MAX_W = 460; // bigger than this is a region, not a button
-const MAX_H = 200;
+const MAX_H = 320; // a home-page cartridge with its title is about 240
 const PULL = 0.16; // how far a locked target leans toward the pointer
 const PULL_X = 7;
 const PULL_Y = 4;

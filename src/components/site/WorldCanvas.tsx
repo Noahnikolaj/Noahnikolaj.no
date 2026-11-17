@@ -388,6 +388,69 @@ function Stars({ phase }: { phase: Phase }) {
   );
 }
 
+/*
+ * Glass cubes, the way a 2000s console's menus had them: big translucent
+ * blocks tumbling slowly in the air at different depths, lit along their
+ * edges. Pale rose glass here, with a bright rim, so they read as light
+ * rather than solid things in front of the page.
+ */
+const GLASS = Array.from({ length: 14 }, (_, i) => ({
+  x: -24 + rand(i + 701) * 200,
+  y: 3 + rand(i + 733) * 10,
+  z: -9 - rand(i + 769) * 26,
+  size: 1.2 + rand(i + 797) * 2.8,
+  spin: 0.06 + rand(i + 811) * 0.12,
+  phase: rand(i + 829) * 6,
+}));
+
+function GlassCubes({
+  still,
+  pointer,
+}: {
+  still: boolean;
+  pointer: React.MutableRefObject<{ x: number; y: number }>;
+}) {
+  const group = React.useRef<THREE.Group>(null);
+  const box = React.useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
+  const edges = React.useMemo(() => new THREE.EdgesGeometry(box), [box]);
+
+  useFrame((state) => {
+    const g = group.current;
+    if (!g || still) return;
+    const t = state.clock.elapsedTime;
+    g.children.forEach((cube, i) => {
+      const c = GLASS[i];
+      cube.rotation.x = t * c.spin + c.phase;
+      cube.rotation.y = t * c.spin * 0.8 + c.phase * 0.5 + pointer.current.x * 0.25;
+      cube.position.y = c.y + Math.sin(t * 0.3 + c.phase) * 0.4;
+    });
+  });
+
+  return (
+    <group ref={group}>
+      {GLASS.map((c, i) => (
+        <group key={i} position={[c.x, c.y, c.z]} scale={c.size}>
+          <mesh geometry={box}>
+            <meshStandardMaterial
+              color="#ffd2de"
+              emissive="#ff9fb8"
+              emissiveIntensity={0.15}
+              transparent
+              opacity={0.32}
+              roughness={0.15}
+              metalness={0.1}
+              depthWrite={false}
+            />
+          </mesh>
+          <lineSegments geometry={edges}>
+            <lineBasicMaterial color="#ffffff" transparent opacity={0.85} />
+          </lineSegments>
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function World({
   station,
   sky,
@@ -465,6 +528,7 @@ function World({
       <Ground still={still} />
       <Stars phase={phase} />
       <Clouds still={still} />
+      <GlassCubes still={still} pointer={pointer} />
       <NameBlocks build={build} still={still} building={building} pointer={pointer} />
       {STATIONS.map((x, i) => (
         <React.Fragment key={x}>

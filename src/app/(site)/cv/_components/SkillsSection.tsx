@@ -3,12 +3,13 @@ import { skillGroups, skillIcons } from "@/content/cv";
 export function SkillsSection() {
   return (
     <section aria-labelledby="kompetanse">
-      <h2 id="kompetanse" className="font-display text-2xl sm:text-3xl">
+      <h2 id="kompetanse" className="tag-title font-display text-2xl sm:text-3xl">
         Verktøy jeg bruker
       </h2>
+      <div aria-hidden="true" className="hatch-rule" />
 
       {/* An inventory: each group is a slot with what is in it. */}
-      <div className="skill-grid mt-8">
+      <div className="skill-grid mt-2">
         {skillGroups.map((group) => (
           <div key={group.title} className="skill-slot ps-well">
             <h3 className="skill-slot-title">{group.title}</h3>

@@ -125,6 +125,14 @@
     letter-spacing: -0.02em;
   }
 
+  /*
+   * Section titles take the deep rose, like a menu screen's coloured
+   * heading. Large type, so 3:1 is the bar: worst sky measures 3.8:1.
+   */
+  h2 {
+    color: rgb(var(--dyp));
+  }
+
   /* Body copy stays under 80 characters per line wherever it is set. */
   p {
     max-width: 68ch;
@@ -637,10 +645,8 @@
    * Halftone, the way print shades with dots. One screen of dots on a
    * 9px grid, drawn twice: big dots fading out from the bevelled corner,
    * and small dots on the same grid carrying on further before they fade.
-   * Where the two meet the dots look half-size, so the shade steps down in
-   * dot size as well as strength. Rose, and kept faint, so text over it
-   * reads as before. Behind the content (the panel's clip makes it its own
-   * stacking context, so -1 stays inside it).
+   * Behind the content: the panel's clip makes it its own stacking
+   * context, so -1 stays inside it.
    */
   .ps-panel::before,
   .ps-panel::after {
@@ -706,66 +712,83 @@
   }
 
   /*
-   * Buttons. The face is a pseudo-element so the bevel can clip it without
-   * clipping the character who peeks over the top edge. The bar on the left
-   * is the press target growing toward you: thin at rest, a block on hover,
-   * the way a system menu marks the item under the cursor.
+   * Buttons are menu options, not boxes. The words, set in capitals, and
+   * behind them a cloud of white light: faint at rest, bright under the
+   * pointer or keyboard, with a ▶ appearing in front, the way a console
+   * marks the option you are on. The main action carries a little light
+   * all the time, so it is the one your eye goes to.
    */
   .ps-btn {
-    --btn-bg: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.8));
-    --btn-bar: rgb(var(--blekk));
     color: rgb(var(--blekk));
-    transition: transform 0.5s var(--ease-ps);
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+    transition: transform 0.3s var(--ease-ps);
   }
 
   .ps-btn::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -0.35rem -0.6rem;
     z-index: -1;
-    background: var(--btn-bg);
-    box-shadow:
-      inset 3px 0 var(--btn-bar),
-      inset 0 0 0 1px var(--edge);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
-    transition: box-shadow 0.5s var(--ease-ps);
+    border-radius: 999px;
+    background: radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      rgb(255 255 255 / 0.95) 0%,
+      rgb(255 255 255 / 0.55) 50%,
+      rgb(255 255 255 / 0) 100%
+    );
+    opacity: 0.35;
+    transform: scale(0.92);
+    transition:
+      opacity 0.35s var(--ease-ps),
+      transform 0.35s var(--ease-ps);
+  }
+
+  .ps-btn::after {
+    content: "▶";
+    position: absolute;
+    left: 0.35rem;
+    top: 50%;
+    font-size: 0.6em;
+    translate: 0 -50%;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
   .ps-btn:hover::before,
   .ps-btn:focus-visible::before {
-    box-shadow:
-      inset 12px 0 var(--btn-bar),
-      inset 0 0 0 1px #fff;
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  .ps-btn:hover::after,
+  .ps-btn:focus-visible::after {
+    opacity: 1;
+  }
+
+  .ps-btn:focus-visible {
+    outline: none;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 
   .ps-btn:active {
     transform: scale(0.97);
   }
 
-  /* White: a plain outline at rest. The bar is the "you are on this" mark
-     across the site, so a white button shows it only under the pointer. */
-  .ps-btn--papir {
-    --btn-bg: #fff;
-  }
-
-  .ps-btn--papir::before {
-    box-shadow: inset 0 0 0 1.5px rgb(var(--blekk) / 0.7);
-  }
-
-  .ps-btn--papir:hover::before,
-  .ps-btn--papir:focus-visible::before {
-    box-shadow:
-      inset 12px 0 rgb(var(--blekk)),
-      inset 0 0 0 1.5px rgb(var(--blekk));
-  }
-
-  /* Rose is a fill; plum on it is 5.35:1. */
+  /* The main action: always a little lit, and its words in deep rose. */
   .ps-btn--rosa {
-    --btn-bg: linear-gradient(180deg, rgb(238 130 150), rgb(var(--rosa)) 55%);
+    color: rgb(var(--dyp));
   }
 
+  .ps-btn--rosa::before {
+    opacity: 0.8;
+  }
+
+  .ps-btn--papir,
   .ps-btn--lys {
-    --btn-bg: linear-gradient(180deg, rgb(255 214 222), rgb(var(--lys)) 55%);
+    color: rgb(var(--blekk));
   }
 }
 
@@ -1099,12 +1122,12 @@
       letter-spacing: 0.02em;
     }
 
-    .floor-nav {
+    .world-floor {
       transition: transform 0.45s var(--ease-ps);
     }
 
-    .world-floor.is-tucked .floor-nav {
-      transform: translateY(calc(100% + 1rem));
+    .world-floor.is-tucked {
+      transform: translateY(100%);
     }
 
     /* No speech on a phone, even if the window was narrowed mid-line. */
@@ -2682,5 +2705,56 @@ html[data-boot]:has(.title-screen:not(.is-started)) .floor-nav {
 @keyframes title-blink {
   50% {
     opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   OPEN TEXT
+
+   The home page's sections without panels: the text stands on the world,
+   set like a console's item screen. A title as a solid plum block with
+   pale lettering, a hatched rule under it, and running text held by a
+   rounded bracket on its left.
+   ========================================================================== */
+
+@layer components {
+  .tag-title {
+    display: inline-block;
+    padding: 0.05em 0.35em 0.1em;
+    color: rgb(var(--lys));
+    background: rgb(var(--blekk));
+    line-height: 1.15;
+  }
+
+  /* Pale rose on plum: 11:1. */
+  h2.tag-title {
+    color: rgb(var(--lys));
+  }
+
+  .hatch-rule {
+    height: 7px;
+    margin: 1rem 0 1.4rem;
+    background: repeating-linear-gradient(
+      -55deg,
+      rgb(var(--blekk) / 0.6) 0 1px,
+      transparent 1px 5px
+    );
+  }
+
+  .bracket-text {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .bracket-text::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    bottom: 0.15em;
+    width: 0.5rem;
+    border: 1.5px solid rgb(var(--blekk) / 0.75);
+    border-right: 0;
+    border-radius: 0.5rem 0 0 0.5rem;
   }
 }

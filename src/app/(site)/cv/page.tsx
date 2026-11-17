@@ -69,7 +69,7 @@ export default function CvPage() {
 
   return (
     <main id="hovedinnhold">
-      <div className="mx-auto my-10 w-[calc(100%-1.5rem)] max-w-3xl ps-panel px-5 py-14 sm:my-14 sm:px-10">
+      <div className="mx-auto my-10 w-[calc(100%-1.5rem)] max-w-3xl px-2 py-10 sm:my-14 sm:px-4">
         <header className="flex flex-col gap-7 sm:flex-row sm:items-end">
           <Image
             src="/andreprofil.png"
@@ -83,11 +83,11 @@ export default function CvPage() {
             <h1 className="font-display text-[clamp(2rem,7vw,3.25rem)] leading-[1.05]">
               {bio.name}
             </h1>
-            <p className="mt-2 text-lg font-bold text-accent">{bio.title}</p>
+            <p className="mt-2 text-lg font-bold">{bio.title}</p>
           </div>
         </header>
 
-        <p className="mt-7 text-lg leading-relaxed">{bio.intro}</p>
+        <p className="bracket-text mt-7 text-lg leading-relaxed">{bio.intro}</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <PixelButton href="/prosjekter">Se prosjektene</PixelButton>
@@ -101,10 +101,11 @@ export default function CvPage() {
 
         <div className="mt-14 space-y-16">
           <section aria-labelledby="erfaring">
-            <h2 id="erfaring" className="font-display text-2xl sm:text-3xl">
+            <h2 id="erfaring" className="tag-title font-display text-2xl sm:text-3xl">
               Erfaring
             </h2>
-            <ul className="mt-8">
+            <div aria-hidden="true" className="hatch-rule" />
+            <ul className="mt-2">
               {experience.map((entry, index) => (
                 <TimelineEntry
                   key={`${entry.organisation}-${entry.period}`}
@@ -121,10 +122,11 @@ export default function CvPage() {
           </section>
 
           <section aria-labelledby="utdanning">
-            <h2 id="utdanning" className="font-display text-2xl sm:text-3xl">
+            <h2 id="utdanning" className="tag-title font-display text-2xl sm:text-3xl">
               Utdanning
             </h2>
-            <ul className="mt-8">
+            <div aria-hidden="true" className="hatch-rule" />
+            <ul className="mt-2">
               {education.map((entry, index) => (
                 <TimelineEntry
                   key={entry.institution}

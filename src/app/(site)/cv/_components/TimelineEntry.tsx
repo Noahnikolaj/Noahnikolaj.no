@@ -45,7 +45,7 @@ export function TimelineEntry({
         </span>
       </div>
 
-      <p className="mt-1 font-bold text-accent">{subheading}</p>
+      <p className="mt-1 font-bold">{subheading}</p>
 
       {description ? (
         <p className="mt-3 leading-relaxed">{description}</p>

@@ -91,20 +91,27 @@ export function WorldFloor() {
     return () => window.clearTimeout(done);
   }, [pathname]);
 
+  const teleport = React.useCallback(
+    (index: number) => {
+      const target = BUTTONS[index];
+      if (!target || index === activeIndex || leaving.current) return;
+      leaving.current = true;
+      setPressed(index);
+      setLine(null);
+      if (reducedMotion()) {
+        router.push(target.href);
+        return;
+      }
+      setPhase("leaving");
+      window.setTimeout(() => router.push(target.href), BEAM_UP_MS);
+    },
+    [activeIndex, router],
+  );
+
   const press = (event: React.MouseEvent, index: number) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
-    const target = BUTTONS[index];
-    if (index === activeIndex || leaving.current) return;
-    leaving.current = true;
-    setPressed(index);
-    setLine(null);
-    if (reducedMotion()) {
-      router.push(target.href);
-      return;
-    }
-    setPhase("leaving");
-    window.setTimeout(() => router.push(target.href), BEAM_UP_MS);
+    teleport(index);
   };
 
   // Arrow keys move between the buttons once one has focus.
@@ -238,6 +245,7 @@ export function WorldFloor() {
           </ul>
         </div>
       </nav>
+
     </div>
   );
 }

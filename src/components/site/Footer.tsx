@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+
 /*
  * The footer is the back of the console.
  *

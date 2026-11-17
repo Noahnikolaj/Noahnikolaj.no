@@ -46,7 +46,7 @@ export default function HomePage() {
           </h1>
 
           <p
-            className="slam mt-7 text-lg leading-relaxed sm:text-xl"
+            className="slam bracket-text mt-7 text-lg leading-relaxed sm:text-xl"
             style={{ ["--slam" as string]: 2 }}
           >
             Jeg designer og koder. For tiden masterstudent i Human Computer
@@ -90,13 +90,14 @@ export default function HomePage() {
         aria-labelledby="utvalgte"
         className="mx-auto w-full max-w-5xl px-3 sm:px-5"
       >
-        <div className="ps-panel px-5 py-14 sm:px-8 md:py-16">
+        <div className="px-2 py-12 sm:px-3 md:py-14">
           <h2
             id="utvalgte"
-            className="font-display text-3xl text-secondary-foreground sm:text-4xl"
+            className="tag-title font-display text-3xl sm:text-4xl"
           >
             Fire ting jeg har laget
           </h2>
+          <div aria-hidden="true" className="hatch-rule" />
 
           {/*
             Each cartridge goes straight into the machine on Prosjekter: the
@@ -128,7 +129,7 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto mt-6 w-full max-w-5xl px-3 sm:px-5">
-        <div className="ps-panel flex flex-col items-start gap-8 px-5 py-12 sm:flex-row sm:items-center sm:px-8">
+        <div className="flex flex-col items-start gap-8 px-2 py-12 sm:flex-row sm:items-center sm:px-3">
           <Image
             src="/andreprofil.png"
             alt="Noah Klavestad-Christensen"
@@ -137,10 +138,11 @@ export default function HomePage() {
             className="ps-frame w-32 object-cover sm:w-40"
           />
           <div>
-            <h2 className="font-display text-2xl sm:text-3xl">
+            <h2 className="tag-title font-display text-2xl sm:text-3xl">
               Kort om meg
             </h2>
-            <p className="mt-3 leading-relaxed">
+            <div aria-hidden="true" className="hatch-rule" />
+            <p className="bracket-text leading-relaxed">
               Jeg er mest interessert i det som skjer mellom folk og grensesnitt:
               VR og AR, kunstig intelligens, og hvordan slike systemer kan bli
               mer tilgjengelige. Jeg bygger også ting som ikke har noen god
